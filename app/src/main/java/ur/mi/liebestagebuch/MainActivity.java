@@ -9,7 +9,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         //Vorgefertigter Code:
-        //Kommentat
+        //Jonas' Branch
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
     }
