@@ -37,7 +37,7 @@ public class StringTransformHelper {
     * Neue Boxtypen müssen ergänzt werden, hier Verbesserung möglich.
     * Ist die Box von einem unbekannten Typ wird sie als Text gespeichert.
     * @param um zu wandelnde Box
-    * @return Stringumwandlung der Box in der Form |<Type | inhalt
+    * @return Stringumwandlung der Box in der Form |<getType() | getString()
      */
     private static String getStringFromBox(Box box){
         String boxString = "|<";
