@@ -3,6 +3,8 @@ package ur.mi.liebestagebuch.Encryption;
 import java.util.ArrayList;
 
 import ur.mi.liebestagebuch.Boxes.Box;
+import ur.mi.liebestagebuch.Boxes.PictureBox;
+import ur.mi.liebestagebuch.Boxes.TextBox;
 import ur.mi.liebestagebuch.Boxes.Type;
 
 public class StringTransformHelper {
@@ -55,5 +57,43 @@ public class StringTransformHelper {
         boxString += box.getString();
 
         return boxString;
+    }
+
+    /*
+    * Gibt eine Arraylist von Boxen auf Basis eines Strings der richtigen Formattierung zurück
+    * Der übergebene String muss unverschlüsselt sein.
+    *
+    * @param Liste der Boxen in String Form
+    * @return Liste von Boxen auf Basis des Strings
+     */
+    private static ArrayList<Box> getBoxListFromString(String boxListString){
+        ArrayList<Box> boxList = new ArrayList<>();
+
+        String[] singleBoxStrings = boxListString.split("\\Q|\\E<");
+        for(String current : singleBoxStrings){
+            Box currentNewBox = getSingleBoxFromString(current);
+            boxList.add(currentNewBox);
+        }
+
+        return boxList;
+    }
+
+    /*
+     * Umwandlung eines Strings der Form |<Typ | Inhalt in eine Box.
+     * Neue Boxtypen müssen ergänzt werden
+     *
+     * @param String repräsentation einer Box
+     * @return eine Box des entsprechenden Typs.
+     */
+    private static Box getSingleBoxFromString(String current) {
+        String[] parts = current.split(" \\Q|\\E ");
+        if(parts[0].equals("Picture")) {
+            PictureBox newPictureBox = new PictureBox(parts[1]);
+            return newPictureBox;
+        }
+
+        TextBox newTextBox = new TextBox(parts[1]);
+
+        return newTextBox;
     }
 }
