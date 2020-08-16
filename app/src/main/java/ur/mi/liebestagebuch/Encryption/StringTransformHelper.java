@@ -1,5 +1,7 @@
 package ur.mi.liebestagebuch.Encryption;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 
 import ur.mi.liebestagebuch.Boxes.Box;
@@ -45,6 +47,7 @@ public class StringTransformHelper {
         String boxString = "|<";
 
         Type boxType = box.getType();
+        //Log.d("TestConfigTest", "" + boxType);
         switch (boxType){
             case PICTURE:
                 boxString += "Picture";
@@ -67,12 +70,17 @@ public class StringTransformHelper {
     * @return Liste von Boxen auf Basis des Strings
      */
     public static ArrayList<Box> getBoxListFromString(String boxListString){
+        //Log.d("TestConfigTest", "getBoxListFromString started");
         ArrayList<Box> boxList = new ArrayList<>();
 
         String[] singleBoxStrings = boxListString.split("\\Q|\\E<");
+        //Log.d("TestConfigTest", "splitted" + singleBoxStrings[1]);
         for(String current : singleBoxStrings){
-            Box currentNewBox = getSingleBoxFromString(current);
-            boxList.add(currentNewBox);
+            if(current.length() > 0) {
+                Box currentNewBox = getSingleBoxFromString(current);
+                boxList.add(currentNewBox);
+            }
+            else continue;
         }
 
         return boxList;
@@ -86,8 +94,9 @@ public class StringTransformHelper {
      * @return eine Box des entsprechenden Typs.
      */
     private static Box getSingleBoxFromString(String current) {
-        String[] parts = current.split(" \\Q|\\E ");
-        if(parts[0].equals("Picture")) {
+        //Log.d("StringTransformHelper", current);
+        String[] parts = current.split("\\Q|\\E");
+        if(parts[0].contains("Picture")) {
             PictureBox newPictureBox = new PictureBox(parts[1]);
             return newPictureBox;
         }
