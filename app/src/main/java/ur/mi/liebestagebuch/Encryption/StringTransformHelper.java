@@ -66,7 +66,7 @@ public class StringTransformHelper {
     * @param Liste der Boxen in String Form
     * @return Liste von Boxen auf Basis des Strings
      */
-    private static ArrayList<Box> getBoxListFromString(String boxListString){
+    public static ArrayList<Box> getBoxListFromString(String boxListString){
         ArrayList<Box> boxList = new ArrayList<>();
 
         String[] singleBoxStrings = boxListString.split("\\Q|\\E<");
