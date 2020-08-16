@@ -1,8 +1,11 @@
 package ur.mi.liebestagebuch.Encryption;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.concurrent.Executors;
 
 import ur.mi.liebestagebuch.Boxes.Box;
 import ur.mi.liebestagebuch.Boxes.PictureBox;
@@ -104,5 +107,16 @@ public class StringTransformHelper {
         TextBox newTextBox = new TextBox(parts[1]);
 
         return newTextBox;
+    }
+
+    /*
+     * Erstellen eines Handlers für den Main-Thread und eines AsyncEncryptor-Objekts, dass die
+     * Verschlüsselung in einem neuen Thread durchführt und den übergebenen Listener
+     * über die Fertigstellung informiert.
+     */
+    public static void startEncryption (String toEncrypt, CryptoListener listener){
+        Handler mainThreadHandler = new Handler(Looper.getMainLooper());
+        AsyncEncryptor encryptor = new AsyncEncryptor(mainThreadHandler, listener, toEncrypt);
+        Executors.newSingleThreadExecutor().submit(encryptor);
     }
 }
