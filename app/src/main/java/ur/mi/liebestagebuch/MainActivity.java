@@ -3,6 +3,7 @@ package ur.mi.liebestagebuch;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -22,6 +23,6 @@ public class MainActivity extends AppCompatActivity {
         //StringTransformHelper Test Code:
         ArrayList<Box> testBoxList = StringTransformHelper.getBoxListFromString(TestConfig.TEST_BOXLIST_STRING);
         String testBoxListString = StringTransformHelper.getStringFromBoxList(testBoxList);
-        System.out.println(testBoxListString);
+        Log.d("StringTransformHelper", testBoxListString);
     }
 }
