@@ -116,7 +116,7 @@ public class StringTransformHelper {
      */
     public static void startEncryption (String toEncrypt, CryptoListener listener){
         Handler mainThreadHandler = new Handler(Looper.getMainLooper());
-        AsyncEncryptor encryptor = new AsyncEncryptor(mainThreadHandler, listener, toEncrypt);
+        AsyncEncryptor encryptor = new AsyncEncryptor(mainThreadHandler, listener, toEncrypt, TestConfig.encryptedPassword);
         Executors.newSingleThreadExecutor().submit(encryptor);
     }
 }

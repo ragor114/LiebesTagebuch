@@ -14,50 +14,51 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
 
-public class AsyncEncryptor implements Runnable {
+public class AsyncDecryptor implements Runnable {
 
     /*
-     * Diese Klasse soll die Verschlüsselung eines Strings in einem nebenläufigen Thread übernehmen,
-     * wobei der Schlüssel auf Basis des verschlüsselten, vom Nutzer festgelegten Passworts
-     * generiert wird.
-     * Als Verschlüsselungsalgorithmus wird AES genutzt.
+     * Klasse die hilft einen verschlüsselten String auf Basis des verschlüsselten, vom Nutzer
+     * festgelegten Passworts zu entschlüsseln und den Listener den entschlüsselten String zu
+     * übermitteln.
+     * Als Entschlüsselungsalgorithmus wird AES genutzt.
      *
-     * Entwickelt von Jannik Wiese
+     * Entwickelt von Jannik Wiese.
      */
 
-    // Notwendige Attribute zur Verschlüsselung
+    // notwendigr Attribute:
     private Handler mainThreadHandler;
     private CryptoListener listener;
-    private String toEncrypt;
+    private String toDecrypt;
     private String encryptedPassword;
 
     // Die notwendigen Attribute werden über den Konstruktor gesetzt
-    public AsyncEncryptor(Handler mainThreadHandler, CryptoListener listener, String toEncrypt, String encryptedPassword){
+    public AsyncDecryptor (Handler mainThreadHandler, CryptoListener listener, String toDecrypt, String encryptedPassword){
         this.mainThreadHandler = mainThreadHandler;
         this.listener = listener;
-        this.toEncrypt = toEncrypt;
+        this.toDecrypt = toDecrypt;
         this.encryptedPassword = encryptedPassword;
     }
 
     @Override
     public void run() {
-        encrypt();
+        decrypt();
     }
 
     /*
-     * Hauptmethode zur Verschlüsselung zuerst wird ein SecretKeySpec generiert, der dann zur
-     * Verschlüsselung mittels der von Java-vorgegebenen Klassen und Methoden genutzt wird.
-     * Das verschlüsselte Byte Array wird in einen String umgewandelt und dem Listener übermittelt.
+     * Hauptmethode der Entschlüsselung.
+     * Der verschlüsselte String wird in ein Byte-Array umgewandelt, das mithilfe eines
+     * SecretKeySpecs, welches auf Basis des verschlüsselten Passworts generiert wird in ein ent-
+     * schlüsseltes Byte-Array umgewandelt wird, dass dann in einen String umgewandelt wird, der dem
+     * Listener übergeben wird.
      */
-    private void encrypt(){
-        //encrypt toEncrypt
-        String encryptedString = "";
-        SecretKeySpec myAESKey = getAESKey();
+    private void decrypt() {
+        byte[] encryptedBytes = toDecrypt.getBytes();
+        String decryptedString = "";
         try {
             Cipher cipher = Cipher.getInstance("AES");
-            cipher.init(Cipher.ENCRYPT_MODE, myAESKey);
-            byte [] encrypted = cipher.doFinal(toEncrypt.getBytes());
-            encryptedString = new String(encrypted);
+            cipher.init(Cipher.DECRYPT_MODE, getAESKey());
+            byte[] decryptedBytes = cipher.doFinal(encryptedBytes);
+            decryptedString = new String (decryptedBytes);
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         } catch (NoSuchPaddingException e) {
@@ -69,13 +70,10 @@ public class AsyncEncryptor implements Runnable {
         } catch (IllegalBlockSizeException e) {
             e.printStackTrace();
         }
-        //call informListener
-        informListener(encryptedString);
+        informListener(decryptedString);
     }
 
-    /*
-     * Der SecretKeySpec wird auf Basis des verschlüsselten Passworts generiert.
-     */
+    // Ein SecretKeySpec wird auf Basis des verschlüsselten Passworts generiert.
     private SecretKeySpec getAESKey() {
         SecretKeySpec keySpec = null;
         try {
@@ -90,13 +88,14 @@ public class AsyncEncryptor implements Runnable {
         return keySpec;
     }
 
-    // Der Listener wird auf dem UI-Thread informiert und der verschlüsselte String übergeben.
+    // Der Listener wird über den Abschluss der Entschlüsselung informiert und der entschlüsselte
+    // String auf dem UI-Thread übergeben.
     private void informListener(String result){
         final String resultString = result;
         mainThreadHandler.post(new Runnable() {
             @Override
             public void run() {
-                listener.onEncryptionFinished(resultString);
+                listener.onDecryptionFinished(resultString);
             }
         });
     }
