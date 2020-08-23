@@ -2,7 +2,6 @@ package ur.mi.liebestagebuch.Encryption;
 
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.concurrent.Executors;
@@ -116,7 +115,19 @@ public class StringTransformHelper {
      */
     public static void startEncryption (String toEncrypt, CryptoListener listener){
         Handler mainThreadHandler = new Handler(Looper.getMainLooper());
-        AsyncEncryptor encryptor = new AsyncEncryptor(mainThreadHandler, listener, toEncrypt, TestConfig.encryptedPassword);
+        AsyncEncryptor encryptor = new AsyncEncryptor(mainThreadHandler, listener, toEncrypt, TestConfig.TEST_ENCRYPTED_PASSWORD);
         Executors.newSingleThreadExecutor().submit(encryptor);
     }
+
+    /*
+     * Erstellen eines Handlers für den Main-Thread und eines AsyncDecryptor-Objekts, dass die
+     * Entschlüsselung in einem neuen Thread durchführt und den übergebenen Listener
+     * über die Fertigstellung informiert.
+     */
+    public static void startDecryption (String toDecrypt, CryptoListener listener){
+        Handler mainThreadHandler = new Handler(Looper.getMainLooper());
+        AsyncDecryptor decryptor = new AsyncDecryptor(mainThreadHandler, listener, toDecrypt, TestConfig.TEST_ENCRYPTED_PASSWORD);
+        Executors.newSingleThreadExecutor().submit(decryptor);
+    }
+
 }

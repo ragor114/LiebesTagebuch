@@ -1,6 +1,7 @@
 package ur.mi.liebestagebuch.Encryption;
 
 import android.os.Handler;
+import android.util.Log;
 
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
@@ -53,21 +54,29 @@ public class AsyncDecryptor implements Runnable {
      */
     private void decrypt() {
         byte[] encryptedBytes = toDecrypt.getBytes();
-        String decryptedString = "";
+        String decryptedString = "None";
+        SecretKeySpec myAESKey = getAESKey();
         try {
-            Cipher cipher = Cipher.getInstance("AES");
-            cipher.init(Cipher.DECRYPT_MODE, getAESKey());
+            Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+            cipher.init(Cipher.DECRYPT_MODE, myAESKey);
             byte[] decryptedBytes = cipher.doFinal(encryptedBytes);
-            decryptedString = new String (decryptedBytes);
+            decryptedString = new String (decryptedBytes, "UTF-8");
         } catch (NoSuchAlgorithmException e) {
+            Log.d("Encryption", "NoSuchAlgorithm");
             e.printStackTrace();
         } catch (NoSuchPaddingException e) {
+            Log.d("Encryption", "NoSuchPadding");
             e.printStackTrace();
         } catch (InvalidKeyException e) {
+            Log.d("Encryption", "InvalidKey");
             e.printStackTrace();
         } catch (BadPaddingException e) {
+            Log.d("Encryption", "BadPadding");
             e.printStackTrace();
         } catch (IllegalBlockSizeException e) {
+            Log.d("Encryption", "IllegalBlockSize");
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
         informListener(decryptedString);

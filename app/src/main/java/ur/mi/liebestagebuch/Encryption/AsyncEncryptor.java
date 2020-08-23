@@ -54,10 +54,10 @@ public class AsyncEncryptor implements Runnable {
         String encryptedString = "";
         SecretKeySpec myAESKey = getAESKey();
         try {
-            Cipher cipher = Cipher.getInstance("AES");
+            Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
             cipher.init(Cipher.ENCRYPT_MODE, myAESKey);
             byte [] encrypted = cipher.doFinal(toEncrypt.getBytes());
-            encryptedString = new String(encrypted);
+            encryptedString = new String(encrypted, "UTF-8");
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         } catch (NoSuchPaddingException e) {
@@ -67,6 +67,8 @@ public class AsyncEncryptor implements Runnable {
         } catch (BadPaddingException e) {
             e.printStackTrace();
         } catch (IllegalBlockSizeException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
         //call informListener
