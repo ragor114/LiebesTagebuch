@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Liebes Tagebuch</string>
+    <string name="encryption_failed">The Encryption Process failed, if this keeps happening please change your password or deactivate Encryption.</string>
+    <string name="decryption_failed">The Decryption Process failed, if this keeps happening please change your password or deactivate Encryption.</string>
 </resources>

@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -43,5 +44,17 @@ public class MainActivity extends AppCompatActivity implements CryptoListener {
     @Override
     public void onDecryptionFinished(String result) {
         Log.d(EncryptionConfig.LOG_TAG, "Decrypted: " + result);
+    }
+
+    @Override
+    public void onEncryptionFailed() {
+        Toast toast = Toast.makeText(getApplicationContext(), R.string.encryption_failed, Toast.LENGTH_LONG);
+        toast.show();
+    }
+
+    @Override
+    public void onDecryptionFailed() {
+        Toast toast = Toast.makeText(getApplicationContext(), R.string.decryption_failed, Toast.LENGTH_LONG);
+        toast.show();
     }
 }

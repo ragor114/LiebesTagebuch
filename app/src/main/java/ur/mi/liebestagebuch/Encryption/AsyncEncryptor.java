@@ -1,6 +1,7 @@
 package ur.mi.liebestagebuch.Encryption;
 
 import android.os.Handler;
+import android.util.Base64;
 import android.util.Log;
 
 import java.io.UnsupportedEncodingException;
@@ -63,55 +64,51 @@ public class AsyncEncryptor implements Runnable {
             AlgorithmParameters params = cipher.getParameters();
             iv = params.getParameterSpec(IvParameterSpec.class).getIV();
             byte [] encrypted = cipher.doFinal(toEncrypt.getBytes(EncryptionConfig.CHARSET_NAME));
-            encryptedString = new String(encrypted, EncryptionConfig.CHARSET_NAME);
+            encryptedString = Base64.encodeToString(encrypted, Base64.DEFAULT);
         } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
+            encryptionFailed();
         } catch (NoSuchPaddingException e) {
-            e.printStackTrace();
+            encryptionFailed();
         } catch (InvalidKeyException e) {
-            e.printStackTrace();
+            encryptionFailed();
         } catch (BadPaddingException e) {
-            e.printStackTrace();
+            encryptionFailed();
         } catch (IllegalBlockSizeException e) {
-            e.printStackTrace();
+            encryptionFailed();
         } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+            encryptionFailed();
         } catch (InvalidParameterSpecException e) {
-            Log.d(EncryptionConfig.LOG_TAG, "Invalid Parameter Spec");
-            e.printStackTrace();
+            // Log.d(EncryptionConfig.LOG_TAG, "Invalid Parameter Spec");
+            encryptionFailed();
         }
         //call informListener
         informListener(encryptedString, iv, salt);
     }
 
-    /*
-     * Der SecretKeySpec wird auf Basis des verschlüsselten Passworts generiert.
-     */
-    /*
-    private SecretKeySpec getAESKey() {
-        SecretKeySpec keySpec = null;
-        try {
-            byte[] key = encryptedPassword.getBytes("UTF-8");
-            MessageDigest sha = MessageDigest.getInstance("SHA-256");
-            key = sha.digest(key);
-            key = Arrays.copyOf(key, 16);
-            keySpec = new SecretKeySpec(key, "AES");
-        } catch (UnsupportedEncodingException | NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
-        return keySpec;
-    }
-    */
-
     // Der Listener wird auf dem UI-Thread informiert und der verschlüsselte String übergeben.
     private void informListener(String result, byte[] iv, byte[] salt){
+        //Nur final Werte können an einen anderen Thread übergeben werden.
         final String resultString = result;
         final byte[] resultIv = iv;
         final byte[] resultSalt = salt;
+        //Informieren des listeners auf einem asynchronen Thread.
         mainThreadHandler.post(new Runnable() {
             @Override
             public void run() {
+                // Der initiale Vektor und das randomisierte salt-Array müssen übergeben werden,
+                // damit die Entschlüsselung gelingen kann, dürfen aber (laut Best-Practise)
+                // unverschlüsselt gespeichert werden, solange der key geheim bleibt.
                 listener.onEncryptionFinished(resultString, resultIv, resultSalt);
+            }
+        });
+    }
+
+    //Bei Absturz informieren des Listeners auf dem UI-Thread.
+    private void encryptionFailed(){
+        mainThreadHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                listener.onEncryptionFailed();
             }
         });
     }

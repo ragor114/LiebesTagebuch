@@ -2,6 +2,11 @@ package ur.mi.liebestagebuch.Encryption;
 
 public class EncryptionConfig {
 
+    /*
+     * Alle vordefinierten Werte, die für die AES-Verschlüsselung in AsyncEncryptor und
+     * AsyncDecryptor gebraucht werden.
+     */
+
     public final static String LOG_TAG = "Encryption";
     public final static String ENCRYPTION_ALGORITHM = "AES/CBC/PKCS5Padding";
     public final static String KEY_FACTORY_ALGORITHM = "PBKDF2WithHmacSHA256";

@@ -8,5 +8,7 @@ public interface CryptoListener {
      */
     void onEncryptionFinished (String result, byte[] iv, byte[] salt);
     void onDecryptionFinished (String result);
+    void onEncryptionFailed();
+    void onDecryptionFailed();
 
 }
