@@ -9,6 +9,7 @@ import java.util.ArrayList;
 
 import ur.mi.liebestagebuch.Boxes.Box;
 import ur.mi.liebestagebuch.Encryption.CryptoListener;
+import ur.mi.liebestagebuch.Encryption.EncryptionConfig;
 import ur.mi.liebestagebuch.Encryption.StringTransformHelper;
 import ur.mi.liebestagebuch.Encryption.TestConfig;
 
@@ -34,13 +35,13 @@ public class MainActivity extends AppCompatActivity implements CryptoListener {
 
     //Test-Implementierungen der Crypto-Listener-Methoden:
     @Override
-    public void onEncryptionFinished(String result) {
-        Log.d("Encryption", "Encrypted: " + result);
-        StringTransformHelper.startDecryption(result, this);
+    public void onEncryptionFinished(String result, byte[] iv) {
+        Log.d(EncryptionConfig.LOG_TAG, "Encrypted: " + result);
+        StringTransformHelper.startDecryption(result, this, iv);
     }
 
     @Override
     public void onDecryptionFinished(String result) {
-        Log.d("Encryption", "Decrypted: " + result);
+        Log.d(EncryptionConfig.LOG_TAG, "Decrypted: " + result);
     }
 }

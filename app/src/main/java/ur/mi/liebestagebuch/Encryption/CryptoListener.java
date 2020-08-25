@@ -7,7 +7,7 @@ public interface CryptoListener {
      * Entschlüsselungsvorgänge.
      */
 
-    void onEncryptionFinished (String result);
+    void onEncryptionFinished (String result, byte[] iv);
     void onDecryptionFinished (String result);
 
 }

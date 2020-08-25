@@ -1,18 +1,20 @@
 package ur.mi.liebestagebuch.Encryption;
 
 import android.os.Handler;
+import android.util.Log;
 
 import java.io.UnsupportedEncodingException;
+import java.security.AlgorithmParameters;
 import java.security.InvalidKeyException;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
+import java.security.spec.InvalidParameterSpecException;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
-import javax.crypto.spec.SecretKeySpec;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.IvParameterSpec;
 
 public class AsyncEncryptor implements Runnable {
 
@@ -52,11 +54,14 @@ public class AsyncEncryptor implements Runnable {
     private void encrypt(){
         //encrypt toEncrypt
         String encryptedString = "";
-        SecretKeySpec myAESKey = getAESKey();
+        byte[] iv = null;
+        SecretKey myAESKey = AESKeyGeneratorHelper.getAESKeyFromPassword(encryptedPassword);
         try {
-            Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+            Cipher cipher = Cipher.getInstance(EncryptionConfig.ENCRYPTION_ALGORITHM);
             cipher.init(Cipher.ENCRYPT_MODE, myAESKey);
-            byte [] encrypted = cipher.doFinal(toEncrypt.getBytes());
+            AlgorithmParameters params = cipher.getParameters();
+            iv = params.getParameterSpec(IvParameterSpec.class).getIV();
+            byte [] encrypted = cipher.doFinal(toEncrypt.getBytes("UTF-8"));
             encryptedString = new String(encrypted, "UTF-8");
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
@@ -70,14 +75,18 @@ public class AsyncEncryptor implements Runnable {
             e.printStackTrace();
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
+        } catch (InvalidParameterSpecException e) {
+            Log.d(EncryptionConfig.LOG_TAG, "Invalid Parameter Spec");
+            e.printStackTrace();
         }
         //call informListener
-        informListener(encryptedString);
+        informListener(encryptedString, iv);
     }
 
     /*
      * Der SecretKeySpec wird auf Basis des verschlüsselten Passworts generiert.
      */
+    /*
     private SecretKeySpec getAESKey() {
         SecretKeySpec keySpec = null;
         try {
@@ -91,14 +100,16 @@ public class AsyncEncryptor implements Runnable {
         }
         return keySpec;
     }
+    */
 
     // Der Listener wird auf dem UI-Thread informiert und der verschlüsselte String übergeben.
-    private void informListener(String result){
+    private void informListener(String result, byte[] iv){
         final String resultString = result;
+        final byte[] resultIv = iv;
         mainThreadHandler.post(new Runnable() {
             @Override
             public void run() {
-                listener.onEncryptionFinished(resultString);
+                listener.onEncryptionFinished(resultString, resultIv);
             }
         });
     }

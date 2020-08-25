@@ -124,9 +124,9 @@ public class StringTransformHelper {
      * Entschlüsselung in einem neuen Thread durchführt und den übergebenen Listener
      * über die Fertigstellung informiert.
      */
-    public static void startDecryption (String toDecrypt, CryptoListener listener){
+    public static void startDecryption (String toDecrypt, CryptoListener listener, byte [] iv){
         Handler mainThreadHandler = new Handler(Looper.getMainLooper());
-        AsyncDecryptor decryptor = new AsyncDecryptor(mainThreadHandler, listener, toDecrypt, TestConfig.TEST_ENCRYPTED_PASSWORD);
+        AsyncDecryptor decryptor = new AsyncDecryptor(mainThreadHandler, listener, toDecrypt, TestConfig.TEST_ENCRYPTED_PASSWORD, iv);
         Executors.newSingleThreadExecutor().submit(decryptor);
     }
 
