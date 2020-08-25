@@ -35,9 +35,9 @@ public class MainActivity extends AppCompatActivity implements CryptoListener {
 
     //Test-Implementierungen der Crypto-Listener-Methoden:
     @Override
-    public void onEncryptionFinished(String result, byte[] iv) {
+    public void onEncryptionFinished(String result, byte[] iv, byte[] salt) {
         Log.d(EncryptionConfig.LOG_TAG, "Encrypted: " + result);
-        StringTransformHelper.startDecryption(result, this, iv);
+        StringTransformHelper.startDecryption(result, this, iv, salt);
     }
 
     @Override

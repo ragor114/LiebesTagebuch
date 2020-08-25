@@ -55,7 +55,8 @@ public class AsyncEncryptor implements Runnable {
         //encrypt toEncrypt
         String encryptedString = "";
         byte[] iv = null;
-        SecretKey myAESKey = AESKeyGeneratorHelper.getAESKeyFromPassword(encryptedPassword);
+        byte[] salt = AESKeyGeneratorHelper.getSalt();
+        SecretKey myAESKey = AESKeyGeneratorHelper.getAESKeyFromPasswordAndGivenSalt(encryptedPassword, salt);
         try {
             Cipher cipher = Cipher.getInstance(EncryptionConfig.ENCRYPTION_ALGORITHM);
             cipher.init(Cipher.ENCRYPT_MODE, myAESKey);
@@ -80,7 +81,7 @@ public class AsyncEncryptor implements Runnable {
             e.printStackTrace();
         }
         //call informListener
-        informListener(encryptedString, iv);
+        informListener(encryptedString, iv, salt);
     }
 
     /*
@@ -103,13 +104,14 @@ public class AsyncEncryptor implements Runnable {
     */
 
     // Der Listener wird auf dem UI-Thread informiert und der verschlüsselte String übergeben.
-    private void informListener(String result, byte[] iv){
+    private void informListener(String result, byte[] iv, byte[] salt){
         final String resultString = result;
         final byte[] resultIv = iv;
+        final byte[] resultSalt = salt;
         mainThreadHandler.post(new Runnable() {
             @Override
             public void run() {
-                listener.onEncryptionFinished(resultString, resultIv);
+                listener.onEncryptionFinished(resultString, resultIv, resultSalt);
             }
         });
     }

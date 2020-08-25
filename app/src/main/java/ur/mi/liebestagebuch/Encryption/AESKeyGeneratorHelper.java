@@ -22,8 +22,12 @@ public class AESKeyGeneratorHelper {
      */
 
     public static SecretKey getAESKeyFromPassword(String password){
-        char[] passChars = password.toCharArray();
         byte[] salt = getSalt();
+        return getAESKeyFromPasswordAndGivenSalt(password, salt);
+    }
+
+    public static SecretKey getAESKeyFromPasswordAndGivenSalt(String password, byte[] salt){
+        char[] passChars = password.toCharArray();
         SecretKey secretKey = null;
         try {
             SecretKeyFactory factory = SecretKeyFactory.getInstance(EncryptionConfig.KEY_FACTORY_ALGORITHM);

@@ -32,14 +32,16 @@ public class AsyncDecryptor implements Runnable {
     private String toDecrypt;
     private String encryptedPassword;
     private byte[] iv;
+    private byte[] salt;
 
     // Die notwendigen Attribute werden über den Konstruktor gesetzt
-    public AsyncDecryptor (Handler mainThreadHandler, CryptoListener listener, String toDecrypt, String encryptedPassword, byte[] iv){
+    public AsyncDecryptor (Handler mainThreadHandler, CryptoListener listener, String toDecrypt, String encryptedPassword, byte[] iv, byte[] salt){
         this.mainThreadHandler = mainThreadHandler;
         this.listener = listener;
         this.toDecrypt = toDecrypt;
         this.encryptedPassword = encryptedPassword;
         this.iv = iv;
+        this.salt = salt;
     }
 
     @Override
@@ -66,7 +68,7 @@ public class AsyncDecryptor implements Runnable {
             e.printStackTrace();
         }
         String decryptedString = "None";
-        SecretKey myAESKey = AESKeyGeneratorHelper.getAESKeyFromPassword(encryptedPassword);
+        SecretKey myAESKey = AESKeyGeneratorHelper.getAESKeyFromPasswordAndGivenSalt(encryptedPassword, salt);
         Log.d(EncryptionConfig.LOG_TAG, "AES Key generated");
         try {
             Cipher cipher = Cipher.getInstance(EncryptionConfig.ENCRYPTION_ALGORITHM);
