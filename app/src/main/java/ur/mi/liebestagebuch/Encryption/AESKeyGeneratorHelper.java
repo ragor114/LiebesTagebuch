@@ -14,6 +14,13 @@ import javax.crypto.spec.SecretKeySpec;
 
 public class AESKeyGeneratorHelper {
 
+    /*
+     * Diese Klasse generiert einen SecretKey auf Basis des vom Nutzer festgelegten, übergebenen
+     * Passworts
+     *
+     * Entwickelt von Jannik Wiese
+     */
+
     public static SecretKey getAESKeyFromPassword(String password){
         char[] passChars = password.toCharArray();
         byte[] salt = getSalt();
