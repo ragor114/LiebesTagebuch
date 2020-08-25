@@ -61,8 +61,8 @@ public class AsyncEncryptor implements Runnable {
             cipher.init(Cipher.ENCRYPT_MODE, myAESKey);
             AlgorithmParameters params = cipher.getParameters();
             iv = params.getParameterSpec(IvParameterSpec.class).getIV();
-            byte [] encrypted = cipher.doFinal(toEncrypt.getBytes("UTF-8"));
-            encryptedString = new String(encrypted, "UTF-8");
+            byte [] encrypted = cipher.doFinal(toEncrypt.getBytes(EncryptionConfig.CHARSET_NAME));
+            encryptedString = new String(encrypted, EncryptionConfig.CHARSET_NAME);
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         } catch (NoSuchPaddingException e) {

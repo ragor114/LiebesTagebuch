@@ -26,7 +26,7 @@ public class AsyncDecryptor implements Runnable {
      * Entwickelt von Jannik Wiese.
      */
 
-    // notwendigr Attribute:
+    // notwendige Attribute:
     private Handler mainThreadHandler;
     private CryptoListener listener;
     private String toDecrypt;
@@ -56,7 +56,15 @@ public class AsyncDecryptor implements Runnable {
      */
     private void decrypt() {
         Log.d(EncryptionConfig.LOG_TAG, "Decryption started");
-        byte[] encryptedBytes = toDecrypt.getBytes();
+        byte[] encryptedBytes = null;
+        try {
+            //Log.d(EncryptionConfig.LOG_TAG, toDecrypt);
+            encryptedBytes = toDecrypt.getBytes(EncryptionConfig.CHARSET_NAME);
+            //Log.d(EncryptionConfig.LOG_TAG, "Encrypted Bytes: " + encryptedBytes);
+        } catch (UnsupportedEncodingException e) {
+            Log.d(EncryptionConfig.LOG_TAG, "UTF-8 not supported");
+            e.printStackTrace();
+        }
         String decryptedString = "None";
         SecretKey myAESKey = AESKeyGeneratorHelper.getAESKeyFromPassword(encryptedPassword);
         Log.d(EncryptionConfig.LOG_TAG, "AES Key generated");
