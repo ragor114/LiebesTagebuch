@@ -1,19 +1,30 @@
 package ur.mi.liebestagebuch.GridView;
 
+import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
+import java.util.ArrayList;
+
 public class EntryGridAdapter extends BaseAdapter {
+
+    private ArrayList<Entry> entries;
+    private Context context;
+
+    public EntryGridAdapter(ArrayList <Entry> entries, Context context){
+        this.entries = entries;
+        this.context = context;
+    }
 
     @Override
     public int getCount() {
-        return 0;
+        return entries.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return null;
+        return entries.get(position);
     }
 
     @Override
@@ -23,6 +34,8 @@ public class EntryGridAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+
+
         return null;
     }
 }
