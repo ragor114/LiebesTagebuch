@@ -9,6 +9,7 @@ public class Entry {
 
     public Entry(Date date){
         this.date = date;
+        emotion = Emotion.NORMAL;
     }
 
     public Date getDate(){

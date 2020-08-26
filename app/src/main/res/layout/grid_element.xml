@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.widget.RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <LinearLayout
@@ -31,8 +31,7 @@
                     android:id="@+id/emotion_color_view"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@color/emotion_normal"
-                    />
+                    android:background="@color/emotion_normal"/>
 
             </LinearLayout>
 
@@ -44,7 +43,7 @@
            android:layout_height="0dp"
            android:layout_weight="1"
            android:text="Date"
-           android:textSize="30sp"/>
+           android:textSize="10sp"/>
 
     </LinearLayout>
 

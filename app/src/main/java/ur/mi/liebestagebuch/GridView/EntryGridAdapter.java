@@ -61,7 +61,7 @@ public class EntryGridAdapter extends BaseAdapter {
         emotionColorView.setBackgroundColor(getColorResourceForEmotion(currentEntry.getEmotion()));
 
         Date entryDate = currentEntry.getDate();
-        DateFormat dateFormat = new SimpleDateFormat("dd-mm-yyyy");
+        DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
         String dateString = dateFormat.format(entryDate);
         dateTextView.setText(dateString);
 
