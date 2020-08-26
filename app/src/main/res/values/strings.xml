@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Liebes Tagebuch</string>
+    <string name="login_test_text">Login</string>
 </resources>
