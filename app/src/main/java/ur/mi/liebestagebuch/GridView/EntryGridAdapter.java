@@ -58,7 +58,7 @@ public class EntryGridAdapter extends BaseAdapter {
         TextView dateTextView = (TextView) gridElementView.findViewById(R.id.date_text);
         View emotionColorView = gridElementView.findViewById(R.id.emotion_color_view);
 
-        emotionColorView.setBackgroundColor(getColorResourceForEmotion(currentEntry.getEmotion()));
+        emotionColorView.setBackgroundColor(context.getColor(getColorResourceForEmotion(currentEntry.getEmotion())));
 
         Date entryDate = currentEntry.getDate();
         DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");

@@ -4,13 +4,17 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <!-- Problem: Aufgrund von wrap_content bei der Höhe muss in grud_element die Höhe des Inhalts
+     min. 100 dp sein, damit alles angezeigt werden kann aber eine andere Einstellung außer
+     wrap_content macht kaum Sinn...
+     Alles ein bisschen schwammig mit den Layouts kann verbessert werden ... -->
+
     <GridView
         android:id="@+id/entries_grid_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:numColumns="3"
         android:gravity="center"
-        android:verticalSpacing="5dp"
         android:padding="10dp"/>
 
 </android.widget.RelativeLayout>

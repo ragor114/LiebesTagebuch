@@ -1,6 +1,8 @@
 package ur.mi.liebestagebuch.GridView;
 
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.GridView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,7 +14,7 @@ import java.util.Date;
 
 import ur.mi.liebestagebuch.R;
 
-public class GridActivity extends AppCompatActivity {
+public class GridActivity extends AppCompatActivity implements AdapterView.OnItemClickListener, EmotionRequestListener {
 
     /*
      * Diese Activity zeigt für jeden Tag seit der Installation einen Tagebucheintrag im Grid an,
@@ -23,8 +25,18 @@ public class GridActivity extends AppCompatActivity {
      * der Activity angelegt wird genutzt.
      *
      * Entwickelt von Moritz Schnell und Jannik Wiese.
+     *
+     * TODO: getInstallationDate(): Installationsdatum aus Datei abfragen, wenn Datei nicht vorhanden, Installationsdatum speichern.
+     * TODO: getDaysPast(): Vergleich des heutigen Datums mit dem gespeicherten Datum und Berechnung der vergangen Tage.
+     * TODO: requestAllEmotions(): Anfrage für ArrayList aller Emotionen an die Datenbank stellen, dabei diese Activity als Listener übergeben.
+     * TODO: onEmotionRequestFinished(): Empfangene Emotionen den entsprechenden Entries zuweisen und dann grid refreshen.
+     * TODO: onEmotionRequestFinished(): Falls kein Datenbankeintrag für ein Datum vorhanden ist, leeren Eintrag anlegen.
+     * TODO: Layout verbessern, Grafiken statt hässlicher Rechtecke.
+     *
+     * TODO: onItemClick(): Übergang in Detailactivity, Übergabe der nötigen Informationen (reicht nur Datum?).
      */
 
+    //Notwendige Attribute der Gridactivity
     private GridView grid;
     private EntryGridAdapter gridAdapter;
     private ArrayList<Entry> entries;
@@ -37,12 +49,21 @@ public class GridActivity extends AppCompatActivity {
         initGrid();
     }
 
+    // Das Grid-View wird in einer Java-Variable gespeichert, die ArrayList aufgesetzt, der
+    // Adapter mit der ArrayList verbunden und diese Activity als Listener registriert.
     private void initGrid() {
         grid = (GridView) findViewById(R.id.entries_grid_view);
         setUpArrayList();
         connectAdapterToArrayList();
+        grid.setOnItemClickListener(this);
     }
 
+    /*
+     * Das Installationsdatum wird angefragt und die vergangenen Tage seit dem Installations-
+     * datum berechnet. Für jeden Tag nach dem Installationsdatum wird ein Entry erstellt und
+     * (in rückläufiger Reihenfolge, so dass der neueste Eintrag oben steht) in die ArrayList
+     * eingefügt.
+     */
     private void setUpArrayList(){
         entries = new ArrayList<>();
         Date installationDate = getInstallationDate();
@@ -76,14 +97,44 @@ public class GridActivity extends AppCompatActivity {
         return testInstallationDate;
     }
 
+    /*
+     * Der GridAdapter wird mit der ArrayList und dem GridView verbunden und die Ansicht initial
+     * aktualisiert.
+     */
     private void connectAdapterToArrayList(){
         gridAdapter = new EntryGridAdapter(entries, this);
         grid.setAdapter(gridAdapter);
         refreshGrid();
     }
 
+    // Diese Methode kann aufgerufen werden, wenn sich etwas an der ArrayList verändert hat.
     private void refreshGrid(){
         gridAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Entry clickedEntry = entries.get(position);
+        Date clickedEntryDate = clickedEntry.getDate();
+        //Auslesen der Informationen über den mit dem Datum korrespondierenden Datenbankeintrag.
+        //Aufruf der Detailansicht und Übergabe der (verschlüsselten) Informationen.
+    }
+
+    public void requestAllEmotions(){
+      // Anfrage für alle Emotionen in einer ArrayList an die Datenbank übergeben
+      // Da Anfrage asyncron läuft wird diese Activity als Listener übergeben.
+    }
+
+
+    /*
+     * Die in der ArrayList gespeicherten Emotionen werden mittels Entry.setEmotion(Emotion)
+     * in den korrespondierenden Entry-Objekten aus entries gespeichert.
+     * Gibt es für ein Datum eines Entry-Objekts aus Entry noch keine Emotion und damit keinen
+     * Datenbankeintrag muss ein entsprechender Eintrag in der Datenbank angelegt werden.
+     */
+    @Override
+    public void onEmotionRequestFinished(ArrayList<Emotion> allEmotions) {
+
     }
 
 }
