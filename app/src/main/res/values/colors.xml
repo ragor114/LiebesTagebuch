@@ -4,5 +4,10 @@
     <color name="colorPrimaryDark">#3700B3</color>
     <color name="colorAccent">#03DAC5</color>
     <color name="button_color">#bf0a64</color>
+
     <color name="emotion_normal">#b5b5b5</color>
+    <color name="emotion_very_good">#005e19</color>
+    <color name="emotion_good">#00ff44</color>
+    <color name="emotion_bad">#ff6a00</color>
+    <color name="emotion_very_bad">#de0000</color>
 </resources>

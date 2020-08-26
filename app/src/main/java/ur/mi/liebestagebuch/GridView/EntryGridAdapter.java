@@ -4,10 +4,16 @@ import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-
 import java.util.ArrayList;
 
 public class EntryGridAdapter extends BaseAdapter {
+
+    /*
+     * Der EntryGridAdapter schließt eine Arraylist von Entries an ein GridView an und gibt für jedes
+     * Entry-Element der Arraylist ein auf grid_element.xml basierenden View zurück.
+     *
+     * Entwickelt von Moritz Schnell und Jannik Wiese.
+     */
 
     private ArrayList<Entry> entries;
     private Context context;
