@@ -1,10 +1,18 @@
 package ur.mi.liebestagebuch.GridView;
 
 import android.content.Context;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.TextView;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+
+import ur.mi.liebestagebuch.R;
 
 public class EntryGridAdapter extends BaseAdapter {
 
@@ -38,10 +46,47 @@ public class EntryGridAdapter extends BaseAdapter {
         return 0;
     }
 
+
+    //TODO: EmotionColorView muss durch einen Smiley in der entsprechenden Farbe ersetzt werden.
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+        Entry currentEntry = entries.get(position);
 
+        LayoutInflater inflater = LayoutInflater.from(context);
+        View gridElementView = inflater.inflate(R.layout.grid_element, null);
 
-        return null;
+        TextView dateTextView = (TextView) gridElementView.findViewById(R.id.date_text);
+        View emotionColorView = gridElementView.findViewById(R.id.emotion_color_view);
+
+        emotionColorView.setBackgroundColor(getColorResourceForEmotion(currentEntry.getEmotion()));
+
+        Date entryDate = currentEntry.getDate();
+        DateFormat dateFormat = new SimpleDateFormat("dd-mm-yyyy");
+        String dateString = dateFormat.format(entryDate);
+        dateTextView.setText(dateString);
+
+        return gridElementView;
+    }
+
+    private int getColorResourceForEmotion(Emotion emotion){
+        int colorId = 0;
+        switch(emotion){
+            case VERY_GOOD:
+                colorId = R.color.emotion_very_good;
+                break;
+            case GOOD:
+                colorId = R.color.emotion_good;
+                break;
+            case BAD:
+                colorId = R.color.emotion_bad;
+                break;
+            case VERY_BAD:
+                colorId = R.color.emotion_very_bad;
+                break;
+            default:
+                colorId = R.color.emotion_normal;
+                break;
+        }
+        return colorId;
     }
 }
