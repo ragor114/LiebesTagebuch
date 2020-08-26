@@ -11,6 +11,12 @@ import ur.mi.liebestagebuch.GridView.GridActivity;
 
 public class LoginActivity extends AppCompatActivity {
 
+    /*
+     * Activity für Login mit Passwort oder Fingerabdruck
+     *
+     * TODO: Login-Funktionalität (also alles)
+     */
+
     Button loginButton;
 
     @Override
