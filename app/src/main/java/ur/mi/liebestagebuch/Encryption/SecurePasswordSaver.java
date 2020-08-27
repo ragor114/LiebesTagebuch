@@ -35,6 +35,13 @@ public class SecurePasswordSaver {
      *
      * ACHTUNG: Noch nicht getestet (da Passwort-Screen noch nicht implementiert), kann Fehler
      * enthalten!
+     *
+     * TODO: Testen, verbessern, in Login-Screen integrieren.
+     * TODO: Exceptions müssen besser gehandelt werden, wenn in Login-Screen integriert.
+     *
+     * QUELLEN:
+     * https://developer.android.com/training/articles/keystore
+     * https://www.youtube.com/watch?v=VeUhQvCObJY
      */
 
     private static final String SP_PASSWORD_KEY = "password";
