@@ -4,6 +4,8 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.view.View;
 
+import ur.mi.liebestagebuch.Encryption.StringTransformHelper;
+
 public class PictureBox implements Box{
 
     /*
@@ -12,21 +14,20 @@ public class PictureBox implements Box{
      * Umwandlung des Strings in eine Uri und ein Bitmap muss implementiert werden!
      */
 
-    //String repräsentation des Dateipfads zum gewählten Bild.
+    //String Repräsentation des gewählten Bilds.
     private String content;
-    //Uri zum gewählten Bild.
-    private Uri pictureUri;
     //Das gewählte Bild als Bitmap.
     private Bitmap pictureBitmap;
 
     public PictureBox(String content){
         this.content = content;
-        //Umwandlung des Strings in eine Uri und eine Bitmap.
+        //Umwandlung des Strings in eine Bitmap.
+        pictureBitmap = StringTransformHelper.convertBase64StringToBitmap(content);
     }
 
     @Override
     public String getString() {
-        return content;
+        return StringTransformHelper.convertBitmapToBase64String(pictureBitmap);
     }
 
     @Override

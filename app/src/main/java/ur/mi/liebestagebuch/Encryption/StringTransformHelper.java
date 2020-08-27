@@ -1,8 +1,13 @@
 package ur.mi.liebestagebuch.Encryption;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Base64;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.Executors;
 
@@ -128,6 +133,39 @@ public class StringTransformHelper {
         Handler mainThreadHandler = new Handler(Looper.getMainLooper());
         AsyncDecryptor decryptor = new AsyncDecryptor(mainThreadHandler, listener, toDecrypt, TestConfig.TEST_ENCRYPTED_PASSWORD, iv, salt);
         Executors.newSingleThreadExecutor().submit(decryptor);
+    }
+
+    /*
+     * Zur Speicherung in der Datenbank wird das als Bitmap gespeicherte Bild komprimiert und in
+     * ein Byte-Array umgewandelt, dass dann in einen String konvertiert wird, der in der Datenbank
+     * gespeichert werden kann.
+     */
+    public static String convertBitmapToBase64String (Bitmap bitmap){
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+        byte[] bitmapAsBytes = baos.toByteArray();
+        String base64BitmapString = Base64.encodeToString(bitmapAsBytes, Base64.DEFAULT);
+
+        //Aufräumen um Speicher zu sparen:
+        try {
+            baos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        bitmap.recycle();
+
+        return base64BitmapString;
+    }
+
+    /*
+     * Aus einem String der durch die Methode convertBitmaoToBase64String generiert wurde kann mit
+     * dieser Methode wieder ein Bild generiert werden, dass in einem ImageView angezeigt werden
+     * kann.
+     */
+    public static Bitmap convertBase64StringToBitmap (String bitmapString){
+        byte[] bitmapAsBytes = Base64.decode(bitmapString, Base64.DEFAULT);
+        Bitmap bitmap = BitmapFactory.decodeByteArray(bitmapAsBytes, 0, bitmapAsBytes.length);
+        return bitmap;
     }
 
 }
