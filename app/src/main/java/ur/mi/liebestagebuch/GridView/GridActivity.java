@@ -11,6 +11,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 import ur.mi.liebestagebuch.R;
 
@@ -84,7 +85,14 @@ public class GridActivity extends AppCompatActivity implements AdapterView.OnIte
 
     //TODO: Vergleich des gespeicherten Installationsdatums mit dem aktuellen und Rückgabe der Anzahl der vergangenen Tage.
     private int getDaysPassed(Date installationDate){
-        return 9;
+        Date currentDate = new Date();
+        int daysPassed = 0;
+        if (installationDate == currentDate){
+            return daysPassed;
+        } else {
+            daysPassed = (int) (currentDate.getTime() - installationDate.getTime());
+            return (int) TimeUnit.DAYS.convert((daysPassed), TimeUnit.MILLISECONDS);
+        }
     }
 
     //TODO: Abruf des in einer Datei gespeicherten Installationsdatums und Rückgabe dieses Objekts.
@@ -123,6 +131,7 @@ public class GridActivity extends AppCompatActivity implements AdapterView.OnIte
     public void requestAllEmotions(){
       // Anfrage für alle Emotionen in einer ArrayList an die Datenbank übergeben
       // Da Anfrage asyncron läuft wird diese Activity als Listener übergeben.
+
     }
 
 
@@ -138,3 +147,4 @@ public class GridActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
 }
+
