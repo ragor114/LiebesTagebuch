@@ -20,15 +20,39 @@ public class DBHelper {
         diaryDB = DiaryDatabase.getInstance(context);
     }
 
+    //ASYNC DURCH RUNNABLE AUSTAUSCHEN
+
+    //BESTIMMTEN EINTRAG SUCHEN
+
     public void newEntry(Date date, int emotion, String content, byte[] salt){
         newEmptyEntry = new Entry(date, emotion, content, salt);
         AsyncNewEmpty asyncNewEmpty = new AsyncNewEmpty();
         asyncNewEmpty.execute();
     }
 
-    //ASYNC DURCH RUNNABLE AUSTAUSCHEN
 
-    //BESTIMMTEN EINTRAG SUCHEN
+
+    public void getEntryByDate(Date date){
+        AsyncGet asyncGet = new AsyncGet(date);
+        asyncGet.execute();
+    }
+
+    private class AsyncGet extends AsyncTask<Void,Void,Entry>{
+        private Date dateSearch;
+
+        public AsyncGet(Date date) {
+            dateSearch = date;
+        }
+
+        @Override
+        protected Entry doInBackground(Void... voids) {
+            Entry get = diaryDB.getDiaryDao().getEntryByDate(dateSearch);
+            Log.println(Log.DEBUG,"DB",get.toString());
+            return get;
+        }
+    }
+
+
 
     private class AsyncNewEmpty extends android.os.AsyncTask<Void,Void,Void> {
 

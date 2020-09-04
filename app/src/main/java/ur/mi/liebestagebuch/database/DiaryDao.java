@@ -7,6 +7,7 @@ import androidx.room.Query;
 import androidx.room.Update;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import ur.mi.liebestagebuch.database.data.Entry;
@@ -31,4 +32,7 @@ public interface DiaryDao {
 
     @Query("SELECT * FROM diary ORDER BY uid DESC LIMIT 1")
     Entry getNewest();
+
+    @Query("SELECT * FROM diary WHERE date = :entryDate")
+    Entry getEntryByDate(Date entryDate);
 }
