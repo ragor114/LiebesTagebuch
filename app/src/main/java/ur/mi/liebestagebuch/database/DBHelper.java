@@ -24,7 +24,7 @@ public class DBHelper {
         diaryDB = DiaryDatabase.getInstance(context);
     }
 
-    //ASYNC DURCH RUNNABLE AUSTAUSCHEN
+    //TODO: ASYNC DURCH RUNNABLE AUSTAUSCHEN
 
 
     public void newEntry(Date date, int emotion, String content, byte[] salt, byte[] iv){
