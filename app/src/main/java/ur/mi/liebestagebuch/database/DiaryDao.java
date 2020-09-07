@@ -35,4 +35,13 @@ public interface DiaryDao {
 
     @Query("SELECT * FROM diary WHERE date = :entryDate")
     Entry getEntryByDate(Date entryDate);
+
+    @Query("UPDATE diary SET content = :newContent WHERE date = :date")
+    void updateContent(Date date,String newContent);
+
+    @Query("UPDATE diary SET salt = :newSalt WHERE date = :date")
+    void updateSalt(Date date,byte[] newSalt);
+
+    @Query("UPDATE diary SET IV = :newIV WHERE date = :date")
+    void updateIV(Date date,byte[] newIV);
 }

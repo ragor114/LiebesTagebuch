@@ -26,11 +26,15 @@ public class Entry{
     @ColumnInfo(name = "salt")
     private byte[] salt;
 
-    public Entry(Date date, int emotions,String content, byte[] salt) {
+    @ColumnInfo(name = "IV")
+    private byte[] iv;
+
+    public Entry(Date date, int emotions, String content, byte[] salt, byte[] iv) {
         this.date = date;
         this.emotions = emotions;
         this.content = content;
         this.salt = salt;
+        this.iv = iv;
     }
 
     public int getEmotions() {
@@ -73,6 +77,14 @@ public class Entry{
         this.salt = salt;
     }
 
+    public byte[] getIv() {
+        return iv;
+    }
+
+    public void setIv(byte[] iv) {
+        this.iv = iv;
+    }
+
     @Override
     public String toString() {
         return "Entry{" +
@@ -81,6 +93,7 @@ public class Entry{
                 ", emotions=" + emotions +
                 ", content='" + content + '\'' +
                 ", salt=" + Arrays.toString(salt) +
+                ", iv=" + Arrays.toString(iv) +
                 '}';
     }
 }

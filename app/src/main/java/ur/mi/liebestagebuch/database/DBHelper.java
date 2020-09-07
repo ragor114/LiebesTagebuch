@@ -15,6 +15,10 @@ public class DBHelper {
 
     private DiaryDatabase diaryDB;
     private Entry newEmptyEntry;
+    private String updatedContent;
+    private byte[] updatedSalt;
+    private byte[] updatedIV;
+    private Date changeDate;
 
     public DBHelper(Context context){
         diaryDB = DiaryDatabase.getInstance(context);
@@ -22,15 +26,75 @@ public class DBHelper {
 
     //ASYNC DURCH RUNNABLE AUSTAUSCHEN
 
-    //BESTIMMTEN EINTRAG SUCHEN
 
-    public void newEntry(Date date, int emotion, String content, byte[] salt){
-        newEmptyEntry = new Entry(date, emotion, content, salt);
+    public void newEntry(Date date, int emotion, String content, byte[] salt, byte[] iv){
+        newEmptyEntry = new Entry(date, emotion, content, salt, iv);
         AsyncNewEmpty asyncNewEmpty = new AsyncNewEmpty();
         asyncNewEmpty.execute();
     }
 
+    public void updateEntryContent(Date date, String content){
+        updatedContent =content;
+        changeDate = date;
+        AsyncUpdateContent asyncUpdateContent = new AsyncUpdateContent();
+        asyncUpdateContent.execute();
+    }
 
+    public void updateEntrySalt(Date date, byte[] salt){
+        updatedSalt = salt;
+        changeDate = date;
+        AsyncUpdateSalt asyncUpdateSalt = new AsyncUpdateSalt();
+        asyncUpdateSalt.execute();
+    }
+
+    public void updateEntryIV(Date date, byte[] IV){
+        updatedIV = IV;
+        changeDate = date;
+        AsyncUpdateIV asyncUpdateIV = new AsyncUpdateIV();
+        asyncUpdateIV.execute();
+    }
+
+    private class AsyncUpdateSalt extends AsyncTask<Void,Void,Void>{
+        @Override
+        protected Void doInBackground(Void... voids) {
+            diaryDB.getDiaryDao().updateSalt(changeDate,updatedSalt);
+
+            //DEBUG
+            for(Entry entry: diaryDB.getDiaryDao().getAll()){
+                Log.println(Log.DEBUG,"DB",entry.toString());
+            }
+
+            return null;
+        }
+    }
+
+    private class AsyncUpdateIV extends AsyncTask<Void,Void,Void>{
+        @Override
+        protected Void doInBackground(Void... voids) {
+            diaryDB.getDiaryDao().updateIV(changeDate,updatedIV);
+
+            //DEBUG
+            for(Entry entry: diaryDB.getDiaryDao().getAll()){
+                Log.println(Log.DEBUG,"DB",entry.toString());
+            }
+
+            return null;
+        }
+    }
+
+    private class AsyncUpdateContent extends AsyncTask<Void,Void,Void>{
+        @Override
+        protected Void doInBackground(Void... voids) {
+            diaryDB.getDiaryDao().updateContent(changeDate,updatedContent);
+
+            //DEBUG
+            for(Entry entry: diaryDB.getDiaryDao().getAll()){
+                Log.println(Log.DEBUG,"DB",entry.toString());
+            }
+
+            return null;
+        }
+    }
 
     public void getEntryByDate(Date date){
         AsyncGet asyncGet = new AsyncGet(date);
@@ -61,7 +125,7 @@ public class DBHelper {
 
             diaryDB.getDiaryDao().insert(newEmptyEntry);
 
-            //DEBUG ONLY
+            //DEBUG
             for(Entry entry: diaryDB.getDiaryDao().getAll()){
                 Log.println(Log.DEBUG,"DB",entry.toString());
             }
