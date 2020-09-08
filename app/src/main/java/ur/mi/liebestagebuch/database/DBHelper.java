@@ -19,6 +19,7 @@ public class DBHelper {
     private byte[] updatedSalt;
     private byte[] updatedIV;
     private Date changeDate;
+    private Entry get;
 
     public DBHelper(Context context){
         diaryDB = DiaryDatabase.getInstance(context);
@@ -96,9 +97,14 @@ public class DBHelper {
         }
     }
 
-    public void getEntryByDate(Date date){
+    public Entry getEntryByDate(Date date){
         AsyncGet asyncGet = new AsyncGet(date);
         asyncGet.execute();
+        try {
+            return get;
+        }catch (Exception e){
+            return null;
+        }
     }
 
     private class AsyncGet extends AsyncTask<Void,Void,Entry>{
@@ -110,9 +116,14 @@ public class DBHelper {
 
         @Override
         protected Entry doInBackground(Void... voids) {
-            Entry get = diaryDB.getDiaryDao().getEntryByDate(dateSearch);
-            Log.println(Log.DEBUG,"DB",get.toString());
-            return get;
+            try {
+                get = diaryDB.getDiaryDao().getEntryByDate(dateSearch);
+                Log.println(Log.DEBUG, "DB", "Found: " + get.toString());
+                return get;
+            }catch(Exception e){
+                Log.println(Log.DEBUG, "DB", "NO ENTRY FOUND");
+                return null;
+            }
         }
     }
 
