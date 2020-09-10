@@ -26,6 +26,7 @@ public class DBHelper{
     private DatabaseListener listener;
 
     public DBHelper(Context context, DatabaseListener listener){
+        this.listener = listener;
         diaryDB = DiaryDatabase.getInstance(context);
     }
 
@@ -34,7 +35,7 @@ public class DBHelper{
 
     public void newEntry(Date date, int emotion, String content, byte[] salt, byte[] iv){
         newEmptyEntry = new Entry(date, emotion, content, salt, iv);
-        AsyncNewEmpty asyncNewEmpty = new AsyncNewEmpty();
+        AsyncNewEmpty asyncNewEmpty = new AsyncNewEmpty(listener);
         asyncNewEmpty.execute();
     }
 
@@ -150,6 +151,7 @@ public class DBHelper{
 
         @Override
         protected Entry doInBackground(Void... voids) {
+            Log.d("Detail", "Searching for Entry");
             try {
                 get = diaryDB.getDiaryDao().getEntryByDate(dateSearch);
                 Log.println(Log.DEBUG, "DB", "Found: " + get.toString());
@@ -157,6 +159,7 @@ public class DBHelper{
                 return get;
             }catch(Exception e){
                 Log.println(Log.DEBUG, "DB", "NO ENTRY FOUND");
+                listener.entryFound(null);
                 return null;
             }
         }
@@ -165,6 +168,12 @@ public class DBHelper{
 
 
     private class AsyncNewEmpty extends android.os.AsyncTask<Void,Void,Void> {
+
+        private DatabaseListener listener;
+
+        public AsyncNewEmpty (DatabaseListener listener){
+            this.listener = listener;
+        }
 
         @Override
         protected Void doInBackground(Void... voids) {
@@ -175,6 +184,8 @@ public class DBHelper{
             for(Entry entry: diaryDB.getDiaryDao().getAll()){
                 Log.println(Log.DEBUG,"DB",entry.toString());
             }
+
+            listener.updateFinished(DetailActivityConfig.NEW_ENTRY_UPDATE_CODE);
 
             return null;
         }

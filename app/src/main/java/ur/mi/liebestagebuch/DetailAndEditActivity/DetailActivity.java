@@ -2,6 +2,7 @@ package ur.mi.liebestagebuch.DetailAndEditActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -58,17 +59,7 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
         Bundle extras = callingIntent.getExtras();
         this.entryDate = (Date) extras.get(DetailActivityConfig.ENTRY_DATE_KEY);
         dbHelper = new DBHelper(this, this);
-        Entry dbEntry = dbHelper.getEntryByDate(this.entryDate);
-
-        if(dbEntry == null){
-            isReadyToFinish = false;
-            String emptyContent = "|<Text | Schreib deine Erlebnisse auf.";
-            StringTransformHelper.startEncryption(emptyContent, this);
-        } else{
-            entryDetail = new EntryDetail(dbEntry);
-            setUpViews();
-        }
-
+        dbHelper.getEntryByDate(this.entryDate);
     }
 
     private void setUpViews() {
@@ -112,13 +103,9 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
 
 
     @Override
-    public void onEncryptionFinished(String result, byte[] iv, byte[] salt) {
+    public void onEncryptionFinished(String result, byte[] iv, byte[] salt){
+        Log.d("Detail", "Encryption finished");
         dbHelper.newEntry(entryDate, 2, result, iv, salt);
-        isReadyToFinish = true;
-        Entry createdDbEntry = dbHelper.getEntryByDate(entryDate);
-        entryDetail = new EntryDetail(createdDbEntry);
-        setUpViews();
-        //notifyDatasetChanged!
     }
 
     @Override
@@ -139,11 +126,26 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
 
     @Override
     public void updateFinished(int updateCode) {
-
+        switch (updateCode){
+            case DetailActivityConfig.NEW_ENTRY_UPDATE_CODE:
+                Log.d("Detail", "New Entry created");
+                dbHelper.getEntryByDate(entryDate);
+                break;
+        }
     }
 
     @Override
     public void entryFound(Entry foundEntry) {
-
+        if(foundEntry == null){
+            Log.d("Detail", "No Entry found");
+            isReadyToFinish = false;
+            String emptyContent = "|<Text | Schreib deine Erlebnisse auf.";
+            StringTransformHelper.startEncryption(emptyContent, this);
+        } else{
+            Log.d("Detail", "Entry found");
+            isReadyToFinish = true;
+            entryDetail = new EntryDetail(foundEntry, true);
+            setUpViews();
+        }
     }
 }

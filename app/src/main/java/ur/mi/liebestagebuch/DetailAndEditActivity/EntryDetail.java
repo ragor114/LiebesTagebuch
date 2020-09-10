@@ -1,5 +1,6 @@
 package ur.mi.liebestagebuch.DetailAndEditActivity;
 
+import android.util.Log;
 import android.view.View;
 
 import java.text.SimpleDateFormat;
@@ -31,10 +32,14 @@ public class EntryDetail implements CryptoListener {
 
     //Initialisierungs-Methoden:
 
-    public EntryDetail(Entry dbEntry){
+    public EntryDetail(Entry dbEntry, boolean isNew){
         this.entryDate = dbEntry.getDate();
         setEmotion(dbEntry);
-        startContentDecryption(dbEntry);
+        if(isNew == false) {
+            startContentDecryption(dbEntry);
+        } else {
+            this.boxList = StringTransformHelper.getBoxListFromString(dbEntry.getContent());
+        }
     }
 
     private void startContentDecryption(Entry dbEntry) {
@@ -123,6 +128,7 @@ public class EntryDetail implements CryptoListener {
 
     @Override
     public void onDecryptionFinished(String result) {
+        Log.d("Detail", "Decryption finished");
         this.boxList = StringTransformHelper.getBoxListFromString(result);
     }
 

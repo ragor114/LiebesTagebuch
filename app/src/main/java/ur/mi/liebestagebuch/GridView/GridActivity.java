@@ -50,6 +50,9 @@ public class GridActivity extends AppCompatActivity implements AdapterView.OnIte
 
     private DBHelper dbHelper;
     private Date lastEditedEntryDate;
+    private String lastEditedBoxListString;
+    private byte[] lastEditedIV;
+    private byte[] lastEditedSalt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -160,17 +163,17 @@ public class GridActivity extends AppCompatActivity implements AdapterView.OnIte
                 String boxListString = extras.getString(DetailActivityConfig.BOX_LIST_KEY);
                 int entryEmotion = (int) extras.get(DetailActivityConfig.EMOTION_KEY);
                 lastEditedEntryDate = entryDate;
+                lastEditedBoxListString = boxListString;
                 dbHelper.newEntry(entryDate, entryEmotion, "", null, null);
-                StringTransformHelper.startEncryption(boxListString, this);
             }
         }
     }
 
     @Override
     public void onEncryptionFinished(String result, byte[] iv, byte[] salt) {
+        lastEditedIV = iv;
+        lastEditedSalt = salt;
         dbHelper.updateEntryContent(lastEditedEntryDate, result);
-        dbHelper.updateEntryIV(lastEditedEntryDate, iv);
-        dbHelper.updateEntrySalt(lastEditedEntryDate, salt);
     }
 
     @Override
@@ -191,7 +194,22 @@ public class GridActivity extends AppCompatActivity implements AdapterView.OnIte
 
     @Override
     public void updateFinished(int updateCode) {
-
+        switch (updateCode){
+            case DetailActivityConfig.NEW_ENTRY_UPDATE_CODE:
+                StringTransformHelper.startEncryption(lastEditedBoxListString, this);
+                lastEditedBoxListString = "";
+                break;
+            case DetailActivityConfig.CONTENT_UPDATE_CODE:
+                dbHelper.updateEntryIV(lastEditedEntryDate, lastEditedIV);
+                break;
+            case DetailActivityConfig.IV_UPDATE_CODE:
+                lastEditedIV = null;
+                dbHelper.updateEntrySalt(lastEditedEntryDate, lastEditedSalt);
+                break;
+            case DetailActivityConfig.SALT_UPDATE_CODE:
+                lastEditedSalt = null;
+                break;
+        }
     }
 
     @Override

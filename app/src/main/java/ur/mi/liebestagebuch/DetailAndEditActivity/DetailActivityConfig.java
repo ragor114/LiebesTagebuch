@@ -11,5 +11,6 @@ public class DetailActivityConfig {
     public static final int SALT_UPDATE_CODE = 1;
     public static final int IV_UPDATE_CODE = 2;
     public static final int EMOTION_UPDATE_CODE = 3;
+    public static final int NEW_ENTRY_UPDATE_CODE = 4;
 
 }
