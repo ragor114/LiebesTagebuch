@@ -1,5 +1,6 @@
 package ur.mi.liebestagebuch.DetailAndEditActivity;
 
+import android.app.ActionBar;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageButton;
@@ -11,13 +12,19 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import ur.mi.liebestagebuch.GridView.Emotion;
 import ur.mi.liebestagebuch.R;
+import ur.mi.liebestagebuch.database.DBHelper;
+import ur.mi.liebestagebuch.database.data.Entry;
 
-public class DetailActivity extends AppCompatActivity {
+public class DetailActivity extends AppCompatActivity implements BoxListEncryptionListener {
 
     private TextView dateTextView;
     private ListView boxListView;
     private ImageButton[] emotionButtons;
+
+    private DBHelper dbHelper;
+    private EntryDetail entryDetail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -27,6 +34,9 @@ public class DetailActivity extends AppCompatActivity {
         Intent callingIntent = getIntent();
         Bundle extras = callingIntent.getExtras();
         Date entryDate = (Date) extras.get(DetailActivityConfig.ENTRY_DATE_KEY);
+        dbHelper = new DBHelper(this);
+        Entry dbEntry = dbHelper.getEntryByDate(entryDate);
+        entryDetail = new EntryDetail(dbEntry, this);
 
         findViews();
     }
@@ -42,4 +52,28 @@ public class DetailActivity extends AppCompatActivity {
         emotionButtons[4] = (ImageButton) findViewById(R.id.button_very_bad);
     }
 
+    private void finishDetail(){
+        Intent returnIntent = new Intent();
+
+        Date entryDate = entryDetail.getDate();
+        Emotion entryEmotion = entryDetail.getEmotion();
+        String boxListString = entryDetail.getBoxListString();
+
+        returnIntent.putExtra(DetailActivityConfig.ENTRY_DATE_KEY, entryDate);
+        returnIntent.putExtra(DetailActivityConfig.EMOTION_KEY, entryEmotion);
+        returnIntent.putExtra(DetailActivityConfig.BOX_LIST_KEY, boxListString);
+
+        setResult(RESULT_OK, returnIntent);
+        finish();
+    }
+
+    @Override
+    public void onBackPressed(){
+        finishDetail();
+    }
+
+    @Override
+    public void onBoxListEncrypted(String encryptedBoxListString, byte[] iv, byte[] salt) {
+
+    }
 }
