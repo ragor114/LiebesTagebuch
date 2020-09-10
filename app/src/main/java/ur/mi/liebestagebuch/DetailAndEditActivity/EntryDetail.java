@@ -28,12 +28,10 @@ public class EntryDetail implements CryptoListener {
     private ArrayList<Box> boxList;
     private Emotion emotion;
     private Date entryDate;
-    private BoxListEncryptionListener listener;
 
     //Initialisierungs-Methoden:
 
-    public EntryDetail(Entry dbEntry, BoxListEncryptionListener listener){
-        this.listener = listener;
+    public EntryDetail(Entry dbEntry){
         this.entryDate = dbEntry.getDate();
         setEmotion(dbEntry);
         startContentDecryption(dbEntry);
@@ -120,7 +118,7 @@ public class EntryDetail implements CryptoListener {
     //Hier unnötig
     @Override
     public void onEncryptionFinished(String result, byte[] iv, byte[] salt) {
-        listener.onBoxListEncrypted(result, iv, salt);
+        //nignweou
     }
 
     @Override

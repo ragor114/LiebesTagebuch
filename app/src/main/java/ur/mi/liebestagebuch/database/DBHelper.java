@@ -8,10 +8,12 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import ur.mi.liebestagebuch.DetailAndEditActivity.DetailActivity;
+import ur.mi.liebestagebuch.DetailAndEditActivity.DetailActivityConfig;
 import ur.mi.liebestagebuch.database.data.Entry;
 
 
-public class DBHelper {
+public class DBHelper{
 
     private DiaryDatabase diaryDB;
     private Entry newEmptyEntry;
@@ -21,7 +23,9 @@ public class DBHelper {
     private Date changeDate;
     private Entry get;
 
-    public DBHelper(Context context){
+    private DatabaseListener listener;
+
+    public DBHelper(Context context, DatabaseListener listener){
         diaryDB = DiaryDatabase.getInstance(context);
     }
 
@@ -37,25 +41,32 @@ public class DBHelper {
     public void updateEntryContent(Date date, String content){
         updatedContent =content;
         changeDate = date;
-        AsyncUpdateContent asyncUpdateContent = new AsyncUpdateContent();
+        AsyncUpdateContent asyncUpdateContent = new AsyncUpdateContent(listener);
         asyncUpdateContent.execute();
     }
 
     public void updateEntrySalt(Date date, byte[] salt){
         updatedSalt = salt;
         changeDate = date;
-        AsyncUpdateSalt asyncUpdateSalt = new AsyncUpdateSalt();
+        AsyncUpdateSalt asyncUpdateSalt = new AsyncUpdateSalt(listener);
         asyncUpdateSalt.execute();
     }
 
     public void updateEntryIV(Date date, byte[] IV){
         updatedIV = IV;
         changeDate = date;
-        AsyncUpdateIV asyncUpdateIV = new AsyncUpdateIV();
+        AsyncUpdateIV asyncUpdateIV = new AsyncUpdateIV(listener);
         asyncUpdateIV.execute();
     }
 
     private class AsyncUpdateSalt extends AsyncTask<Void,Void,Void>{
+
+        private DatabaseListener listener;
+
+        public AsyncUpdateSalt(DatabaseListener listener){
+            this.listener = listener;
+        }
+
         @Override
         protected Void doInBackground(Void... voids) {
             diaryDB.getDiaryDao().updateSalt(changeDate,updatedSalt);
@@ -65,11 +76,20 @@ public class DBHelper {
                 Log.println(Log.DEBUG,"DB",entry.toString());
             }
 
+            listener.updateFinished(DetailActivityConfig.SALT_UPDATE_CODE);
+
             return null;
         }
     }
 
     private class AsyncUpdateIV extends AsyncTask<Void,Void,Void>{
+
+        private DatabaseListener listener;
+
+        public AsyncUpdateIV(DatabaseListener listener){
+            this.listener = listener;
+        }
+
         @Override
         protected Void doInBackground(Void... voids) {
             diaryDB.getDiaryDao().updateIV(changeDate,updatedIV);
@@ -79,11 +99,20 @@ public class DBHelper {
                 Log.println(Log.DEBUG,"DB",entry.toString());
             }
 
+            listener.updateFinished(DetailActivityConfig.IV_UPDATE_CODE);
+
             return null;
         }
     }
 
     private class AsyncUpdateContent extends AsyncTask<Void,Void,Void>{
+
+        private DatabaseListener listener;
+
+        public AsyncUpdateContent(DatabaseListener listener){
+            this.listener = listener;
+        }
+
         @Override
         protected Void doInBackground(Void... voids) {
             diaryDB.getDiaryDao().updateContent(changeDate,updatedContent);
@@ -93,12 +122,14 @@ public class DBHelper {
                 Log.println(Log.DEBUG,"DB",entry.toString());
             }
 
+            listener.updateFinished(DetailActivityConfig.CONTENT_UPDATE_CODE);
+
             return null;
         }
     }
 
     public Entry getEntryByDate(Date date){
-        AsyncGet asyncGet = new AsyncGet(date);
+        AsyncGet asyncGet = new AsyncGet(date, listener);
         asyncGet.execute();
         try {
             return get;
@@ -110,8 +141,11 @@ public class DBHelper {
     private class AsyncGet extends AsyncTask<Void,Void,Entry>{
         private Date dateSearch;
 
-        public AsyncGet(Date date) {
+        private DatabaseListener listener;
+
+        public AsyncGet(Date date, DatabaseListener listener) {
             dateSearch = date;
+            this.listener = listener;
         }
 
         @Override
@@ -119,6 +153,7 @@ public class DBHelper {
             try {
                 get = diaryDB.getDiaryDao().getEntryByDate(dateSearch);
                 Log.println(Log.DEBUG, "DB", "Found: " + get.toString());
+                listener.entryFound(get);
                 return get;
             }catch(Exception e){
                 Log.println(Log.DEBUG, "DB", "NO ENTRY FOUND");

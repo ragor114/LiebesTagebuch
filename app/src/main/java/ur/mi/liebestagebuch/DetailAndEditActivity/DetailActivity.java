@@ -16,9 +16,10 @@ import ur.mi.liebestagebuch.Encryption.StringTransformHelper;
 import ur.mi.liebestagebuch.GridView.Emotion;
 import ur.mi.liebestagebuch.R;
 import ur.mi.liebestagebuch.database.DBHelper;
+import ur.mi.liebestagebuch.database.DatabaseListener;
 import ur.mi.liebestagebuch.database.data.Entry;
 
-public class DetailActivity extends AppCompatActivity implements BoxListEncryptionListener, CryptoListener {
+public class DetailActivity extends AppCompatActivity implements CryptoListener, DatabaseListener {
 
     /*
      * In der DetailActivity werden das Datum, die ausgewählte Emotion und der Inhalt in Form von
@@ -56,7 +57,7 @@ public class DetailActivity extends AppCompatActivity implements BoxListEncrypti
         Intent callingIntent = getIntent();
         Bundle extras = callingIntent.getExtras();
         this.entryDate = (Date) extras.get(DetailActivityConfig.ENTRY_DATE_KEY);
-        dbHelper = new DBHelper(this);
+        dbHelper = new DBHelper(this, this);
         Entry dbEntry = dbHelper.getEntryByDate(this.entryDate);
 
         if(dbEntry == null){
@@ -64,7 +65,7 @@ public class DetailActivity extends AppCompatActivity implements BoxListEncrypti
             String emptyContent = "|<Text | Schreib deine Erlebnisse auf.";
             StringTransformHelper.startEncryption(emptyContent, this);
         } else{
-            entryDetail = new EntryDetail(dbEntry, this);
+            entryDetail = new EntryDetail(dbEntry);
             setUpViews();
         }
 
@@ -109,17 +110,13 @@ public class DetailActivity extends AppCompatActivity implements BoxListEncrypti
         finishDetail();
     }
 
-    @Override
-    public void onBoxListEncrypted(String encryptedBoxListString, byte[] iv, byte[] salt) {
-
-    }
 
     @Override
     public void onEncryptionFinished(String result, byte[] iv, byte[] salt) {
         dbHelper.newEntry(entryDate, 2, result, iv, salt);
         isReadyToFinish = true;
         Entry createdDbEntry = dbHelper.getEntryByDate(entryDate);
-        entryDetail = new EntryDetail(createdDbEntry, this);
+        entryDetail = new EntryDetail(createdDbEntry);
         setUpViews();
         //notifyDatasetChanged!
     }
@@ -138,5 +135,15 @@ public class DetailActivity extends AppCompatActivity implements BoxListEncrypti
     @Override
     public void onDecryptionFailed() {
         return;
+    }
+
+    @Override
+    public void updateFinished(int updateCode) {
+
+    }
+
+    @Override
+    public void entryFound(Entry foundEntry) {
+
     }
 }

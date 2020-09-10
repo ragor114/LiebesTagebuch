@@ -19,8 +19,9 @@ import ur.mi.liebestagebuch.Encryption.CryptoListener;
 import ur.mi.liebestagebuch.Encryption.StringTransformHelper;
 import ur.mi.liebestagebuch.R;
 import ur.mi.liebestagebuch.database.DBHelper;
+import ur.mi.liebestagebuch.database.DatabaseListener;
 
-public class GridActivity extends AppCompatActivity implements AdapterView.OnItemClickListener, EmotionRequestListener, CryptoListener {
+public class GridActivity extends AppCompatActivity implements AdapterView.OnItemClickListener, EmotionRequestListener, CryptoListener, DatabaseListener {
 
     /*
      * Diese Activity zeigt für jeden Tag seit der Installation einen Tagebucheintrag im Grid an,
@@ -56,7 +57,7 @@ public class GridActivity extends AppCompatActivity implements AdapterView.OnIte
         setContentView(R.layout.grid_activity);
 
         initGrid();
-        dbHelper = new DBHelper(this);
+        dbHelper = new DBHelper(this, this);
     }
 
     // Das Grid-View wird in einer Java-Variable gespeichert, die ArrayList aufgesetzt, der
@@ -186,5 +187,15 @@ public class GridActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     public void onDecryptionFailed() {
         return;
+    }
+
+    @Override
+    public void updateFinished(int updateCode) {
+
+    }
+
+    @Override
+    public void entryFound(ur.mi.liebestagebuch.database.data.Entry foundEntry) {
+
     }
 }

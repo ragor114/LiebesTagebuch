@@ -7,4 +7,9 @@ public class DetailActivityConfig {
     public static final String EMOTION_KEY = "EmotionKey";
     public static final String BOX_LIST_KEY = "BoxListString";
 
+    public static final int CONTENT_UPDATE_CODE = 0;
+    public static final int SALT_UPDATE_CODE = 1;
+    public static final int IV_UPDATE_CODE = 2;
+    public static final int EMOTION_UPDATE_CODE = 3;
+
 }
