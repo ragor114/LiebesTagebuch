@@ -15,9 +15,12 @@ import java.util.Date;
 
 import ur.mi.liebestagebuch.DetailAndEditActivity.DetailActivity;
 import ur.mi.liebestagebuch.DetailAndEditActivity.DetailActivityConfig;
+import ur.mi.liebestagebuch.Encryption.CryptoListener;
+import ur.mi.liebestagebuch.Encryption.StringTransformHelper;
 import ur.mi.liebestagebuch.R;
+import ur.mi.liebestagebuch.database.DBHelper;
 
-public class GridActivity extends AppCompatActivity implements AdapterView.OnItemClickListener, EmotionRequestListener {
+public class GridActivity extends AppCompatActivity implements AdapterView.OnItemClickListener, EmotionRequestListener, CryptoListener {
 
     /*
      * Diese Activity zeigt für jeden Tag seit der Installation einen Tagebucheintrag im Grid an,
@@ -44,12 +47,16 @@ public class GridActivity extends AppCompatActivity implements AdapterView.OnIte
     private EntryGridAdapter gridAdapter;
     private ArrayList<Entry> entries;
 
+    private DBHelper dbHelper;
+    private Date lastEditedEntryDate;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.grid_activity);
 
         initGrid();
+        dbHelper = new DBHelper(this);
     }
 
     // Das Grid-View wird in einer Java-Variable gespeichert, die ArrayList aufgesetzt, der
@@ -145,7 +152,39 @@ public class GridActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == DetailActivityConfig.START_DETAIL_ACTIVITY_REQUEST_CODE){
+            if(resultCode == RESULT_OK){
+                Bundle extras = data.getExtras();
+                Date entryDate = (Date) extras.get(DetailActivityConfig.ENTRY_DATE_KEY);
+                String boxListString = extras.getString(DetailActivityConfig.BOX_LIST_KEY);
+                int entryEmotion = (int) extras.get(DetailActivityConfig.EMOTION_KEY);
+                lastEditedEntryDate = entryDate;
+                dbHelper.newEntry(entryDate, entryEmotion, "", null, null);
+                StringTransformHelper.startEncryption(boxListString, this);
+            }
+        }
+    }
+
+    @Override
+    public void onEncryptionFinished(String result, byte[] iv, byte[] salt) {
+        dbHelper.updateEntryContent(lastEditedEntryDate, result);
+        dbHelper.updateEntryIV(lastEditedEntryDate, iv);
+        dbHelper.updateEntrySalt(lastEditedEntryDate, salt);
+    }
+
+    @Override
+    public void onDecryptionFinished(String result) {
+        return;
+    }
+
+    //TODO: Make useful.
+    @Override
+    public void onEncryptionFailed() {
 
     }
 
+    @Override
+    public void onDecryptionFailed() {
+        return;
+    }
 }
