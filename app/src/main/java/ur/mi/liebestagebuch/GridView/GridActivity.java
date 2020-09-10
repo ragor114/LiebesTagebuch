@@ -1,5 +1,6 @@
 package ur.mi.liebestagebuch.GridView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -12,6 +13,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
+import ur.mi.liebestagebuch.DetailAndEditActivity.DetailActivity;
+import ur.mi.liebestagebuch.DetailAndEditActivity.DetailActivityConfig;
 import ur.mi.liebestagebuch.R;
 
 public class GridActivity extends AppCompatActivity implements AdapterView.OnItemClickListener, EmotionRequestListener {
@@ -116,8 +119,10 @@ public class GridActivity extends AppCompatActivity implements AdapterView.OnIte
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Entry clickedEntry = entries.get(position);
         Date clickedEntryDate = clickedEntry.getDate();
-        //Auslesen der Informationen über den mit dem Datum korrespondierenden Datenbankeintrag.
-        //Aufruf der Detailansicht und Übergabe der (verschlüsselten) Informationen.
+
+        Intent intent = new Intent (GridActivity.this, DetailActivity.class);
+        intent.putExtra(DetailActivityConfig.ENTRY_DATE_KEY, clickedEntryDate);
+        startActivityForResult(intent, DetailActivityConfig.START_DETAIL_ACTIVITY_REQUEST_CODE);
     }
 
     public void requestAllEmotions(){
@@ -134,6 +139,12 @@ public class GridActivity extends AppCompatActivity implements AdapterView.OnIte
      */
     @Override
     public void onEmotionRequestFinished(ArrayList<Emotion> allEmotions) {
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
 
     }
 
