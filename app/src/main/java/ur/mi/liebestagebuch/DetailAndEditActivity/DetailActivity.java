@@ -6,11 +6,14 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
@@ -82,7 +85,7 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
                 finishDetail();
                 break;
             case R.id.add_box_menu_item:
-                //Create new Box
+                startAddingNewBox();
                 break;
         }
         return true;
@@ -100,6 +103,14 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
         emotionButtons[4] = (ImageButton) findViewById(R.id.button_very_bad);
 
         dateTextView.setText(entryDetail.getDateString());
+
+        FloatingActionButton fab = findViewById(R.id.floating_action_button);
+        fab.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                startAddingNewBox();
+            }
+        });
 
         Log.d("Detail", "setUpViews finished");
 
@@ -130,6 +141,10 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
         finishDetail();
     }
 
+
+    private void startAddingNewBox(){
+
+    }
 
     @Override
     public void onEncryptionFinished(String result, byte[] iv, byte[] salt){
