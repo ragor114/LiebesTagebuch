@@ -3,4 +3,6 @@
     <string name="login_test_text">Login</string>
     <string name="encryption_failed">The Encryption Process failed, if this keeps happening please change your password or deactivate Encryption.</string>
     <string name="decryption_failed">The Decryption Process failed, if this keeps happening please change your password or deactivate Encryption.</string>
+    <string name="back_button_title">Back to Grid</string>
+    <string name="add_menu_button_title">Add Box to List</string>
 </resources>

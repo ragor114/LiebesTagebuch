@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -64,6 +66,26 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
         Log.d("Detail", "Date loaded: " + entryDate.toString());
         dbHelper = new DBHelper(this, this);
         dbHelper.getEntryByDate(this.entryDate);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu){
+        getMenuInflater().inflate(R.menu.detail_activity_action_bar, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+        int id = item.getItemId();
+        switch (id){
+            case R.id.back_button:
+                finishDetail();
+                break;
+            case R.id.add_box_menu_item:
+                //Create new Box
+                break;
+        }
+        return true;
     }
 
     private void setUpViews() {
