@@ -83,7 +83,7 @@ public class StringTransformHelper {
         ArrayList<Box> boxList = new ArrayList<>();
 
         String[] singleBoxStrings = boxListString.split("<\\Q|\\E<");
-        Log.d("Detail", "splitted" + singleBoxStrings[1]);
+        Log.d("Detail", "splitted" + singleBoxStrings[0]);
         for(String current : singleBoxStrings){
             if(current.length() > 0) {
                 Box currentNewBox = getSingleBoxFromString(current);
@@ -113,6 +113,7 @@ public class StringTransformHelper {
         }
 
         TextBox newTextBox = new TextBox(parts[1]);
+
 
         return newTextBox;
     }

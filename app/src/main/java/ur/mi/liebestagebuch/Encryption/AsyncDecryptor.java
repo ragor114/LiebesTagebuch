@@ -110,7 +110,7 @@ public class AsyncDecryptor implements Runnable {
     // Der Listener wird über den Abschluss der Entschlüsselung informiert und der entschlüsselte
     // String auf dem UI-Thread übergeben.
     private void informListener(String result){
-        //Log.d(EncryptionConfig.LOG_TAG, "Informing Listener");
+        Log.d(EncryptionConfig.LOG_TAG, "Informing Listener");
         final String resultString = result;
         mainThreadHandler.post(new Runnable() {
             @Override

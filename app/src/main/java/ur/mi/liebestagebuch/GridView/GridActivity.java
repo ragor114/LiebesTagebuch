@@ -161,10 +161,28 @@ public class GridActivity extends AppCompatActivity implements AdapterView.OnIte
                 Bundle extras = data.getExtras();
                 Date entryDate = (Date) extras.get(DetailActivityConfig.ENTRY_DATE_KEY);
                 String boxListString = extras.getString(DetailActivityConfig.BOX_LIST_KEY);
-                int entryEmotion = (int) extras.get(DetailActivityConfig.EMOTION_KEY);
+                Emotion entryEmotion = (Emotion) extras.get(DetailActivityConfig.EMOTION_KEY);
+                int emotionInt = 0;
+                switch (entryEmotion){
+                    case VERY_GOOD:
+                        emotionInt = 0;
+                        break;
+                    case GOOD:
+                        emotionInt = 1;
+                        break;
+                    case NORMAL:
+                        emotionInt = 2;
+                        break;
+                    case BAD:
+                        emotionInt = 3;
+                        break;
+                    case VERY_BAD:
+                        emotionInt = 4;
+                        break;
+                }
                 lastEditedEntryDate = entryDate;
                 lastEditedBoxListString = boxListString;
-                dbHelper.newEntry(entryDate, entryEmotion, "", null, null);
+                dbHelper.newEntry(entryDate, emotionInt, "", null, null);
             }
         }
     }

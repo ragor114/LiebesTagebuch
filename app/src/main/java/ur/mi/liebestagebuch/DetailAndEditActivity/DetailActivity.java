@@ -113,7 +113,7 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
     public void onEncryptionFinished(String result, byte[] iv, byte[] salt){
         Log.d("Detail", "Encryption finished");
         Log.d("Encryption", "IV length at Encryption is " + iv.length);
-        dbHelper.newEntry(entryDate, 2, result, iv, salt);
+        dbHelper.newEntry(entryDate, 2, result, salt, iv);
         Log.d("Encryption", iv.toString());
     }
 

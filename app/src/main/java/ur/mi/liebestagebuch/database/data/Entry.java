@@ -37,7 +37,7 @@ public class Entry{
         this.content = content;
         this.salt = salt;
         this.iv = iv;
-        Log.d("Encryption", "IV-Length before Store is " + iv.length);
+        //Log.d("Encryption", "IV-Length before Store is " + iv.length);
     }
 
     public int getEmotions() {
