@@ -58,47 +58,50 @@ public class AsyncDecryptor implements Runnable {
      * Listener übergeben wird.
      */
     private void decrypt() {
-        //Log.d(EncryptionConfig.LOG_TAG, "Decryption started");
-        //Log.d(EncryptionConfig.LOG_TAG, toDecrypt);
+        Log.d(EncryptionConfig.LOG_TAG, "Decryption started");
+        Log.d(EncryptionConfig.LOG_TAG, "ToDecrypt: " + toDecrypt);
         byte[] encryptedBytes = Base64.decode(toDecrypt, Base64.DEFAULT);
-        //Log.d(EncryptionConfig.LOG_TAG, "Encrypted Bytes: " + encryptedBytes);
+        Log.d(EncryptionConfig.LOG_TAG, "Encrypted Bytes: " + encryptedBytes);
+        Log.d(EncryptionConfig.LOG_TAG, "IV: " + iv);
+        Log.d(EncryptionConfig.LOG_TAG, "IV length is " + iv.length);
+        Log.d(EncryptionConfig.LOG_TAG, "Salt: " + salt);
         String decryptedString = "None";
         SecretKey myAESKey = AESKeyGeneratorHelper.getAESKeyFromPasswordAndGivenSalt(encryptedPassword, salt);
-        //Log.d(EncryptionConfig.LOG_TAG, "AES Key generated");
+        Log.d(EncryptionConfig.LOG_TAG, "AES Key generated");
         try {
             Cipher cipher = Cipher.getInstance(EncryptionConfig.ENCRYPTION_ALGORITHM);
-            //Log.d(EncryptionConfig.LOG_TAG, "Cipher generated");
+            Log.d(EncryptionConfig.LOG_TAG, "Cipher generated");
 
-            //Log.d(EncryptionConfig.LOG_TAG, "Initialising Cipher...");
+            Log.d(EncryptionConfig.LOG_TAG, "Initialising Cipher...");
             cipher.init(Cipher.DECRYPT_MODE, myAESKey, new IvParameterSpec(iv));
-            //Log.d(EncryptionConfig.LOG_TAG, "Cipher Initialised");
+            Log.d(EncryptionConfig.LOG_TAG, "Cipher Initialised");
 
-            //Log.d(EncryptionConfig.LOG_TAG, "Doing Final decryption");
+            Log.d(EncryptionConfig.LOG_TAG, "Doing Final decryption");
             byte[] decryptedBytes = cipher.doFinal(encryptedBytes);
-            //Log.d(EncryptionConfig.LOG_TAG, "Final Byte-Decryption finished");
+            Log.d(EncryptionConfig.LOG_TAG, "Final Byte-Decryption finished");
 
             decryptedString = new String (decryptedBytes, "UTF-8");
 
         } catch (NoSuchAlgorithmException e) {
-            // Log.d(EncryptionConfig.LOG_TAG, "NoSuchAlgorithm");
+            Log.d(EncryptionConfig.LOG_TAG, "NoSuchAlgorithm");
             decryptionFailed();
         } catch (NoSuchPaddingException e) {
-            //Log.d(EncryptionConfig.LOG_TAG, "NoSuchPadding");
+            Log.d(EncryptionConfig.LOG_TAG, "NoSuchPadding");
             decryptionFailed();
         } catch (InvalidKeyException e) {
-            //Log.d(EncryptionConfig.LOG_TAG, "InvalidKey");
+            Log.d(EncryptionConfig.LOG_TAG, "InvalidKey");
             decryptionFailed();
         } catch (BadPaddingException e) {
-            //Log.d(EncryptionConfig.LOG_TAG, "BadPadding");
+            Log.d(EncryptionConfig.LOG_TAG, "BadPadding");
             decryptionFailed();
         } catch (IllegalBlockSizeException e) {
-            //Log.d(EncryptionConfig.LOG_TAG, "IllegalBlockSize");
+            Log.d(EncryptionConfig.LOG_TAG, "IllegalBlockSize");
             decryptionFailed();
         } catch (UnsupportedEncodingException e) {
-            //Log.d(EncryptionConfig.LOG_TAG, "UnsupportedEncoding");
+            Log.d(EncryptionConfig.LOG_TAG, "UnsupportedEncoding");
             decryptionFailed();
         } catch (InvalidAlgorithmParameterException e) {
-            //Log.d(EncryptionConfig.LOG_TAG, "Invalid Iv Parameter");
+            Log.d(EncryptionConfig.LOG_TAG, "Invalid Iv Parameter");
             decryptionFailed();
         }
         informListener(decryptedString);

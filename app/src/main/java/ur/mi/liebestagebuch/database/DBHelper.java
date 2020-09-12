@@ -2,13 +2,14 @@ package ur.mi.liebestagebuch.database;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.concurrent.Executors;
 
-import ur.mi.liebestagebuch.DetailAndEditActivity.DetailActivity;
 import ur.mi.liebestagebuch.DetailAndEditActivity.DetailActivityConfig;
 import ur.mi.liebestagebuch.database.data.Entry;
 
@@ -129,8 +130,10 @@ public class DBHelper{
         }
     }
 
-    public Entry getEntryByDate(Date date){
+    public void getEntryByDate(Date date){
         Log.d("Detail","Getting entry by date");
+
+        /*
         AsyncGet asyncGet = new AsyncGet(date, listener);
         asyncGet.execute();
         try {
@@ -138,12 +141,50 @@ public class DBHelper{
         }catch (Exception e){
             return null;
         }
+        */
+        GetRunnable get = new GetRunnable(date, listener);
+        Executors.newSingleThreadExecutor().submit(get);
+    }
+
+    private class GetRunnable implements Runnable{
+
+        private Date dateSearch;
+        private DatabaseListener listener;
+
+        public GetRunnable(Date date, DatabaseListener listener){
+            this.dateSearch = date;
+            this.listener = listener;
+        }
+
+        @Override
+        public void run() {
+            Entry foundEntry = null;
+            Log.d("Detail", "Searching for Entry");
+            try {
+                foundEntry = diaryDB.getDiaryDao().getEntryByDate(dateSearch);
+                Log.d("DB", "Found Entry");
+                Log.d("Detail", "Giving found Entry to listener, Async");
+            } catch (Exception e) {
+                Log.d("Detail", "Exception in AsyncGet: " + e.getMessage());
+                Log.d("DB", "NO ENTRY FOUND");
+            }
+            final Entry finalFound = foundEntry;
+            Handler mainThreadHandler = new Handler(Looper.getMainLooper());
+            mainThreadHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    listener.entryFound(finalFound);
+                }
+            });
+        }
     }
 
     private class AsyncGet extends AsyncTask<Void,Void,Entry>{
         private Date dateSearch;
 
         private DatabaseListener listener;
+
+        private Entry foundEntry;
 
         public AsyncGet(Date date, DatabaseListener listener) {
             dateSearch = date;
@@ -155,22 +196,26 @@ public class DBHelper{
             if(!isCancelled()) {
                 Log.d("Detail", "Searching for Entry");
                 try {
-                    get = diaryDB.getDiaryDao().getEntryByDate(dateSearch);
+                    foundEntry = diaryDB.getDiaryDao().getEntryByDate(dateSearch);
                     Log.d("DB", "Found Entry");
                     Log.d("Detail", "Giving found Entry to listener, Async");
-                    listener.entryFound(get);
+                    onPostExecute(foundEntry);
                     cancel(true);
-                    return get;
+                    return foundEntry;
                 } catch (Exception e) {
                     Log.d("Detail", "Exception in AsyncGet: " + e.getMessage());
                     Log.d("DB", "NO ENTRY FOUND");
-                    listener.entryFound(null);
                     cancel(true);
                     return null;
                 }
             }
             Log.d("Detail", "isCancelled");
             return null;
+        }
+
+        @Override
+        protected void onPostExecute(Entry entry){
+            listener.entryFound(foundEntry);
         }
     }
 

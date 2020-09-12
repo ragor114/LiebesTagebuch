@@ -1,5 +1,7 @@
 package ur.mi.liebestagebuch.database.data;
 
+import android.util.Log;
+
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
@@ -35,6 +37,7 @@ public class Entry{
         this.content = content;
         this.salt = salt;
         this.iv = iv;
+        Log.d("Encryption", "IV-Length before Store is " + iv.length);
     }
 
     public int getEmotions() {

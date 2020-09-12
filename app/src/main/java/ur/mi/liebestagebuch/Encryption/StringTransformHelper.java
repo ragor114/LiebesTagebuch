@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Base64;
+import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -77,11 +78,12 @@ public class StringTransformHelper {
     * @return Liste von Boxen auf Basis des Strings
      */
     public static ArrayList<Box> getBoxListFromString(String boxListString){
+        Log.d("Detail", "Getting BoxList");
         //Log.d("TestConfigTest", "getBoxListFromString started");
         ArrayList<Box> boxList = new ArrayList<>();
 
-        String[] singleBoxStrings = boxListString.split("\\Q|\\E<");
-        //Log.d("TestConfigTest", "splitted" + singleBoxStrings[1]);
+        String[] singleBoxStrings = boxListString.split("<\\Q|\\E<");
+        Log.d("Detail", "splitted" + singleBoxStrings[1]);
         for(String current : singleBoxStrings){
             if(current.length() > 0) {
                 Box currentNewBox = getSingleBoxFromString(current);
@@ -89,6 +91,8 @@ public class StringTransformHelper {
             }
             else continue;
         }
+
+        Log.d("Detail", "Got Boxlist");
 
         return boxList;
     }

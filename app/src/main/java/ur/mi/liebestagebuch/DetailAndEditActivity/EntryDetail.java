@@ -36,13 +36,15 @@ public class EntryDetail implements CryptoListener {
         Log.d("Detail", "Creating Entry Detail");
         this.entryDate = dbEntry.getDate();
         setEmotion(dbEntry);
-        if(isNew == false) {
+        startContentDecryption(dbEntry);
+        /*if(isNew == false) {
             Log.d("Detail", "Entry is not new");
             startContentDecryption(dbEntry);
         } else {
             Log.d("Detail", "Entry is New");
             this.boxList = StringTransformHelper.getBoxListFromString(dbEntry.getContent());
         }
+        */
     }
 
     private void startContentDecryption(Entry dbEntry) {
@@ -133,6 +135,7 @@ public class EntryDetail implements CryptoListener {
     @Override
     public void onDecryptionFinished(String result) {
         Log.d("Detail", "Decryption finished");
+        Log.d("Detail", "Decrypted String: " + result);
         this.boxList = StringTransformHelper.getBoxListFromString(result);
     }
 

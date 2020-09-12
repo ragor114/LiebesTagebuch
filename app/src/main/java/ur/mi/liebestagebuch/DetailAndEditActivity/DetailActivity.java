@@ -2,6 +2,7 @@ package ur.mi.liebestagebuch.DetailAndEditActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -9,7 +10,9 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 
 import ur.mi.liebestagebuch.Encryption.CryptoListener;
@@ -109,7 +112,9 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
     @Override
     public void onEncryptionFinished(String result, byte[] iv, byte[] salt){
         Log.d("Detail", "Encryption finished");
+        Log.d("Encryption", "IV length at Encryption is " + iv.length);
         dbHelper.newEntry(entryDate, 2, result, iv, salt);
+        Log.d("Encryption", iv.toString());
     }
 
     @Override
@@ -148,6 +153,10 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
         } else{
             Log.d("Detail", "Entry found");
             isReadyToFinish = true;
+            Log.d("Encryption", "found Entry: " + foundEntry.toString());
+            //Debug:
+            byte[] contentBytes = Base64.decode(foundEntry.getContent(), Base64.DEFAULT);
+            Log.d("Encryption", "Content bytes:" + Arrays.toString(contentBytes));
             entryDetail = new EntryDetail(foundEntry, true);
             setUpViews();
         }

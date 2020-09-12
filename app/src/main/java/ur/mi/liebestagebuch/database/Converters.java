@@ -1,11 +1,11 @@
 package ur.mi.liebestagebuch.database;
 
 import android.os.Build;
+import android.util.Base64;
 
 import androidx.annotation.RequiresApi;
 import androidx.room.TypeConverter;
 
-import java.util.Base64;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -21,17 +21,15 @@ public class Converters {
         return date == null ? null : date.getTime();
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
     @TypeConverter
     public static byte[] toByte(String string){
-        byte[] bytes = Base64.getDecoder().decode(string);
+        byte[] bytes = Base64.decode(string, Base64.DEFAULT);
         return bytes;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
     @TypeConverter
     public static String fromByte(byte[] bytes){
-        String string = Base64.getEncoder().encodeToString(bytes);
+        String string = Base64.encodeToString(bytes, Base64.DEFAULT);
         return string;
     }
 }
