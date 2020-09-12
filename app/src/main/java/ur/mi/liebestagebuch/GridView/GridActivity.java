@@ -1,6 +1,9 @@
 package ur.mi.liebestagebuch.GridView;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
@@ -13,6 +16,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import ur.mi.liebestagebuch.R;
+import ur.mi.liebestagebuch.Settings.SettingsActivity;
 
 public class GridActivity extends AppCompatActivity implements AdapterView.OnItemClickListener, EmotionRequestListener {
 
@@ -137,4 +141,18 @@ public class GridActivity extends AppCompatActivity implements AdapterView.OnIte
 
     }
 
+    //Inflate Menü-Zahnrad oben rechts
+    public boolean onCreateOptionsMenu(Menu menu){
+        getMenuInflater().inflate(R.menu.settings_button, menu);
+        return true;
+    }
+
+
+    public boolean onOptionsItemSelected(MenuItem item){
+        if(item.getItemId() == R.id.settings_button){
+            Intent openSettingsIntent = new Intent(GridActivity.this, SettingsActivity.class);
+            startActivity(openSettingsIntent);
+        }
+        return true;
+    }
 }
