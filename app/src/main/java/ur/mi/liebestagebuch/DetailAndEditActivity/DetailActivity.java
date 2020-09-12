@@ -58,11 +58,13 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
         Intent callingIntent = getIntent();
         Bundle extras = callingIntent.getExtras();
         this.entryDate = (Date) extras.get(DetailActivityConfig.ENTRY_DATE_KEY);
+        Log.d("Detail", "Date loaded: " + entryDate.toString());
         dbHelper = new DBHelper(this, this);
         dbHelper.getEntryByDate(this.entryDate);
     }
 
     private void setUpViews() {
+        Log.d("Detail", "Setting up Views");
         dateTextView = (TextView) findViewById(R.id.datum_text_view);
         boxListView = (ListView) findViewById(R.id.box_list_view);
         emotionButtons = new ImageButton[5];
@@ -73,6 +75,8 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
         emotionButtons[4] = (ImageButton) findViewById(R.id.button_very_bad);
 
         dateTextView.setText(entryDetail.getDateString());
+
+        Log.d("Detail", "setUpViews finished");
 
         //TODO: boxListView an Adapter anschließen.
     }

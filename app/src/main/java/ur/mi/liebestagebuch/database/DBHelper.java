@@ -130,6 +130,7 @@ public class DBHelper{
     }
 
     public Entry getEntryByDate(Date date){
+        Log.d("Detail","Getting entry by date");
         AsyncGet asyncGet = new AsyncGet(date, listener);
         asyncGet.execute();
         try {
@@ -151,17 +152,25 @@ public class DBHelper{
 
         @Override
         protected Entry doInBackground(Void... voids) {
-            Log.d("Detail", "Searching for Entry");
-            try {
-                get = diaryDB.getDiaryDao().getEntryByDate(dateSearch);
-                Log.println(Log.DEBUG, "DB", "Found: " + get.toString());
-                listener.entryFound(get);
-                return get;
-            }catch(Exception e){
-                Log.println(Log.DEBUG, "DB", "NO ENTRY FOUND");
-                listener.entryFound(null);
-                return null;
+            if(!isCancelled()) {
+                Log.d("Detail", "Searching for Entry");
+                try {
+                    get = diaryDB.getDiaryDao().getEntryByDate(dateSearch);
+                    Log.d("DB", "Found Entry");
+                    Log.d("Detail", "Giving found Entry to listener, Async");
+                    listener.entryFound(get);
+                    cancel(true);
+                    return get;
+                } catch (Exception e) {
+                    Log.d("Detail", "Exception in AsyncGet: " + e.getMessage());
+                    Log.d("DB", "NO ENTRY FOUND");
+                    listener.entryFound(null);
+                    cancel(true);
+                    return null;
+                }
             }
+            Log.d("Detail", "isCancelled");
+            return null;
         }
     }
 

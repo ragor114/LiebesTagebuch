@@ -13,7 +13,7 @@
             android:id="@+id/datum_text_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Datum"
+            android:text="Wait while data is loaded"
             android:gravity="center"
             android:textSize="30sp"
             android:textAlignment="center"/>

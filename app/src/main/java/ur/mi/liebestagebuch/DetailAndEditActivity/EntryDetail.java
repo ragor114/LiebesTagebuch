@@ -33,11 +33,14 @@ public class EntryDetail implements CryptoListener {
     //Initialisierungs-Methoden:
 
     public EntryDetail(Entry dbEntry, boolean isNew){
+        Log.d("Detail", "Creating Entry Detail");
         this.entryDate = dbEntry.getDate();
         setEmotion(dbEntry);
         if(isNew == false) {
+            Log.d("Detail", "Entry is not new");
             startContentDecryption(dbEntry);
         } else {
+            Log.d("Detail", "Entry is New");
             this.boxList = StringTransformHelper.getBoxListFromString(dbEntry.getContent());
         }
     }
@@ -105,6 +108,7 @@ public class EntryDetail implements CryptoListener {
     }
 
     public String getDateString(){
+        Log.d("Detail","Getting Datestring");
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
         return dateFormat.format(entryDate);
     }
