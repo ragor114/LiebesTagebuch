@@ -52,7 +52,7 @@ public class StringTransformHelper {
     * @return Stringumwandlung der Box in der Form |<getType() | getString()
      */
     private static String getStringFromBox(Box box){
-        String boxString = "|<";
+        String boxString = " < ";
 
         Type boxType = box.getType();
         //Log.d("TestConfigTest", "" + boxType);
@@ -82,8 +82,8 @@ public class StringTransformHelper {
         //Log.d("TestConfigTest", "getBoxListFromString started");
         ArrayList<Box> boxList = new ArrayList<>();
 
-        String[] singleBoxStrings = boxListString.split("<\\Q|\\E<");
-        Log.d("Detail", "splitted: " + singleBoxStrings[0]);
+        String[] singleBoxStrings = boxListString.split("\\Q < \\E");
+        Log.d("Detail", "splitted 0: " + singleBoxStrings[0]);
         for(String current : singleBoxStrings){
             if(current.length() > 0) {
                 Box currentNewBox = getSingleBoxFromString(current);

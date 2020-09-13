@@ -26,6 +26,7 @@ public class PictureBox implements Box{
     public PictureBox(String content){
         this.content = content;
         //Umwandlung des Strings in eine Bitmap.
+        this.content = content;
         pictureBitmap = StringTransformHelper.convertBase64StringToBitmap(content);
     }
 

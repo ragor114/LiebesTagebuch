@@ -20,6 +20,8 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 
+import ur.mi.liebestagebuch.Boxes.PictureBox;
+import ur.mi.liebestagebuch.Boxes.TextBox;
 import ur.mi.liebestagebuch.Encryption.CryptoListener;
 import ur.mi.liebestagebuch.Encryption.StringTransformHelper;
 import ur.mi.liebestagebuch.GridView.Emotion;
@@ -152,6 +154,16 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
         super.onActivityResult(requestCode, resultCode, data);
         if(resultCode == RESULT_OK){
             Log.d("Detail", "Result in Detail OK");
+            Bundle extras = data.getExtras();
+            if(extras.getString(DetailActivityConfig.TEXTBOX_CONTENT_KEY) != null){
+                TextBox createdTextBox = new TextBox(extras.getString(DetailActivityConfig.TEXTBOX_CONTENT_KEY));
+                entryDetail.addBoxToBoxList(createdTextBox);
+                boxListAdapter.notifyDataSetChanged();
+            } else if(extras.getString(DetailActivityConfig.PICTUREBOX_CONTENT_KEY) != null){
+                PictureBox createdPictureBox = new PictureBox(extras.getString(DetailActivityConfig.PICTUREBOX_CONTENT_KEY));
+                entryDetail.addBoxToBoxList(createdPictureBox);
+                boxListAdapter.notifyDataSetChanged();
+            }
         }
 
     }
