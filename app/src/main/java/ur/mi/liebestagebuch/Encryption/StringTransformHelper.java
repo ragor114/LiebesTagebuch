@@ -83,7 +83,7 @@ public class StringTransformHelper {
         ArrayList<Box> boxList = new ArrayList<>();
 
         String[] singleBoxStrings = boxListString.split("<\\Q|\\E<");
-        Log.d("Detail", "splitted" + singleBoxStrings[0]);
+        Log.d("Detail", "splitted: " + singleBoxStrings[0]);
         for(String current : singleBoxStrings){
             if(current.length() > 0) {
                 Box currentNewBox = getSingleBoxFromString(current);
@@ -106,7 +106,10 @@ public class StringTransformHelper {
      */
     private static Box getSingleBoxFromString(String current) {
         //Log.d("StringTransformHelper", current);
-        String[] parts = current.split("\\Q|\\E");
+        String[] parts = current.split(" \\Q|\\E ");
+        Log.d("Detail", "parts 0: " + parts[0]);
+        Log.d("Detail", "parts 1: " + parts[1]);
+        //Log.d("Detail", "parts 2: " + parts[2]);
         if(parts[0].contains("Picture")) {
             PictureBox newPictureBox = new PictureBox(parts[1]);
             return newPictureBox;

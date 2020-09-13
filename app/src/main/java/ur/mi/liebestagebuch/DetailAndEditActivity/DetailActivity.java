@@ -28,7 +28,7 @@ import ur.mi.liebestagebuch.database.DBHelper;
 import ur.mi.liebestagebuch.database.DatabaseListener;
 import ur.mi.liebestagebuch.database.data.Entry;
 
-public class DetailActivity extends AppCompatActivity implements CryptoListener, DatabaseListener {
+public class DetailActivity extends AppCompatActivity implements CryptoListener, DatabaseListener, BoxListEncryptionListener {
 
     /*
      * In der DetailActivity werden das Datum, die ausgewählte Emotion und der Inhalt in Form von
@@ -56,6 +56,8 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
     private EntryDetail entryDetail;
     private Date entryDate;
     private boolean isReadyToFinish;
+
+    private BoxListAdapter boxListAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -113,8 +115,6 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
         });
 
         Log.d("Detail", "setUpViews finished");
-
-        //TODO: boxListView an Adapter anschließen.
     }
 
     private void finishDetail(){
@@ -194,8 +194,21 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
             //Debug:
             byte[] contentBytes = Base64.decode(foundEntry.getContent(), Base64.DEFAULT);
             Log.d("Encryption", "Content bytes:" + Arrays.toString(contentBytes));
-            entryDetail = new EntryDetail(foundEntry, true);
+            entryDetail = new EntryDetail(foundEntry, this);
             setUpViews();
         }
+    }
+
+    @Override
+    public void onBoxListEncrypted(String encryptedBoxListString, byte[] iv, byte[] salt) {
+        return;
+    }
+
+    @Override
+    public void onBoxListDecryptionFinished() {
+        //TODO: boxListView an Adapter anschließen.
+        boxListAdapter = new BoxListAdapter(entryDetail.getBoxList(), this);
+        boxListView.setAdapter(boxListAdapter);
+        boxListAdapter.notifyDataSetChanged();
     }
 }

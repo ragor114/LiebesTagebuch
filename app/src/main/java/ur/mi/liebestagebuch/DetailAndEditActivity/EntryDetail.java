@@ -30,9 +30,12 @@ public class EntryDetail implements CryptoListener {
     private Emotion emotion;
     private Date entryDate;
 
+    private BoxListEncryptionListener listener;
+
     //Initialisierungs-Methoden:
 
-    public EntryDetail(Entry dbEntry, boolean isNew){
+    public EntryDetail(Entry dbEntry, BoxListEncryptionListener listener){
+        this.listener = listener;
         Log.d("Detail", "Creating Entry Detail");
         this.entryDate = dbEntry.getDate();
         setEmotion(dbEntry);
@@ -93,9 +96,10 @@ public class EntryDetail implements CryptoListener {
         boxList.add(box);
     }
 
-    public View getViewFromBox(int id){
+    /*public View getViewFromBox(int id){
         return boxList.get(id).getView();
     }
+     */
 
     public Emotion getEmotion(){
         return emotion;
@@ -137,6 +141,7 @@ public class EntryDetail implements CryptoListener {
         Log.d("Detail", "Decryption finished");
         Log.d("Detail", "Decrypted String: " + result);
         this.boxList = StringTransformHelper.getBoxListFromString(result);
+        listener.onBoxListDecryptionFinished();
     }
 
     //TODO: Make usefull

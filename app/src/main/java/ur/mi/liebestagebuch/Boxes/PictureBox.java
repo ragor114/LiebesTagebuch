@@ -1,10 +1,14 @@
 package ur.mi.liebestagebuch.Boxes;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageView;
 
 import ur.mi.liebestagebuch.Encryption.StringTransformHelper;
+import ur.mi.liebestagebuch.R;
 
 public class PictureBox implements Box{
 
@@ -37,8 +41,12 @@ public class PictureBox implements Box{
 
     //muss noch implementiert werden!
     @Override
-    public View getView() {
-        return null;
+    public View getView(Context context) {
+        LayoutInflater inflater = LayoutInflater.from(context);
+        View convertView = inflater.inflate(R.layout.picture_box_layout, null);
+        ImageView imageView = (ImageView) convertView.findViewById(R.id.picture_box_image);
+        imageView.setImageBitmap(pictureBitmap);
+        return convertView;
     }
 
 }
