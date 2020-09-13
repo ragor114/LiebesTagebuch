@@ -5,4 +5,7 @@
     <string name="decryption_failed">The Decryption Process failed, if this keeps happening please change your password or deactivate Encryption.</string>
     <string name="back_button_title">Back to Grid</string>
     <string name="add_menu_button_title">Add Box to List</string>
+    <string name="type_chooser_text">Add Text</string>
+    <string name="type_chooser_picture">Add Picture</string>
+    <string name="hint_new_textbox">Was willst du erzählen?</string>
 </resources>

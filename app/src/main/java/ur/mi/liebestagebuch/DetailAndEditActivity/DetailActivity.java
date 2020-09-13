@@ -143,6 +143,16 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
 
 
     private void startAddingNewBox(){
+        Intent intent = new Intent(DetailActivity.this, TypeChooserActivity.class);
+        startActivityForResult(intent, DetailActivityConfig.TYPE_CHOOSER_REQUEST_CODE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == RESULT_OK){
+            Log.d("Detail", "Result in Detail OK");
+        }
 
     }
 

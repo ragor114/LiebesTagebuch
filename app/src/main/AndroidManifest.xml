@@ -18,6 +18,8 @@
         </activity>
         <activity android:name=".GridView.GridActivity"/>
         <activity android:name=".DetailAndEditActivity.DetailActivity"/>
+        <activity android:name=".DetailAndEditActivity.TypeChooserActivity"/>
+        <activity android:name=".DetailAndEditActivity.CreateTextBoxActivity"/>
     </application>
 
 </manifest>

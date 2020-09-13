@@ -5,7 +5,7 @@
         android:id="@+id/back_button"
         android:title="@string/back_button_title"
         app:showAsAction="ifRoom"
-        android:icon="@drawable/ic_arrow_back_black_24dp" />
+        android:icon="@drawable/ic_save_black_24dp" />
 
     <item
         android:id="@+id/add_box_menu_item"

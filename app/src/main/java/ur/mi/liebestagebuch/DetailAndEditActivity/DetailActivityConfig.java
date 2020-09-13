@@ -13,4 +13,8 @@ public class DetailActivityConfig {
     public static final int EMOTION_UPDATE_CODE = 3;
     public static final int NEW_ENTRY_UPDATE_CODE = 4;
 
+    public static final int TYPE_CHOOSER_REQUEST_CODE = 998;
+    public static final int NEW_TEXT_BOX_REQUEST_CODE = 999;
+    public static final String TEXTBOX_CONTENT_KEY = "Textbox Content";
+
 }
