@@ -31,7 +31,8 @@ public class TypeChooserActivity extends AppCompatActivity {
         choosePicture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = new Intent(TypeChooserActivity.this, CreatePictureBoxActivity.class);
+                startActivityForResult(intent, DetailActivityConfig.NEW_PICTURE_BOX_REQUEST_CODE);
             }
         });
     }

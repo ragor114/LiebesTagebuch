@@ -11,4 +11,6 @@
     <color name="emotion_good">#00ff44</color>
     <color name="emotion_bad">#ff6a00</color>
     <color name="emotion_very_bad">#de0000</color>
+
+    <color name="white">#ffffff</color>
 </resources>

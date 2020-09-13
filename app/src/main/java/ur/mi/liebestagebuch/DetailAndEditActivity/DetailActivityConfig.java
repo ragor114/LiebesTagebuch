@@ -15,6 +15,8 @@ public class DetailActivityConfig {
 
     public static final int TYPE_CHOOSER_REQUEST_CODE = 998;
     public static final int NEW_TEXT_BOX_REQUEST_CODE = 999;
+    public static final int NEW_PICTURE_BOX_REQUEST_CODE = 1000;
     public static final String TEXTBOX_CONTENT_KEY = "Textbox Content";
+    public static final String PICTUREBOX_CONTENT_KEY = "Picturebox Content";
 
 }

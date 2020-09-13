@@ -20,6 +20,7 @@
         <activity android:name=".DetailAndEditActivity.DetailActivity"/>
         <activity android:name=".DetailAndEditActivity.TypeChooserActivity"/>
         <activity android:name=".DetailAndEditActivity.CreateTextBoxActivity"/>
+        <activity android:name=".DetailAndEditActivity.CreatePictureBoxActivity"/>
     </application>
 
 </manifest>
