@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -35,12 +36,16 @@ public class CreatePictureBoxActivity extends AppCompatActivity {
         finishChoosing.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.d("Detail", "Button clicked");
                 Bitmap previewedBitmap = ((BitmapDrawable) previewImage.getDrawable()).getBitmap();
+                Bitmap copyBitmap = previewedBitmap.copy(Bitmap.Config.RGB_565, false);
                 //TODO: Make Bitmap smaller (JPEG + weniger Pixel)
-                String bitmapString = StringTransformHelper.convertBitmapToBase64String(previewedBitmap);
+                String bitmapString = StringTransformHelper.convertBitmapToBase64String(copyBitmap);
+                Log.d("Detail", "Got String" + bitmapString);
                 Intent intent = new Intent();
                 intent.putExtra(DetailActivityConfig.PICTUREBOX_CONTENT_KEY, bitmapString);
                 setResult(RESULT_OK, intent);
+                finish();
             }
         });
     }

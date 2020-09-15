@@ -160,6 +160,7 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
                 entryDetail.addBoxToBoxList(createdTextBox);
                 boxListAdapter.notifyDataSetChanged();
             } else if(extras.getString(DetailActivityConfig.PICTUREBOX_CONTENT_KEY) != null){
+                Log.d("Detail", "Creating new PictureBox");
                 PictureBox createdPictureBox = new PictureBox(extras.getString(DetailActivityConfig.PICTUREBOX_CONTENT_KEY));
                 entryDetail.addBoxToBoxList(createdPictureBox);
                 boxListAdapter.notifyDataSetChanged();

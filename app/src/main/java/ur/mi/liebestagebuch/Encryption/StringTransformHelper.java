@@ -149,10 +149,15 @@ public class StringTransformHelper {
      * gespeichert werden kann.
      */
     public static String convertBitmapToBase64String (Bitmap bitmap){
+        Log.d("Detail", "Converting startetd");
+        Bitmap bitmapCopy = bitmap.copy(Bitmap.Config.RGB_565, false);
+        Log.d("Detail", "Copy made");
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+        bitmapCopy.compress(Bitmap.CompressFormat.PNG, 100, baos);
+        Log.d("Detail", "Compressed");
         byte[] bitmapAsBytes = baos.toByteArray();
         String base64BitmapString = Base64.encodeToString(bitmapAsBytes, Base64.DEFAULT);
+        Log.d("Detail", "Encoded to String");
 
         //Aufräumen um Speicher zu sparen:
         try {
@@ -160,8 +165,8 @@ public class StringTransformHelper {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        bitmap.recycle();
-
+        //bitmap.recycle();
+        //bitmapCopy.recycle();
         return base64BitmapString;
     }
 
