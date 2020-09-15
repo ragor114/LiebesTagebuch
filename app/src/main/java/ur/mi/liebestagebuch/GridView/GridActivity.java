@@ -2,13 +2,13 @@ package ur.mi.liebestagebuch.GridView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -53,6 +53,7 @@ public class GridActivity extends AppCompatActivity implements AdapterView.OnIte
     private String lastEditedBoxListString;
     private byte[] lastEditedIV;
     private byte[] lastEditedSalt;
+    private int lastEditedEntryEmotion;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -182,6 +183,7 @@ public class GridActivity extends AppCompatActivity implements AdapterView.OnIte
                 }
                 lastEditedEntryDate = entryDate;
                 lastEditedBoxListString = boxListString;
+                lastEditedEntryEmotion = emotionInt;
                 dbHelper.newEntry(entryDate, emotionInt, "", null, null);
             }
         }
@@ -226,6 +228,11 @@ public class GridActivity extends AppCompatActivity implements AdapterView.OnIte
                 break;
             case DetailActivityConfig.SALT_UPDATE_CODE:
                 lastEditedSalt = null;
+                dbHelper.updateEntryEmotion(lastEditedEntryDate, lastEditedEntryEmotion);
+                break;
+            case DetailActivityConfig.EMOTION_UPDATE_CODE:
+                Log.d("Detail", "Entry update complete");
+                lastEditedEntryEmotion = 0;
                 break;
         }
     }

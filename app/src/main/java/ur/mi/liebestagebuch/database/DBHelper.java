@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.concurrent.Executors;
 
 import ur.mi.liebestagebuch.DetailAndEditActivity.DetailActivityConfig;
+import ur.mi.liebestagebuch.GridView.Emotion;
 import ur.mi.liebestagebuch.database.data.Entry;
 
 
@@ -21,6 +22,7 @@ public class DBHelper{
     private String updatedContent;
     private byte[] updatedSalt;
     private byte[] updatedIV;
+    private int updatedEmotion;
     private Date changeDate;
     private Entry get;
 
@@ -59,6 +61,32 @@ public class DBHelper{
         changeDate = date;
         AsyncUpdateIV asyncUpdateIV = new AsyncUpdateIV(listener);
         asyncUpdateIV.execute();
+    }
+
+    public void updateEntryEmotion(Date date, int emotion){
+        changeDate = date;
+        updatedEmotion = emotion;
+        AsyncUpdateEmotion updateEmotion = new AsyncUpdateEmotion(updatedEmotion, changeDate, listener);
+        Executors.newSingleThreadExecutor().submit(updateEmotion);
+    }
+
+    private class AsyncUpdateEmotion implements Runnable{
+
+        private int updateEmotion;
+        private Date updateDate;
+        private DatabaseListener listener;
+
+        public AsyncUpdateEmotion(int updateEmotion, Date updateDate, DatabaseListener listener){
+            this.updateEmotion = updateEmotion;
+            this.updateDate = updateDate;
+            this.listener = listener;
+        }
+
+        @Override
+        public void run() {
+            diaryDB.getDiaryDao().updateEmotion(updateDate, updateEmotion);
+            listener.updateFinished(DetailActivityConfig.EMOTION_UPDATE_CODE);
+        }
     }
 
     private class AsyncUpdateSalt extends AsyncTask<Void,Void,Void>{

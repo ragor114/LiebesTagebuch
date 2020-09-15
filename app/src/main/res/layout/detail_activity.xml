@@ -30,31 +30,36 @@
                 android:id="@+id/button_very_good"
                 android:layout_width="0dp"
                 android:layout_height="75dp"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:background="@drawable/ic__very_good_bw_24dp"/>
 
             <ImageButton
                 android:id="@+id/button_good"
                 android:layout_width="0dp"
                 android:layout_height="75dp"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:background="@drawable/ic_good_black_24dp"/>
 
             <ImageButton
                 android:id="@+id/button_normal"
                 android:layout_width="0dp"
                 android:layout_height="75dp"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:background="@drawable/ic_normal_black_24dp"/>
 
             <ImageButton
                 android:id="@+id/button_bad"
                 android:layout_width="0dp"
                 android:layout_height="75dp"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:background="@drawable/ic_bad_black_24dp"/>
 
             <ImageButton
                 android:id="@+id/button_very_bad"
                 android:layout_width="0dp"
                 android:layout_height="75dp"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:background="@drawable/ic_very_bad_black_24dp"/>
 
         </LinearLayout>
 

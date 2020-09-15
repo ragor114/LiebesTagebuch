@@ -13,6 +13,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.res.ResourcesCompat;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -62,6 +63,8 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
     private Date entryDate;
     private boolean isReadyToFinish;
 
+    private int currentlyActivatedButton;
+
     private BoxListAdapter boxListAdapter;
 
     @Override
@@ -102,12 +105,8 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
         Log.d("Detail", "Setting up Views");
         dateTextView = (TextView) findViewById(R.id.datum_text_view);
         boxListView = (ListView) findViewById(R.id.box_list_view);
-        emotionButtons = new ImageButton[5];
-        emotionButtons[0] = (ImageButton) findViewById(R.id.button_very_good);
-        emotionButtons[1] = (ImageButton) findViewById(R.id.button_good);
-        emotionButtons[2] = (ImageButton) findViewById(R.id.button_normal);
-        emotionButtons[3] = (ImageButton) findViewById(R.id.button_bad);
-        emotionButtons[4] = (ImageButton) findViewById(R.id.button_very_bad);
+
+        setUpEmotionButtons();
 
         dateTextView.setText(entryDetail.getDateString());
 
@@ -120,6 +119,96 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
         });
 
         Log.d("Detail", "setUpViews finished");
+    }
+
+    private void setUpEmotionButtons() {
+        emotionButtons = new ImageButton[5];
+        emotionButtons[0] = (ImageButton) findViewById(R.id.button_very_good);
+        emotionButtons[0].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                entryDetail.setEmotion(Emotion.VERY_GOOD);
+                activateEmotionButton(0);
+            }
+        });
+        emotionButtons[1] = (ImageButton) findViewById(R.id.button_good);
+        emotionButtons[1].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                entryDetail.setEmotion(Emotion.GOOD);
+                activateEmotionButton(1);
+            }
+        });
+        emotionButtons[2] = (ImageButton) findViewById(R.id.button_normal);
+        emotionButtons[2].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                entryDetail.setEmotion(Emotion.NORMAL);
+                activateEmotionButton(2);
+            }
+        });
+        emotionButtons[3] = (ImageButton) findViewById(R.id.button_bad);
+        emotionButtons[3].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                entryDetail.setEmotion(Emotion.BAD);
+                activateEmotionButton(3);
+            }
+        });
+        emotionButtons[4] = (ImageButton) findViewById(R.id.button_very_bad);
+        emotionButtons[4].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                entryDetail.setEmotion(Emotion.VERY_BAD);
+                activateEmotionButton(4);
+            }
+        });
+        activateEmotionButton(entryDetail.getEmotionInt());
+    }
+
+    private void activateEmotionButton (int position){
+        resetActivatedEmotionButton();
+        currentlyActivatedButton = position;
+        switch(position){
+            case 0:
+                emotionButtons[0].setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_very_good_color_24dp, null));
+                break;
+            case 1:
+                emotionButtons[1].setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_good_color_24dp, null));
+                break;
+            case 2:
+                emotionButtons[2].setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_normal_color_24dp, null));
+                break;
+            case 3:
+                emotionButtons[3].setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_bad_color_24dp, null));
+                break;
+            case 4:
+                emotionButtons[4].setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_very_bad_color_24dp, null));
+                break;
+        }
+    }
+
+    private void resetActivatedEmotionButton(){
+        switch (currentlyActivatedButton){
+            case 0:
+                emotionButtons[0].setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.ic__very_good_bw_24dp, null));
+                break;
+            case 1:
+                emotionButtons[1].setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_good_black_24dp, null));
+                break;
+            case 2:
+                emotionButtons[2].setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_normal_black_24dp, null));
+                break;
+            case 3:
+                emotionButtons[3].setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_bad_black_24dp, null));
+                break;
+            case 4:
+                emotionButtons[4].setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_very_bad_black_24dp, null));
+                break;
+            default:
+                //TODO: TOAST
+                break;
+        }
     }
 
     private void finishDetail(){

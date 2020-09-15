@@ -105,8 +105,25 @@ public class EntryDetail implements CryptoListener {
         return emotion;
     }
 
+    public int getEmotionInt(){
+        switch(emotion){
+            case VERY_GOOD:
+                return 0;
+            case GOOD:
+                return 1;
+            case NORMAL:
+                return 2;
+            case BAD:
+                return 3;
+            case VERY_BAD:
+                return 4;
+        }
+        return 2;
+    }
+
     public void setEmotion(Emotion emotion){
         this.emotion = emotion;
+        Log.d("Detail", "Set Emotion to " + this.emotion);
     }
 
     public Date getDate(){
