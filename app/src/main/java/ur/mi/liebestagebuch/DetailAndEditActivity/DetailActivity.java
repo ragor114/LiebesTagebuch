@@ -158,7 +158,7 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
         if(resultCode == RESULT_OK){
             Log.d("Detail", "Result in Detail OK");
             Bundle extras = data.getExtras();
-            if(requestCode != DetailActivityConfig.EDIT_TEXT_BOX_REQUEST_CODE && requestCode != DetailActivityConfig.EDIT_PICTURE_BOX_REQUEST_CODE) {
+            if(requestCode != DetailActivityConfig.EDIT_BOX_REQUEST_CODE) {
                 if (extras.getString(DetailActivityConfig.TEXTBOX_CONTENT_KEY) != null) {
                     TextBox createdTextBox = new TextBox(extras.getString(DetailActivityConfig.TEXTBOX_CONTENT_KEY));
                     entryDetail.addBoxToBoxList(createdTextBox);
@@ -169,13 +169,16 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
                     entryDetail.addBoxToBoxList(createdPictureBox);
                     boxListAdapter.notifyDataSetChanged();
                 }
-            } else if (requestCode == DetailActivityConfig.EDIT_TEXT_BOX_REQUEST_CODE){
+            } else if (requestCode == DetailActivityConfig.EDIT_BOX_REQUEST_CODE){
                 int positionInList = extras.getInt(DetailActivityConfig.POSITION_IN_LIST_KEY);
-                String newText = "";
+                String newContent = "";
                 if(extras.getString(DetailActivityConfig.TEXTBOX_CONTENT_KEY) != null){
-                    newText = extras.getString(DetailActivityConfig.TEXTBOX_CONTENT_KEY);
+                    newContent = extras.getString(DetailActivityConfig.TEXTBOX_CONTENT_KEY);
                 }
-                entryDetail.getBoxList().get(positionInList).setContent(newText);
+                if(extras.getString(DetailActivityConfig.PICTUREBOX_CONTENT_KEY) != null){
+                    newContent = extras.getString(DetailActivityConfig.PICTUREBOX_CONTENT_KEY);
+                }
+                entryDetail.getBoxList().get(positionInList).setContent(newContent);
                 boxListAdapter.notifyDataSetChanged();
             }
         }
@@ -267,12 +270,16 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
                 Type boxType = clickedBox.getType();
                 switch (boxType){
                     case TEXT:
-                        Intent intent = new Intent(DetailActivity.this, CreateTextBoxActivity.class);
-                        intent.putExtra(DetailActivityConfig.POSITION_IN_LIST_KEY, position);
-                        intent.putExtra(DetailActivityConfig.EXISTING_CONTENT_KEY, clickedBox.getString());
-                        startActivityForResult(intent, DetailActivityConfig.EDIT_TEXT_BOX_REQUEST_CODE);
+                        Intent startTextboxEditingIntent = new Intent(DetailActivity.this, CreateTextBoxActivity.class);
+                        startTextboxEditingIntent.putExtra(DetailActivityConfig.POSITION_IN_LIST_KEY, position);
+                        startTextboxEditingIntent.putExtra(DetailActivityConfig.EXISTING_CONTENT_KEY, clickedBox.getString());
+                        startActivityForResult(startTextboxEditingIntent, DetailActivityConfig.EDIT_BOX_REQUEST_CODE);
                         break;
                     case PICTURE:
+                        Intent startPictureboxEditingIntent = new Intent(DetailActivity.this, CreatePictureBoxActivity.class);
+                        startPictureboxEditingIntent.putExtra(DetailActivityConfig.POSITION_IN_LIST_KEY, position);
+                        startPictureboxEditingIntent.putExtra(DetailActivityConfig.EXISTING_CONTENT_KEY, clickedBox.getString());
+                        startActivityForResult(startPictureboxEditingIntent, DetailActivityConfig.EDIT_BOX_REQUEST_CODE);
                         break;
                 }
             }

@@ -33,6 +33,9 @@ public class CreatePictureBoxActivity extends AppCompatActivity {
         finishChoosing = (ImageButton) findViewById(R.id.button_finish_picture_box);
         previewImage = (ImageView) findViewById(R.id.new_picture_preview);
 
+        Intent callingIntent = getIntent();
+        Bundle extras = callingIntent.getExtras();
+
         finishChoosing.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -48,6 +51,29 @@ public class CreatePictureBoxActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        if(extras != null){
+            String transferedBitmapString = extras.getString(DetailActivityConfig.EXISTING_CONTENT_KEY);
+            Bitmap transferedBitmap = StringTransformHelper.convertBase64StringToBitmap(transferedBitmapString);
+            previewImage.setImageBitmap(transferedBitmap);
+            final int positionInList = extras.getInt(DetailActivityConfig.POSITION_IN_LIST_KEY);
+            finishChoosing.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.d("Detail", "Button clicked");
+                    Bitmap previewedBitmap = ((BitmapDrawable) previewImage.getDrawable()).getBitmap();
+                    Bitmap copyBitmap = previewedBitmap.copy(Bitmap.Config.RGB_565, false);
+                    //TODO: Make Bitmap smaller (JPEG + weniger Pixel)
+                    String bitmapString = StringTransformHelper.convertBitmapToBase64String(copyBitmap);
+                    Log.d("Detail", "Got String" + bitmapString);
+                    Intent intent = new Intent();
+                    intent.putExtra(DetailActivityConfig.PICTUREBOX_CONTENT_KEY, bitmapString);
+                    intent.putExtra(DetailActivityConfig.POSITION_IN_LIST_KEY, positionInList);
+                    setResult(RESULT_OK, intent);
+                    finish();
+                }
+            });
+        }
     }
 
 }
