@@ -50,4 +50,10 @@ public class PictureBox implements Box{
         return convertView;
     }
 
+    @Override
+    public void setContent(String content) {
+        this.content = content;
+        pictureBitmap = StringTransformHelper.convertBase64StringToBitmap(content);
+    }
+
 }

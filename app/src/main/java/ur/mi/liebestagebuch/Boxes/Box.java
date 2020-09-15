@@ -8,5 +8,6 @@ public interface Box {
     public String getString();
     public Type getType();
     public View getView(Context context);
+    public void setContent(String content);
 
 }

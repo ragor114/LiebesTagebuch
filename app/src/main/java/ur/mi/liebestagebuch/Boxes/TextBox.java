@@ -40,4 +40,9 @@ public class TextBox implements Box{
         textView.setText(content);
         return convertView;
     }
+
+    @Override
+    public void setContent(String content) {
+        this.content = content;
+    }
 }

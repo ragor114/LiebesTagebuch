@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -20,8 +21,10 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 
+import ur.mi.liebestagebuch.Boxes.Box;
 import ur.mi.liebestagebuch.Boxes.PictureBox;
 import ur.mi.liebestagebuch.Boxes.TextBox;
+import ur.mi.liebestagebuch.Boxes.Type;
 import ur.mi.liebestagebuch.Encryption.CryptoListener;
 import ur.mi.liebestagebuch.Encryption.StringTransformHelper;
 import ur.mi.liebestagebuch.GridView.Emotion;
@@ -155,14 +158,24 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
         if(resultCode == RESULT_OK){
             Log.d("Detail", "Result in Detail OK");
             Bundle extras = data.getExtras();
-            if(extras.getString(DetailActivityConfig.TEXTBOX_CONTENT_KEY) != null){
-                TextBox createdTextBox = new TextBox(extras.getString(DetailActivityConfig.TEXTBOX_CONTENT_KEY));
-                entryDetail.addBoxToBoxList(createdTextBox);
-                boxListAdapter.notifyDataSetChanged();
-            } else if(extras.getString(DetailActivityConfig.PICTUREBOX_CONTENT_KEY) != null){
-                Log.d("Detail", "Creating new PictureBox");
-                PictureBox createdPictureBox = new PictureBox(extras.getString(DetailActivityConfig.PICTUREBOX_CONTENT_KEY));
-                entryDetail.addBoxToBoxList(createdPictureBox);
+            if(requestCode != DetailActivityConfig.EDIT_TEXT_BOX_REQUEST_CODE && requestCode != DetailActivityConfig.EDIT_PICTURE_BOX_REQUEST_CODE) {
+                if (extras.getString(DetailActivityConfig.TEXTBOX_CONTENT_KEY) != null) {
+                    TextBox createdTextBox = new TextBox(extras.getString(DetailActivityConfig.TEXTBOX_CONTENT_KEY));
+                    entryDetail.addBoxToBoxList(createdTextBox);
+                    boxListAdapter.notifyDataSetChanged();
+                } else if (extras.getString(DetailActivityConfig.PICTUREBOX_CONTENT_KEY) != null) {
+                    Log.d("Detail", "Creating new PictureBox");
+                    PictureBox createdPictureBox = new PictureBox(extras.getString(DetailActivityConfig.PICTUREBOX_CONTENT_KEY));
+                    entryDetail.addBoxToBoxList(createdPictureBox);
+                    boxListAdapter.notifyDataSetChanged();
+                }
+            } else if (requestCode == DetailActivityConfig.EDIT_TEXT_BOX_REQUEST_CODE){
+                int positionInList = extras.getInt(DetailActivityConfig.POSITION_IN_LIST_KEY);
+                String newText = "";
+                if(extras.getString(DetailActivityConfig.TEXTBOX_CONTENT_KEY) != null){
+                    newText = extras.getString(DetailActivityConfig.TEXTBOX_CONTENT_KEY);
+                }
+                entryDetail.getBoxList().get(positionInList).setContent(newText);
                 boxListAdapter.notifyDataSetChanged();
             }
         }
@@ -229,9 +242,40 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
 
     @Override
     public void onBoxListDecryptionFinished() {
-        //TODO: boxListView an Adapter anschließen.
+        setUpBoxlistView();
+
+    }
+
+    private void setUpBoxlistView() {
         boxListAdapter = new BoxListAdapter(entryDetail.getBoxList(), this);
         boxListView.setAdapter(boxListAdapter);
         boxListAdapter.notifyDataSetChanged();
+
+        boxListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                entryDetail.getBoxList().remove(position);
+                boxListAdapter.notifyDataSetChanged();
+                return true;
+            }
+        });
+
+        boxListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Box clickedBox = entryDetail.getBoxFromBoxList(position);
+                Type boxType = clickedBox.getType();
+                switch (boxType){
+                    case TEXT:
+                        Intent intent = new Intent(DetailActivity.this, CreateTextBoxActivity.class);
+                        intent.putExtra(DetailActivityConfig.POSITION_IN_LIST_KEY, position);
+                        intent.putExtra(DetailActivityConfig.EXISTING_CONTENT_KEY, clickedBox.getString());
+                        startActivityForResult(intent, DetailActivityConfig.EDIT_TEXT_BOX_REQUEST_CODE);
+                        break;
+                    case PICTURE:
+                        break;
+                }
+            }
+        });
     }
 }
