@@ -2,6 +2,7 @@ package ur.mi.liebestagebuch.DetailAndEditActivity;
 
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -40,16 +41,10 @@ public class EntryDetail implements CryptoListener {
         this.entryDate = dbEntry.getDate();
         setEmotion(dbEntry);
         startContentDecryption(dbEntry);
-        /*if(isNew == false) {
-            Log.d("Detail", "Entry is not new");
-            startContentDecryption(dbEntry);
-        } else {
-            Log.d("Detail", "Entry is New");
-            this.boxList = StringTransformHelper.getBoxListFromString(dbEntry.getContent());
-        }
-        */
     }
 
+    // Die für die Entschlüsselung nötigen Informationen werden aus dem Datenbank-Entry geladen und
+    // die asynchrone Entschlüsselung gestartet:
     private void startContentDecryption(Entry dbEntry) {
         String encryptedBoxString = dbEntry.getContent();
         byte[] salt = dbEntry.getSalt();
@@ -57,6 +52,8 @@ public class EntryDetail implements CryptoListener {
         StringTransformHelper.startDecryption(encryptedBoxString, this, iv, salt);
     }
 
+    // Da die Emotion in der Datenbank als int gespeichert wird muss die korrespondierende Emotion
+    // über einen switch gefunden werden:
     private void setEmotion(Entry dbEntry) {
         int emotionInt = dbEntry.getEmotions();
         switch (emotionInt){
@@ -79,13 +76,8 @@ public class EntryDetail implements CryptoListener {
     }
 
     //Getter- und Setter-Methoden:
-
     public ArrayList<Box> getBoxList(){
         return boxList;
-    }
-
-    public void setBoxList(ArrayList<Box> boxList){
-        this.boxList = boxList;
     }
 
     public Box getBoxFromBoxList(int id){
@@ -95,11 +87,6 @@ public class EntryDetail implements CryptoListener {
     public void addBoxToBoxList(Box box){
         boxList.add(box);
     }
-
-    /*public View getViewFromBox(int id){
-        return boxList.get(id).getView();
-    }
-     */
 
     public Emotion getEmotion(){
         return emotion;
@@ -136,23 +123,20 @@ public class EntryDetail implements CryptoListener {
         return dateFormat.format(entryDate);
     }
 
-    public void encryptBoxList(){
-        String boxListString = getBoxListString();
-        StringTransformHelper.startEncryption(boxListString, this);
-    }
-
     public String getBoxListString(){
         return StringTransformHelper.getStringFromBoxList(boxList);
     }
 
     //CryptoListener-Methoden:
 
-    //Hier unnötig
+    // Das Entry-Detail entschlüsselt nur und verschlüsselt nicht!
     @Override
     public void onEncryptionFinished(String result, byte[] iv, byte[] salt) {
-        //nignweou
+        return;
     }
 
+    // Wenn der String aus der Datenbank entschlüsselt wurde, wird daraus eine Arraylist von Boxen
+    // gemacht und dem listener mitgeteilt, dass die Entschlüsselung abgeschlossen ist.
     @Override
     public void onDecryptionFinished(String result) {
         Log.d("Detail", "Decryption finished");
@@ -161,15 +145,13 @@ public class EntryDetail implements CryptoListener {
         listener.onBoxListDecryptionFinished();
     }
 
-    //TODO: Make usefull
     @Override
     public void onEncryptionFailed() {
-
+        return;
     }
 
-    //TODO: Make helpful
     @Override
-    public void onDecryptionFailed() {
-
+    public void onDecryptionFailed(){
+        listener.onEncryptionFailed(DetailActivityConfig.DECRYPTION_FAILED_CODE);
     }
 }

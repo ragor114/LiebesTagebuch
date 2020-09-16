@@ -15,6 +15,14 @@ import ur.mi.liebestagebuch.Boxes.Box;
 
 public class BoxListAdapter extends BaseAdapter {
 
+    /*
+     * Der BoxListAdapter schließt eine Liste von Boxen an ein ListView an.
+     * Dafür gibt getView() für jedes Listenlement den Rückgabewert von getView der Box
+     * zurück.
+     *
+     * Entwickelt von Jannik Wiese.
+     */
+
     private ArrayList<Box> boxList;
     private Context context;
 

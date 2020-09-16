@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -127,6 +128,8 @@ public class GridActivity extends AppCompatActivity implements AdapterView.OnIte
         gridAdapter.notifyDataSetChanged();
     }
 
+    // Wird ein Element des Grids geklickt wird das Datum des entsprechenden Eintrags gesucht und
+    // dieses der DetailActivity als Extra übergeben, die forResult gestartet wird.
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Entry clickedEntry = entries.get(position);
@@ -154,6 +157,11 @@ public class GridActivity extends AppCompatActivity implements AdapterView.OnIte
 
     }
 
+    /*
+     * Meldet sich die DetailActivty mit einem Ergebnis zurück und ist der resultCode OK, dann
+     * werden die übergebenen Informationen in lokalen Variablen zwischen gespeichert und nach und
+     * nach in die Datenbank rückgespeichert.
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -163,30 +171,38 @@ public class GridActivity extends AppCompatActivity implements AdapterView.OnIte
                 Date entryDate = (Date) extras.get(DetailActivityConfig.ENTRY_DATE_KEY);
                 String boxListString = extras.getString(DetailActivityConfig.BOX_LIST_KEY);
                 Emotion entryEmotion = (Emotion) extras.get(DetailActivityConfig.EMOTION_KEY);
-                int emotionInt = 0;
-                switch (entryEmotion){
-                    case VERY_GOOD:
-                        emotionInt = 0;
-                        break;
-                    case GOOD:
-                        emotionInt = 1;
-                        break;
-                    case NORMAL:
-                        emotionInt = 2;
-                        break;
-                    case BAD:
-                        emotionInt = 3;
-                        break;
-                    case VERY_BAD:
-                        emotionInt = 4;
-                        break;
-                }
+                int emotionInt = getEmotionInt(entryEmotion);
+
+                // Die Informationen des EntryDetails müssen zwischengespeichert werden, während
+                // asynchron Datenbank- und Verschlüsselungsoperationen durchgeführt werden.
                 lastEditedEntryDate = entryDate;
                 lastEditedBoxListString = boxListString;
                 lastEditedEntryEmotion = emotionInt;
                 dbHelper.newEntry(entryDate, emotionInt, "", null, null);
             }
         }
+    }
+
+    private int getEmotionInt(Emotion entryEmotion) {
+        int emotionInt = 0;
+        switch (entryEmotion){
+            case VERY_GOOD:
+                emotionInt = 0;
+                break;
+            case GOOD:
+                emotionInt = 1;
+                break;
+            case NORMAL:
+                emotionInt = 2;
+                break;
+            case BAD:
+                emotionInt = 3;
+                break;
+            case VERY_BAD:
+                emotionInt = 4;
+                break;
+        }
+        return emotionInt;
     }
 
     @Override
@@ -201,10 +217,9 @@ public class GridActivity extends AppCompatActivity implements AdapterView.OnIte
         return;
     }
 
-    //TODO: Make useful.
     @Override
     public void onEncryptionFailed() {
-
+        Toast.makeText(this, "Encryption failed, if this keeps happening, change password", Toast.LENGTH_SHORT);
     }
 
     @Override
@@ -212,6 +227,10 @@ public class GridActivity extends AppCompatActivity implements AdapterView.OnIte
         return;
     }
 
+    /*
+     * Die Informationen aus der DetailActivity werden eine nach der anderen in die Datenbank
+     * gespeichert.
+     */
     @Override
     public void updateFinished(int updateCode) {
         switch (updateCode){
@@ -239,6 +258,6 @@ public class GridActivity extends AppCompatActivity implements AdapterView.OnIte
 
     @Override
     public void entryFound(ur.mi.liebestagebuch.database.data.Entry foundEntry) {
-
+        return;
     }
 }
