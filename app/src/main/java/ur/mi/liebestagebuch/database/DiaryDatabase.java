@@ -14,17 +14,4 @@ import ur.mi.liebestagebuch.database.data.Entry;
 @TypeConverters({Converters.class})
 public abstract class DiaryDatabase extends RoomDatabase {
     public abstract DiaryDao getDiaryDao();
-
-    private static DiaryDatabase diaryDB;
-
-    public static DiaryDatabase getInstance(Context context){
-        if(null == diaryDB){
-            diaryDB = buildDBInstance(context);
-        }
-        return diaryDB;
-    }
-
-    private static DiaryDatabase buildDBInstance(Context context){
-        return Room.databaseBuilder(context,DiaryDatabase.class,"database-diary").build();
-    }
 }

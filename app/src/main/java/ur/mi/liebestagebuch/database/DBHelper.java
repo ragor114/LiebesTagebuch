@@ -6,6 +6,8 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
+import androidx.room.Room;
+
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -26,11 +28,13 @@ public class DBHelper{
     private Date changeDate;
     private Entry get;
 
+    private static final String DATABASE_NAME = "database-diary";
+
     private DatabaseListener listener;
 
     public DBHelper(Context context, DatabaseListener listener){
         this.listener = listener;
-        diaryDB = DiaryDatabase.getInstance(context);
+        diaryDB = Room.databaseBuilder(context, DiaryDatabase.class, DATABASE_NAME).build();
     }
 
     //TODO: ASYNC DURCH RUNNABLE AUSTAUSCHEN
