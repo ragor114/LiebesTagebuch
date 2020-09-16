@@ -19,7 +19,7 @@ import ur.mi.liebestagebuch.database.data.Entry;
 
 public class DBHelper{
 
-    private DiaryDatabase diaryDB;
+    private static DiaryDatabase diaryDB;
     private Entry newEmptyEntry;
     private String updatedContent;
     private byte[] updatedSalt;

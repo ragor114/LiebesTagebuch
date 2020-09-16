@@ -13,5 +13,7 @@ import ur.mi.liebestagebuch.database.data.Entry;
 @Database(entities = {Entry.class}, version = 1)
 @TypeConverters({Converters.class})
 public abstract class DiaryDatabase extends RoomDatabase {
+
     public abstract DiaryDao getDiaryDao();
+
 }
