@@ -66,6 +66,8 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Log.d("login", "clicked not firsttime");
+                String storedPassword = SecurePasswordSaver.getStoredPassword(getApplicationContext());
+                Log.d("login", "Stored password: " + storedPassword);
             }
         });
 
@@ -76,12 +78,9 @@ public class LoginActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     storePassword();
                 }
-
-
             });
             prefs.edit().putBoolean("firstrun", false).commit();
         }
-
     }
 
     protected void onResume(){
@@ -163,7 +162,10 @@ public class LoginActivity extends AppCompatActivity {
     private void storePassword() {
         if (!editTextPassword.getText().toString().equals("")) {
             SecurePasswordSaver.storePasswordSecure(editTextPassword.getText().toString(), this);
+            editTextPassword.setText("");
             Log.d("login", "clicked first time");
+            String storedPassword = SecurePasswordSaver.getStoredPassword(this);
+            Log.d("login", "Strored password: " + storedPassword);
         }
     }
     

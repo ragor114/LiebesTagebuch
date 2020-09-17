@@ -148,8 +148,7 @@ public class SecurePasswordSaver {
             KeyGenerator keyGenerator = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, "AndroidKeyStore");
             keyGenerator.init(new KeyGenParameterSpec.Builder("key", KeyProperties.PURPOSE_DECRYPT | KeyProperties.PURPOSE_ENCRYPT)
                     .setBlockModes(KeyProperties.BLOCK_MODE_CBC)
-                    .setUserAuthenticationRequired(true)
-                    .setUserAuthenticationValidityDurationSeconds(15)
+                    .setUserAuthenticationRequired(false)
                     .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_PKCS7)
                     .build());
             secretKey = keyGenerator.generateKey();
