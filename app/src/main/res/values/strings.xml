@@ -9,4 +9,9 @@
     <string name="encryption_failed">The Encryption Process failed, if this keeps happening please change your password or deactivate Encryption.</string>
     <string name="decryption_failed">The Decryption Process failed, if this keeps happening please change your password or deactivate Encryption.</string>
 
+    <string name="settings_title">Preferences</string>
+    <string name="settings_encrypt">Encrypt Entries</string>
+    <string name="settings_reminder">Reminder</string>
+    <string name="settings_password">Set Password And Fingerprint</string>
+    <string name="settings_button">Settings</string>
 </resources>
