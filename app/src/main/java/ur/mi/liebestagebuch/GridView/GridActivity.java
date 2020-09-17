@@ -7,10 +7,10 @@ import android.widget.GridView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 import ur.mi.liebestagebuch.R;
 
@@ -27,11 +27,11 @@ public class GridActivity extends AppCompatActivity implements AdapterView.OnIte
      * Entwickelt von Moritz Schnell und Jannik Wiese.
      *
      * TODO: getInstallationDate(): Installationsdatum aus Datei abfragen, wenn Datei nicht vorhanden, Installationsdatum speichern.
-     * TODO: getDaysPast(): Vergleich des heutigen Datums mit dem gespeicherten Datum und Berechnung der vergangen Tage.
+     * Check: getDaysPast(): Vergleich des heutigen Datums mit dem gespeicherten Datum und Berechnung der vergangen Tage.
      * TODO: requestAllEmotions(): Anfrage für ArrayList aller Emotionen an die Datenbank stellen, dabei diese Activity als Listener übergeben.
      * TODO: onEmotionRequestFinished(): Empfangene Emotionen den entsprechenden Entries zuweisen und dann grid refreshen.
      * TODO: onEmotionRequestFinished(): Falls kein Datenbankeintrag für ein Datum vorhanden ist, leeren Eintrag anlegen.
-     * TODO: Layout verbessern, Grafiken statt hässlicher Rechtecke.
+     * Check: Layout verbessern, Grafiken statt hässlicher Rechtecke.
      *
      * TODO: onItemClick(): Übergang in Detailactivity, Übergabe der nötigen Informationen (reicht nur Datum?).
      */
@@ -82,12 +82,19 @@ public class GridActivity extends AppCompatActivity implements AdapterView.OnIte
         }
     }
 
-    //TODO: Vergleich des gespeicherten Installationsdatums mit dem aktuellen und Rückgabe der Anzahl der vergangenen Tage.
+    //Check: Vergleich des gespeicherten Installationsdatums mit dem aktuellen und Rückgabe der Anzahl der vergangenen Tage.
     private int getDaysPassed(Date installationDate){
-        return 9;
+        Date currentDate = new Date();
+        int daysPassed = 0;
+        if (installationDate == currentDate){
+            return daysPassed;
+        } else {
+            daysPassed = (int) (currentDate.getTime() - installationDate.getTime());
+            return (int) TimeUnit.DAYS.convert((daysPassed), TimeUnit.MILLISECONDS);
+        }
     }
 
-    //TODO: Abruf des in einer Datei gespeicherten Installationsdatums und Rückgabe dieses Objekts.
+    // TODO: Abruf des in einer Datei gespeicherten Installationsdatums und Rückgabe dieses Objekts.
     private Date getInstallationDate(){
         Date currentDate = new Date();
         Calendar c = Calendar.getInstance();
@@ -116,11 +123,19 @@ public class GridActivity extends AppCompatActivity implements AdapterView.OnIte
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Entry clickedEntry = entries.get(position);
         Date clickedEntryDate = clickedEntry.getDate();
+        Emotion clickedEntryEmotion = clickedEntry.getEmotion();
+
         //Auslesen der Informationen über den mit dem Datum korrespondierenden Datenbankeintrag.
         //Aufruf der Detailansicht und Übergabe der (verschlüsselten) Informationen.
     }
 
     public void requestAllEmotions(){
+        Emotion values[] =Emotion.values();
+        ArrayList allEmotions = new ArrayList<>();
+       // for (Emotion.values()) {
+       //     allEmotions.add(allEmotions.get(values));
+       // }
+
       // Anfrage für alle Emotionen in einer ArrayList an die Datenbank übergeben
       // Da Anfrage asyncron läuft wird diese Activity als Listener übergeben.
     }

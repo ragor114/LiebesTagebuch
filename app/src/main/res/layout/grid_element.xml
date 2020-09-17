@@ -2,7 +2,8 @@
 <android.widget.RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_gravity="center">
+    android:layout_gravity="center"
+    android:background="@color/backgroundColor">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -20,20 +21,22 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/colorPrimary"/>
+                android:background="@color/backgroundColor"/>
 
             <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
 
-                <View
-                    android:id="@+id/emotion_color_view"
-                    android:layout_width="50dp"
-                    android:layout_height="100dp"
-                    android:background="@color/emotion_normal"
-                    android:layout_centerInParent="true"/>
+                android:background="@color/backgroundColor">
 
             </RelativeLayout>
+
+            <View
+                android:id="@+id/emotion_color_view"
+                android:layout_width="100sp"
+                android:layout_height="100sp"
+                android:layout_gravity="center"
+                android:background="@drawable/emoji_neutral" />
 
         </FrameLayout>
 
@@ -43,7 +46,8 @@
            android:layout_height="0dp"
            android:layout_weight="1"
            android:text="Date"
-           android:textSize="10sp"/>
+           android:textSize="10sp"
+           android:textColor="@color/colorPrimary"/>
 
     </LinearLayout>
 

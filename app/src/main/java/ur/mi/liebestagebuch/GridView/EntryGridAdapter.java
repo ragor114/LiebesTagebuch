@@ -47,7 +47,7 @@ public class EntryGridAdapter extends BaseAdapter {
     }
 
 
-    //TODO: EmotionColorView muss durch einen Smiley in der entsprechenden Farbe ersetzt werden.
+    //Check: EmotionColorView muss durch einen Smiley in der entsprechenden Farbe ersetzt werden.
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         Entry currentEntry = entries.get(position);
@@ -58,7 +58,9 @@ public class EntryGridAdapter extends BaseAdapter {
         TextView dateTextView = (TextView) gridElementView.findViewById(R.id.date_text);
         View emotionColorView = gridElementView.findViewById(R.id.emotion_color_view);
 
-        emotionColorView.setBackgroundColor(context.getColor(getColorResourceForEmotion(currentEntry.getEmotion())));
+        emotionColorView.setBackground(context.getDrawable(getColorResourceForEmotion(currentEntry.getEmotion())));
+        //emotionColorView.setBackgroundColor(context.getColor(getColorResourceForEmotion(currentEntry.getEmotion())));
+
 
         Date entryDate = currentEntry.getDate();
         DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
@@ -72,21 +74,22 @@ public class EntryGridAdapter extends BaseAdapter {
         int colorId = 0;
         switch(emotion){
             case VERY_GOOD:
-                colorId = R.color.emotion_very_good;
+                colorId = R.drawable.emoji_sehr_glucklich;
                 break;
             case GOOD:
-                colorId = R.color.emotion_good;
+                colorId = R.drawable.emoji_glucklich;
                 break;
             case BAD:
-                colorId = R.color.emotion_bad;
+                colorId = R.drawable.emoji_traurig;
                 break;
             case VERY_BAD:
-                colorId = R.color.emotion_very_bad;
+                colorId = R.drawable.emoji_sehr_traurig;
                 break;
             default:
-                colorId = R.color.emotion_normal;
+                colorId = R.drawable.emoji_neutral;
                 break;
         }
         return colorId;
     }
+
 }

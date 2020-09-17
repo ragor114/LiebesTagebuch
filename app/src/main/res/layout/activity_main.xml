@@ -7,17 +7,39 @@
     tools:context=".LoginActivity">
 
     <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center">
+        android:gravity="center"
+        android:background="@color/backgroundColor">
+
+        <TextView
+            android:id="@+id/login_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="50dp"
+            android:gravity="top"
+            android:text="@string/app_name"
+            android:textColor="@color/colorAccent"
+            android:textSize="35sp" />
 
         <Button
             android:id="@+id/login_button"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            android:background="@drawable/custom_button"
+            android:gravity="center"
+            />
+
+        <TextView
+            android:id="@+id/loginFingerprintText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/login_test_text"
-            android:gravity="center"
-            android:background="@color/button_color" />
+            android:text="@string/login_fingerprint_text"
+            android:layout_marginLeft="20sp"
+            android:layout_marginRight="20sp"
+            android:textAlignment="center"
+            android:textColor="@color/colorPrimary" />
 
     </LinearLayout>
 
