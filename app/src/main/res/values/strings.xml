@@ -1,6 +1,12 @@
 <resources>
     <string name="app_name">Liebes Tagebuch</string>
-    <string name="login_test_text">Login</string>
+    <string name="login_fingerprint_text">Press the Lock to Log in with your Fingerprint</string>
+    <string name="login_password_text">No Fingerprint Sensor found, press the Lock to Log in with Password</string>
+    <string name="login_fingerprint_hw_unavailable">The Biometric Sensors are currently unavailable, press the Lock to log in with Password</string>
+    <string name="login_fingerprint_no_fingerprint">There are no Fingerprints registered on this Phone, press the Lock to log in with Password</string>
+
+
     <string name="encryption_failed">The Encryption Process failed, if this keeps happening please change your password or deactivate Encryption.</string>
     <string name="decryption_failed">The Decryption Process failed, if this keeps happening please change your password or deactivate Encryption.</string>
+
 </resources>
