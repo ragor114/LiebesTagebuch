@@ -2,27 +2,39 @@ package ur.mi.liebestagebuch.database;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.List;
+import androidx.room.Room;
 
+import java.util.Date;
+import java.util.List;
+import java.util.concurrent.Executors;
+
+import ur.mi.liebestagebuch.DetailAndEditActivity.DetailActivityConfig;
+import ur.mi.liebestagebuch.GridView.Emotion;
 import ur.mi.liebestagebuch.database.data.Entry;
 
 
-public class DBHelper {
+public class DBHelper{
 
-    private DiaryDatabase diaryDB;
+    private static DiaryDatabase diaryDB;
     private Entry newEmptyEntry;
     private String updatedContent;
     private byte[] updatedSalt;
     private byte[] updatedIV;
+    private int updatedEmotion;
     private Date changeDate;
     private Entry get;
 
-    public DBHelper(Context context){
-        diaryDB = DiaryDatabase.getInstance(context);
+    private static final String DATABASE_NAME = "database-diary";
+
+    private DatabaseListener listener;
+
+    public DBHelper(Context context, DatabaseListener listener){
+        this.listener = listener;
+        diaryDB = Room.databaseBuilder(context, DiaryDatabase.class, DATABASE_NAME).build();
     }
 
     //TODO: ASYNC DURCH RUNNABLE AUSTAUSCHEN
@@ -30,32 +42,65 @@ public class DBHelper {
 
     public void newEntry(Date date, int emotion, String content, byte[] salt, byte[] iv){
         newEmptyEntry = new Entry(date, emotion, content, salt, iv);
-        AsyncNewEmpty asyncNewEmpty = new AsyncNewEmpty();
+        AsyncNewEmpty asyncNewEmpty = new AsyncNewEmpty(listener);
         asyncNewEmpty.execute();
     }
 
     public void updateEntryContent(Date date, String content){
         updatedContent =content;
         changeDate = date;
-        AsyncUpdateContent asyncUpdateContent = new AsyncUpdateContent();
+        AsyncUpdateContent asyncUpdateContent = new AsyncUpdateContent(listener);
         asyncUpdateContent.execute();
     }
 
     public void updateEntrySalt(Date date, byte[] salt){
         updatedSalt = salt;
         changeDate = date;
-        AsyncUpdateSalt asyncUpdateSalt = new AsyncUpdateSalt();
+        AsyncUpdateSalt asyncUpdateSalt = new AsyncUpdateSalt(listener);
         asyncUpdateSalt.execute();
     }
 
     public void updateEntryIV(Date date, byte[] IV){
         updatedIV = IV;
         changeDate = date;
-        AsyncUpdateIV asyncUpdateIV = new AsyncUpdateIV();
+        AsyncUpdateIV asyncUpdateIV = new AsyncUpdateIV(listener);
         asyncUpdateIV.execute();
     }
 
+    public void updateEntryEmotion(Date date, int emotion){
+        changeDate = date;
+        updatedEmotion = emotion;
+        AsyncUpdateEmotion updateEmotion = new AsyncUpdateEmotion(updatedEmotion, changeDate, listener);
+        Executors.newSingleThreadExecutor().submit(updateEmotion);
+    }
+
+    private class AsyncUpdateEmotion implements Runnable{
+
+        private int updateEmotion;
+        private Date updateDate;
+        private DatabaseListener listener;
+
+        public AsyncUpdateEmotion(int updateEmotion, Date updateDate, DatabaseListener listener){
+            this.updateEmotion = updateEmotion;
+            this.updateDate = updateDate;
+            this.listener = listener;
+        }
+
+        @Override
+        public void run() {
+            diaryDB.getDiaryDao().updateEmotion(updateDate, updateEmotion);
+            listener.updateFinished(DetailActivityConfig.EMOTION_UPDATE_CODE);
+        }
+    }
+
     private class AsyncUpdateSalt extends AsyncTask<Void,Void,Void>{
+
+        private DatabaseListener listener;
+
+        public AsyncUpdateSalt(DatabaseListener listener){
+            this.listener = listener;
+        }
+
         @Override
         protected Void doInBackground(Void... voids) {
             diaryDB.getDiaryDao().updateSalt(changeDate,updatedSalt);
@@ -65,11 +110,20 @@ public class DBHelper {
                 Log.println(Log.DEBUG,"DB",entry.toString());
             }
 
+            listener.updateFinished(DetailActivityConfig.SALT_UPDATE_CODE);
+
             return null;
         }
     }
 
     private class AsyncUpdateIV extends AsyncTask<Void,Void,Void>{
+
+        private DatabaseListener listener;
+
+        public AsyncUpdateIV(DatabaseListener listener){
+            this.listener = listener;
+        }
+
         @Override
         protected Void doInBackground(Void... voids) {
             diaryDB.getDiaryDao().updateIV(changeDate,updatedIV);
@@ -79,11 +133,20 @@ public class DBHelper {
                 Log.println(Log.DEBUG,"DB",entry.toString());
             }
 
+            listener.updateFinished(DetailActivityConfig.IV_UPDATE_CODE);
+
             return null;
         }
     }
 
     private class AsyncUpdateContent extends AsyncTask<Void,Void,Void>{
+
+        private DatabaseListener listener;
+
+        public AsyncUpdateContent(DatabaseListener listener){
+            this.listener = listener;
+        }
+
         @Override
         protected Void doInBackground(Void... voids) {
             diaryDB.getDiaryDao().updateContent(changeDate,updatedContent);
@@ -93,43 +156,110 @@ public class DBHelper {
                 Log.println(Log.DEBUG,"DB",entry.toString());
             }
 
+            listener.updateFinished(DetailActivityConfig.CONTENT_UPDATE_CODE);
+
             return null;
         }
     }
 
-    public Entry getEntryByDate(Date date){
-        AsyncGet asyncGet = new AsyncGet(date);
+    public void getEntryByDate(Date date){
+        Log.d("Detail","Getting entry by date");
+
+        /*
+        AsyncGet asyncGet = new AsyncGet(date, listener);
         asyncGet.execute();
         try {
             return get;
         }catch (Exception e){
             return null;
         }
+        */
+        GetRunnable get = new GetRunnable(date, listener);
+        Executors.newSingleThreadExecutor().submit(get);
+    }
+
+    private class GetRunnable implements Runnable{
+
+        private Date dateSearch;
+        private DatabaseListener listener;
+
+        public GetRunnable(Date date, DatabaseListener listener){
+            this.dateSearch = date;
+            this.listener = listener;
+        }
+
+        @Override
+        public void run() {
+            Entry foundEntry = null;
+            Log.d("Detail", "Searching for Entry");
+            try {
+                foundEntry = diaryDB.getDiaryDao().getEntryByDate(dateSearch);
+                Log.d("DB", "Found Entry");
+                Log.d("Detail", "Giving found Entry to listener, Async");
+            } catch (Exception e) {
+                Log.d("Detail", "Exception in AsyncGet: " + e.getMessage());
+                Log.d("DB", "NO ENTRY FOUND");
+            }
+            final Entry finalFound = foundEntry;
+            Handler mainThreadHandler = new Handler(Looper.getMainLooper());
+            mainThreadHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    listener.entryFound(finalFound);
+                }
+            });
+        }
     }
 
     private class AsyncGet extends AsyncTask<Void,Void,Entry>{
         private Date dateSearch;
 
-        public AsyncGet(Date date) {
+        private DatabaseListener listener;
+
+        private Entry foundEntry;
+
+        public AsyncGet(Date date, DatabaseListener listener) {
             dateSearch = date;
+            this.listener = listener;
         }
 
         @Override
         protected Entry doInBackground(Void... voids) {
-            try {
-                get = diaryDB.getDiaryDao().getEntryByDate(dateSearch);
-                Log.println(Log.DEBUG, "DB", "Found: " + get.toString());
-                return get;
-            }catch(Exception e){
-                Log.println(Log.DEBUG, "DB", "NO ENTRY FOUND");
-                return null;
+            if(!isCancelled()) {
+                Log.d("Detail", "Searching for Entry");
+                try {
+                    foundEntry = diaryDB.getDiaryDao().getEntryByDate(dateSearch);
+                    Log.d("DB", "Found Entry");
+                    Log.d("Detail", "Giving found Entry to listener, Async");
+                    onPostExecute(foundEntry);
+                    cancel(true);
+                    return foundEntry;
+                } catch (Exception e) {
+                    Log.d("Detail", "Exception in AsyncGet: " + e.getMessage());
+                    Log.d("DB", "NO ENTRY FOUND");
+                    cancel(true);
+                    return null;
+                }
             }
+            Log.d("Detail", "isCancelled");
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Entry entry){
+            listener.entryFound(foundEntry);
         }
     }
 
 
 
     private class AsyncNewEmpty extends android.os.AsyncTask<Void,Void,Void> {
+
+        private DatabaseListener listener;
+
+        public AsyncNewEmpty (DatabaseListener listener){
+            this.listener = listener;
+        }
 
         @Override
         protected Void doInBackground(Void... voids) {
@@ -140,6 +270,8 @@ public class DBHelper {
             for(Entry entry: diaryDB.getDiaryDao().getAll()){
                 Log.println(Log.DEBUG,"DB",entry.toString());
             }
+
+            listener.updateFinished(DetailActivityConfig.NEW_ENTRY_UPDATE_CODE);
 
             return null;
         }

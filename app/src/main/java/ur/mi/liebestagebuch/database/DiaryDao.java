@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import ur.mi.liebestagebuch.GridView.Emotion;
 import ur.mi.liebestagebuch.database.data.Entry;
 
 @Dao
@@ -44,4 +45,7 @@ public interface DiaryDao {
 
     @Query("UPDATE diary SET IV = :newIV WHERE date = :date")
     void updateIV(Date date,byte[] newIV);
+
+    @Query("UPDATE diary SET emotion = :emotion WHERE date = :date")
+    void updateEmotion(Date date, int emotion);
 }

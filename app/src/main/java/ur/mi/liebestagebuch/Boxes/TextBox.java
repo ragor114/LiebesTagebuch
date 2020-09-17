@@ -1,6 +1,11 @@
 package ur.mi.liebestagebuch.Boxes;
 
+import android.content.Context;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.TextView;
+
+import ur.mi.liebestagebuch.R;
 
 public class TextBox implements Box{
 
@@ -28,7 +33,16 @@ public class TextBox implements Box{
 
     //Muss noch implementiert werden!
     @Override
-    public View getView() {
-        return null;
+    public View getView(Context context) {
+        LayoutInflater inflater = LayoutInflater.from(context);
+        View convertView = inflater.inflate(R.layout.text_box_layout, null);
+        TextView textView = (TextView) convertView.findViewById(R.id.text_box_text);
+        textView.setText(content);
+        return convertView;
+    }
+
+    @Override
+    public void setContent(String content) {
+        this.content = content;
     }
 }

@@ -4,9 +4,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -15,10 +17,16 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
+import ur.mi.liebestagebuch.DetailAndEditActivity.DetailActivity;
+import ur.mi.liebestagebuch.DetailAndEditActivity.DetailActivityConfig;
+import ur.mi.liebestagebuch.Encryption.CryptoListener;
+import ur.mi.liebestagebuch.Encryption.StringTransformHelper;
 import ur.mi.liebestagebuch.R;
 import ur.mi.liebestagebuch.Settings.SettingsActivity;
+import ur.mi.liebestagebuch.database.DBHelper;
+import ur.mi.liebestagebuch.database.DatabaseListener;
 
-public class GridActivity extends AppCompatActivity implements AdapterView.OnItemClickListener, EmotionRequestListener {
+public class GridActivity extends AppCompatActivity implements AdapterView.OnItemClickListener, EmotionRequestListener, CryptoListener, DatabaseListener {
 
     /*
      * Diese Activity zeigt für jeden Tag seit der Installation einen Tagebucheintrag im Grid an,
@@ -45,12 +53,20 @@ public class GridActivity extends AppCompatActivity implements AdapterView.OnIte
     private EntryGridAdapter gridAdapter;
     private ArrayList<Entry> entries;
 
+    private DBHelper dbHelper;
+    private Date lastEditedEntryDate;
+    private String lastEditedBoxListString;
+    private byte[] lastEditedIV;
+    private byte[] lastEditedSalt;
+    private int lastEditedEntryEmotion;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.grid_activity);
 
         initGrid();
+        dbHelper = new DBHelper(this, this);
     }
 
     // Das Grid-View wird in einer Java-Variable gespeichert, die ArrayList aufgesetzt, der
@@ -123,14 +139,17 @@ public class GridActivity extends AppCompatActivity implements AdapterView.OnIte
         gridAdapter.notifyDataSetChanged();
     }
 
+    // Wird ein Element des Grids geklickt wird das Datum des entsprechenden Eintrags gesucht und
+    // dieses der DetailActivity als Extra übergeben, die forResult gestartet wird.
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Entry clickedEntry = entries.get(position);
         Date clickedEntryDate = clickedEntry.getDate();
         Emotion clickedEntryEmotion = clickedEntry.getEmotion();
 
-        //Auslesen der Informationen über den mit dem Datum korrespondierenden Datenbankeintrag.
-        //Aufruf der Detailansicht und Übergabe der (verschlüsselten) Informationen.
+        Intent intent = new Intent (GridActivity.this, DetailActivity.class);
+        intent.putExtra(DetailActivityConfig.ENTRY_DATE_KEY, clickedEntryDate);
+        startActivityForResult(intent, DetailActivityConfig.START_DETAIL_ACTIVITY_REQUEST_CODE);
     }
 
     public void requestAllEmotions(){
@@ -163,11 +182,115 @@ public class GridActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
 
-    public boolean onOptionsItemSelected(MenuItem item){
-        if(item.getItemId() == R.id.settings_button){
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.settings_button) {
             Intent openSettingsIntent = new Intent(GridActivity.this, SettingsActivity.class);
             startActivity(openSettingsIntent);
         }
         return true;
+    }
+    /*
+     * Meldet sich die DetailActivty mit einem Ergebnis zurück und ist der resultCode OK, dann
+     * werden die übergebenen Informationen in lokalen Variablen zwischen gespeichert und nach und
+     * nach in die Datenbank rückgespeichert.
+     */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == DetailActivityConfig.START_DETAIL_ACTIVITY_REQUEST_CODE){
+            if(resultCode == RESULT_OK){
+                Bundle extras = data.getExtras();
+                Date entryDate = (Date) extras.get(DetailActivityConfig.ENTRY_DATE_KEY);
+                String boxListString = extras.getString(DetailActivityConfig.BOX_LIST_KEY);
+                Emotion entryEmotion = (Emotion) extras.get(DetailActivityConfig.EMOTION_KEY);
+                int emotionInt = getEmotionInt(entryEmotion);
+
+                // Die Informationen des EntryDetails müssen zwischengespeichert werden, während
+                // asynchron Datenbank- und Verschlüsselungsoperationen durchgeführt werden.
+                lastEditedEntryDate = entryDate;
+                lastEditedBoxListString = boxListString;
+                lastEditedEntryEmotion = emotionInt;
+                dbHelper.newEntry(entryDate, emotionInt, "", null, null);
+            }
+        }
+    }
+
+    private int getEmotionInt(Emotion entryEmotion) {
+        int emotionInt = 0;
+        switch (entryEmotion){
+            case VERY_GOOD:
+                emotionInt = 0;
+                break;
+            case GOOD:
+                emotionInt = 1;
+                break;
+            case NORMAL:
+                emotionInt = 2;
+                break;
+            case BAD:
+                emotionInt = 3;
+                break;
+            case VERY_BAD:
+                emotionInt = 4;
+                break;
+        }
+        return emotionInt;
+    }
+
+    @Override
+    public void onEncryptionFinished(String result, byte[] iv, byte[] salt) {
+        lastEditedIV = iv;
+        lastEditedSalt = salt;
+        dbHelper.updateEntryContent(lastEditedEntryDate, result);
+    }
+
+    @Override
+    public void onDecryptionFinished(String result) {
+        return;
+    }
+
+    @Override
+    public void onEncryptionFailed() {
+        Toast.makeText(this, "Encryption failed, if this keeps happening, change password", Toast.LENGTH_SHORT);
+    }
+
+    @Override
+    public void onDecryptionFailed() {
+        return;
+    }
+
+    /*
+     * Die Informationen aus der DetailActivity werden eine nach der anderen in die Datenbank
+     * gespeichert.
+     */
+    @Override
+    public void updateFinished(int updateCode) {
+        switch (updateCode){
+            case DetailActivityConfig.NEW_ENTRY_UPDATE_CODE:
+                StringTransformHelper.startEncryption(lastEditedBoxListString, this);
+                lastEditedBoxListString = "";
+                break;
+            case DetailActivityConfig.CONTENT_UPDATE_CODE:
+                dbHelper.updateEntryIV(lastEditedEntryDate, lastEditedIV);
+                break;
+            case DetailActivityConfig.IV_UPDATE_CODE:
+                lastEditedIV = null;
+                dbHelper.updateEntrySalt(lastEditedEntryDate, lastEditedSalt);
+                break;
+            case DetailActivityConfig.SALT_UPDATE_CODE:
+                lastEditedSalt = null;
+                dbHelper.updateEntryEmotion(lastEditedEntryDate, lastEditedEntryEmotion);
+                break;
+            case DetailActivityConfig.EMOTION_UPDATE_CODE:
+                Log.d("Detail", "Entry update complete");
+                lastEditedEntryEmotion = 0;
+                break;
+        }
+    }
+
+    @Override
+    public void entryFound(ur.mi.liebestagebuch.database.data.Entry foundEntry) {
+        return;
+
     }
 }

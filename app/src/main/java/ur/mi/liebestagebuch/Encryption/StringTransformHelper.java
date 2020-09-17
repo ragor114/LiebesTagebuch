@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Base64;
+import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -51,7 +52,7 @@ public class StringTransformHelper {
     * @return Stringumwandlung der Box in der Form |<getType() | getString()
      */
     private static String getStringFromBox(Box box){
-        String boxString = "|<";
+        String boxString = " < ";
 
         Type boxType = box.getType();
         //Log.d("TestConfigTest", "" + boxType);
@@ -77,11 +78,12 @@ public class StringTransformHelper {
     * @return Liste von Boxen auf Basis des Strings
      */
     public static ArrayList<Box> getBoxListFromString(String boxListString){
+        Log.d("Detail", "Getting BoxList");
         //Log.d("TestConfigTest", "getBoxListFromString started");
         ArrayList<Box> boxList = new ArrayList<>();
 
-        String[] singleBoxStrings = boxListString.split("\\Q|\\E<");
-        //Log.d("TestConfigTest", "splitted" + singleBoxStrings[1]);
+        String[] singleBoxStrings = boxListString.split("\\Q < \\E");
+        Log.d("Detail", "splitted 0: " + singleBoxStrings[0]);
         for(String current : singleBoxStrings){
             if(current.length() > 0) {
                 Box currentNewBox = getSingleBoxFromString(current);
@@ -89,6 +91,8 @@ public class StringTransformHelper {
             }
             else continue;
         }
+
+        Log.d("Detail", "Got Boxlist");
 
         return boxList;
     }
@@ -102,13 +106,17 @@ public class StringTransformHelper {
      */
     private static Box getSingleBoxFromString(String current) {
         //Log.d("StringTransformHelper", current);
-        String[] parts = current.split("\\Q|\\E");
+        String[] parts = current.split(" \\Q|\\E ");
+        Log.d("Detail", "parts 0: " + parts[0]);
+        Log.d("Detail", "parts 1: " + parts[1]);
+        //Log.d("Detail", "parts 2: " + parts[2]);
         if(parts[0].contains("Picture")) {
             PictureBox newPictureBox = new PictureBox(parts[1]);
             return newPictureBox;
         }
 
         TextBox newTextBox = new TextBox(parts[1]);
+
 
         return newTextBox;
     }
@@ -141,10 +149,15 @@ public class StringTransformHelper {
      * gespeichert werden kann.
      */
     public static String convertBitmapToBase64String (Bitmap bitmap){
+        Log.d("Detail", "Converting startetd");
+        Bitmap bitmapCopy = bitmap.copy(Bitmap.Config.RGB_565, false);
+        Log.d("Detail", "Copy made");
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+        bitmapCopy.compress(Bitmap.CompressFormat.PNG, 100, baos);
+        Log.d("Detail", "Compressed");
         byte[] bitmapAsBytes = baos.toByteArray();
         String base64BitmapString = Base64.encodeToString(bitmapAsBytes, Base64.DEFAULT);
+        Log.d("Detail", "Encoded to String");
 
         //Aufräumen um Speicher zu sparen:
         try {
@@ -152,8 +165,8 @@ public class StringTransformHelper {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        bitmap.recycle();
-
+        //bitmap.recycle();
+        //bitmapCopy.recycle();
         return base64BitmapString;
     }
 

@@ -1,0 +1,32 @@
+package ur.mi.liebestagebuch.DetailAndEditActivity;
+
+public class DetailActivityConfig {
+
+    /*
+     * Konstanten, die für die Detail- und EditActivities gebraucht werden.
+     */
+
+    public static final int START_DETAIL_ACTIVITY_REQUEST_CODE = 210;
+    public static final String ENTRY_DATE_KEY = "Entry Date";
+    public static final String EMOTION_KEY = "EmotionKey";
+    public static final String BOX_LIST_KEY = "BoxListString";
+
+    public static final int CONTENT_UPDATE_CODE = 0;
+    public static final int SALT_UPDATE_CODE = 1;
+    public static final int IV_UPDATE_CODE = 2;
+    public static final int EMOTION_UPDATE_CODE = 3;
+    public static final int NEW_ENTRY_UPDATE_CODE = 4;
+
+    public static final int TYPE_CHOOSER_REQUEST_CODE = 998;
+    public static final int NEW_TEXT_BOX_REQUEST_CODE = 999;
+    public static final int NEW_PICTURE_BOX_REQUEST_CODE = 1000;
+    public static final int EDIT_BOX_REQUEST_CODE = 1001;
+    public static final String POSITION_IN_LIST_KEY = "Position in List";
+    public static final String EXISTING_CONTENT_KEY = "Existing content";
+    public static final String TEXTBOX_CONTENT_KEY = "Textbox Content";
+    public static final String PICTUREBOX_CONTENT_KEY = "Picturebox Content";
+
+    public static final int DECRYPTION_FAILED_CODE = 1;
+    public static final int ENCRYPTION_FAILED_CODE = 2;
+
+}
