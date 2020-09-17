@@ -37,6 +37,7 @@ public class LoginActivity extends AppCompatActivity {
      *
      * Entwickelt von Moritz Schnell
      *
+     * TODO: Login-Funktionalität (also alles)
      *
      * Quellen:
      * https://www.youtube.com/watch?v=e49DvaJ1IX4&t=931s
@@ -44,7 +45,10 @@ public class LoginActivity extends AppCompatActivity {
      */
 
     SharedPreferences prefs = null;
-    EditText pwEingabe;
+    TextView loginFingerprintText;
+    Button loginButton;
+    Button okButton;
+    EditText editTextPassword ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,24 +57,36 @@ public class LoginActivity extends AppCompatActivity {
 
         prefs = getSharedPreferences("ur.mi.liebestagebuch", MODE_PRIVATE);
 
+
+        loginFingerprintText = (TextView) findViewById(R.id.loginFingerprintText);
+        okButton = findViewById(R.id.ok_button);
+        editTextPassword = findViewById(R.id.edit_password);
+
+        okButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("login", "clicked not firsttime");
+            }
+        });
+
+
+        if (prefs.getBoolean("firstrun", true)){
+            okButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    storePassword();
+                }
+
+
+            });
+            prefs.edit().putBoolean("firstrun", false).commit();
+        }
+
     }
 
     protected void onResume(){
         super.onResume();
 
-        TextView loginFingerprintText = (TextView) findViewById(R.id.loginFingerprintText);
-        Button loginButton;
-
-
-       /* if (prefs.getBoolean("firstrun", true)){
-            SecurePasswordSaver.storePasswordSecure(pwEingabe.getText().toString(),this);
-            Calendar calendar = Calendar.getInstance();
-            Date installationDate = new Date();
-            installationDate = calendar.getTime();
-            prefs.edit().putBoolean("firstrun", false).commit();
-        }
-        */
-        
         //Nutzen eines BiometricManagers um zu schauen ob der nutzer zugriff auf fingerabdrücke hat
         final BiometricManager biometricManager = BiometricManager.from(this);
         switch(biometricManager.canAuthenticate()){
@@ -83,23 +99,21 @@ public class LoginActivity extends AppCompatActivity {
             case BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE:
 
                 loginFingerprintText.setText(R.string.login_password_text);
-                inputPassword();
 
                 break;
 
             case BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE:
 
                 loginFingerprintText.setText(R.string.login_fingerprint_hw_unavailable);
-                inputPassword();
 
                 break;
 
             case BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED:
 
                 loginFingerprintText.setText(R.string.login_fingerprint_no_fingerprint);
-                inputPassword();
 
                 break;
+
         }
 
 
@@ -146,8 +160,12 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-    private void inputPassword() {
-
+    private void storePassword() {
+        if (!editTextPassword.getText().toString().equals("")) {
+            SecurePasswordSaver.storePasswordSecure(editTextPassword.getText().toString(), this);
+            Log.d("login", "clicked first time");
+        }
     }
-
+    
 }
+
