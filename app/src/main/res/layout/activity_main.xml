@@ -41,6 +41,37 @@
             android:textAlignment="center"
             android:textColor="@color/colorPrimary" />
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_margin="50dp"
+            android:weightSum="10">
+
+            <EditText
+                android:layout_weight="8"
+                android:id="@+id/edit_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Passwort"
+                android:textColorHint="@color/colorPrimary"
+                android:inputType="textPassword"
+                />
+
+            <Button
+                android:id="@+id/ok_button"
+                android:layout_weight="2"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="OK"
+                android:background="@color/colorAccent"
+                android:layout_margin="1dp"
+                />
+
+        </LinearLayout>
+
+
+
     </LinearLayout>
 
 
