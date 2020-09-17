@@ -37,7 +37,6 @@ public class LoginActivity extends AppCompatActivity {
      *
      * Entwickelt von Moritz Schnell
      *
-     * TODO: Login-Funktionalität (also alles)
      *
      * Quellen:
      * https://www.youtube.com/watch?v=e49DvaJ1IX4&t=931s
