@@ -49,12 +49,16 @@ public class LoginActivity extends AppCompatActivity {
     private Button loginButton;
     private Button okButton;
     private EditText editTextPassword ;
+    private boolean isFirstRun;
+
     public static String correctPassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        isFirstRun = false;
 
         prefs = getSharedPreferences("ur.mi.liebestagebuch", MODE_PRIVATE);
 
@@ -80,6 +84,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
         if (prefs.getBoolean("firstrun", true)){
+            isFirstRun = true;
             Log.d("login", "Is firstrun");
             okButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -123,7 +128,6 @@ public class LoginActivity extends AppCompatActivity {
 
         }
 
-
         Executor executor = ContextCompat.getMainExecutor(this);
 
         final BiometricPrompt biometricPrompt = new BiometricPrompt(LoginActivity.this, executor, new BiometricPrompt.AuthenticationCallback() {
@@ -149,15 +153,21 @@ public class LoginActivity extends AppCompatActivity {
                 .setDescription("Use your fingerprint to login to your Diary")
                 .setNegativeButtonText("Cancel")
                 .build();
+
         loginButton = (Button) findViewById(R.id.login_button);
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                biometricPrompt.authenticate(promptInfo);
-                //Intent switchActivityIntent = new Intent(LoginActivity.this, GridActivity.class);
-                //startActivity(switchActivityIntent);
+                if(!isFirstRun) {
+                    biometricPrompt.authenticate(promptInfo);
+                    //Intent switchActivityIntent = new Intent(LoginActivity.this, GridActivity.class);
+                    //startActivity(switchActivityIntent);
+                } else{
+                    loginFingerprintText.setText(R.string.set_password_first);
+                }
             }
         });
+
     }
 
     private void loginSuccess() {

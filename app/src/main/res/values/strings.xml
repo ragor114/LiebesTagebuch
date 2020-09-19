@@ -22,4 +22,5 @@
     <string name="take_picture_button_text">Take Picture</string>
     <string name="choose_picture_button_text">Choose Picture</string>
     <string name="wrong_password">Wrong Password!</string>
+    <string name="set_password_first">Please set the password before using fingerprints</string>
 </resources>
