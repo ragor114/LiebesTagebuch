@@ -9,10 +9,14 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="10dp"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:background="@color/backgroundColor">
 
-
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_margin="10dp">
 
             <TextView
                 android:layout_width="match_parent"
@@ -21,14 +25,16 @@
                 android:gravity="center"
                 android:text="@string/settings_title"
                 android:textSize="20sp"
-                android:textStyle="bold"/>
+                android:textStyle="bold"
+                android:textColor="@color/colorPrimary"/>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
                 android:background="@color/colorPrimary"
                 android:layout_marginVertical="5dp"
-                android:layout_marginHorizontal="20dp"/>
+                android:layout_marginHorizontal="20dp"
+                android:textColor="@color/colorPrimary"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -42,7 +48,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="7"
                 android:text="@string/settings_encrypt"
-                android:textSize="20sp"/>
+                android:textSize="20sp"
+                android:textColor="@color/colorPrimary"/>
 
             <Switch
                 android:id="@+id/switch_encrypt"
@@ -51,7 +58,8 @@
                 android:layout_weight="20"
                 android:layout_marginHorizontal="10dp"
                 android:scaleX="1.25"
-                android:scaleY="1.25"/>
+                android:scaleY="1.25"
+                android:trackTint="@color/colorPrimary" />
 
         </LinearLayout>
 
@@ -67,7 +75,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="7"
                 android:text="@string/settings_reminder"
-                android:textSize="20sp"/>
+                android:textSize="20sp"
+                android:textColor="@color/colorPrimary"/>
 
             <Switch
                 android:id="@+id/switch_remind"
@@ -76,7 +85,8 @@
                 android:layout_weight="20"
                 android:layout_marginHorizontal="10dp"
                 android:scaleX="1.25"
-                android:scaleY="1.25"/>
+                android:scaleY="1.25"
+                android:trackTint="@color/colorPrimary"/>
 
         </LinearLayout>
 
@@ -86,8 +96,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:timePickerMode="spinner"
-            android:visibility="gone"
-            />
+            android:visibility="visible"/>
 
     <LinearLayout
         android:id="@+id/change_password"
@@ -103,7 +112,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="7"
             android:text="@string/settings_password"
-            android:textSize="20sp"/>
+            android:textSize="20sp"
+            android:textColor="@color/colorPrimary"/>
 
         <ImageButton
             android:id="@+id/password_arrow"
@@ -114,6 +124,7 @@
             android:src="@drawable/ic_baseline_arrow_forward_ios_24"/>
 
     </LinearLayout>
+        </LinearLayout>
 
     </LinearLayout>
 
