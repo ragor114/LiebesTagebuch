@@ -16,6 +16,7 @@ import ur.mi.liebestagebuch.Boxes.Box;
 import ur.mi.liebestagebuch.Boxes.PictureBox;
 import ur.mi.liebestagebuch.Boxes.TextBox;
 import ur.mi.liebestagebuch.Boxes.Type;
+import ur.mi.liebestagebuch.LoginActivity;
 
 public class StringTransformHelper {
     /*
@@ -128,7 +129,7 @@ public class StringTransformHelper {
      */
     public static void startEncryption (String toEncrypt, CryptoListener listener){
         Handler mainThreadHandler = new Handler(Looper.getMainLooper());
-        AsyncEncryptor encryptor = new AsyncEncryptor(mainThreadHandler, listener, toEncrypt, TestConfig.TEST_ENCRYPTED_PASSWORD);
+        AsyncEncryptor encryptor = new AsyncEncryptor(mainThreadHandler, listener, toEncrypt, LoginActivity.correctPassword);
         Executors.newSingleThreadExecutor().submit(encryptor);
     }
 
@@ -139,7 +140,7 @@ public class StringTransformHelper {
      */
     public static void startDecryption (String toDecrypt, CryptoListener listener, byte[] iv, byte[] salt){
         Handler mainThreadHandler = new Handler(Looper.getMainLooper());
-        AsyncDecryptor decryptor = new AsyncDecryptor(mainThreadHandler, listener, toDecrypt, TestConfig.TEST_ENCRYPTED_PASSWORD, iv, salt);
+        AsyncDecryptor decryptor = new AsyncDecryptor(mainThreadHandler, listener, toDecrypt, LoginActivity.correctPassword, iv, salt);
         Executors.newSingleThreadExecutor().submit(decryptor);
     }
 

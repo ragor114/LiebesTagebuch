@@ -44,16 +44,21 @@ public class LoginActivity extends AppCompatActivity {
      * https://developer.android.com/reference/android/Manifest.permission
      */
 
-    SharedPreferences prefs = null;
-    TextView loginFingerprintText;
-    Button loginButton;
-    Button okButton;
-    EditText editTextPassword ;
+    private SharedPreferences prefs = null;
+    private TextView loginFingerprintText;
+    private Button loginButton;
+    private Button okButton;
+    private EditText editTextPassword ;
+    private boolean isFirstRun;
+
+    public static String correctPassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        isFirstRun = false;
 
         prefs = getSharedPreferences("ur.mi.liebestagebuch", MODE_PRIVATE);
 
@@ -68,11 +73,19 @@ public class LoginActivity extends AppCompatActivity {
                 Log.d("login", "clicked not firsttime");
                 String storedPassword = SecurePasswordSaver.getStoredPassword(getApplicationContext());
                 Log.d("login", "Stored password: " + storedPassword);
+                if(storedPassword.equals(editTextPassword.getText().toString())){
+                    Log.d("login", "Password correct");
+                    loginSuccess();
+                } else{
+                    loginFingerprintText.setText(R.string.wrong_password);
+                }
             }
         });
 
 
         if (prefs.getBoolean("firstrun", true)){
+            isFirstRun = true;
+            Log.d("login", "Is firstrun");
             okButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -115,7 +128,6 @@ public class LoginActivity extends AppCompatActivity {
 
         }
 
-
         Executor executor = ContextCompat.getMainExecutor(this);
 
         final BiometricPrompt biometricPrompt = new BiometricPrompt(LoginActivity.this, executor, new BiometricPrompt.AuthenticationCallback() {
@@ -127,9 +139,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onAuthenticationSucceeded(@NonNull BiometricPrompt.AuthenticationResult result) {
                 super.onAuthenticationSucceeded(result);
-                Toast.makeText(getApplicationContext(), "Login Sucess!", Toast.LENGTH_SHORT).show();
-                Intent switchActivityIntent = new Intent(LoginActivity.this, GridActivity.class);
-                startActivity(switchActivityIntent);
+                loginSuccess();
             }
 
             @Override
@@ -144,19 +154,27 @@ public class LoginActivity extends AppCompatActivity {
                 .setNegativeButtonText("Cancel")
                 .build();
 
-
         loginButton = (Button) findViewById(R.id.login_button);
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                biometricPrompt.authenticate(promptInfo);
-                //Intent switchActivityIntent = new Intent(LoginActivity.this, GridActivity.class);
-                //startActivity(switchActivityIntent);
+                if(!isFirstRun) {
+                    biometricPrompt.authenticate(promptInfo);
+                    //Intent switchActivityIntent = new Intent(LoginActivity.this, GridActivity.class);
+                    //startActivity(switchActivityIntent);
+                } else{
+                    loginFingerprintText.setText(R.string.set_password_first);
+                }
             }
         });
 
+    }
 
-
+    private void loginSuccess() {
+        Toast.makeText(getApplicationContext(), "Login Success!", Toast.LENGTH_SHORT).show();
+        correctPassword = SecurePasswordSaver.getStoredPassword(this);
+        Intent switchActivityIntent = new Intent(LoginActivity.this, GridActivity.class);
+        startActivity(switchActivityIntent);
     }
 
     private void storePassword() {
@@ -164,8 +182,7 @@ public class LoginActivity extends AppCompatActivity {
             SecurePasswordSaver.storePasswordSecure(editTextPassword.getText().toString(), this);
             editTextPassword.setText("");
             Log.d("login", "clicked first time");
-            String storedPassword = SecurePasswordSaver.getStoredPassword(this);
-            Log.d("login", "Strored password: " + storedPassword);
+            loginSuccess();
         }
     }
     

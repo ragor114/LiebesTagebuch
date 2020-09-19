@@ -6,14 +6,17 @@ import android.content.SharedPreferences;
 import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyProperties;
 import android.util.Base64;
+import android.util.Log;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
+import java.security.UnrecoverableEntryException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 
@@ -26,6 +29,7 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 
 public class SecurePasswordSaver {
+
 
     /*
      * Diese Klasse stellt statische Methoden zur Verfügung um das Passwort sicher zu speichern
@@ -46,6 +50,7 @@ public class SecurePasswordSaver {
 
     private static final String SP_PASSWORD_KEY = "password";
     private static final String SP_IV_KEY = "encryptionIv";
+    private static final String KEY_ALIAS = "mypaswordkey1";
 
     /*
      * Speichert das eingegebene Passwort im Android-Keystore (also sicher).
@@ -71,7 +76,8 @@ public class SecurePasswordSaver {
 
             byte[] encryptionIv = cipher.getIV();
             saveStringInSharedPreference(context, SP_IV_KEY, Base64.encodeToString(encryptionIv, Base64.DEFAULT));
-            byte[] passwordBytes = Base64.decode(passwordClearText, Base64.DEFAULT);
+            Log.d("login", "passwordClearText is: " + passwordClearText);
+            byte[] passwordBytes = passwordClearText.getBytes(EncryptionConfig.CHARSET_NAME);
             byte[] encryptedPasswordBytes = cipher.doFinal(passwordBytes);
             encryptedPassword = Base64.encodeToString(encryptedPasswordBytes, Base64.DEFAULT);
         } catch (NoSuchAlgorithmException e) {
@@ -83,6 +89,8 @@ public class SecurePasswordSaver {
         } catch (BadPaddingException e) {
             e.printStackTrace();
         } catch (IllegalBlockSizeException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
         return encryptedPassword;
@@ -108,11 +116,12 @@ public class SecurePasswordSaver {
         try {
             KeyStore keyStore = KeyStore.getInstance("AndroidKeyStore");
             keyStore.load(null);
-            SecretKey secretKey = (SecretKey) keyStore.getKey("Key", null);
+            KeyStore.SecretKeyEntry secretKeyEntry = (KeyStore.SecretKeyEntry) keyStore.getEntry(KEY_ALIAS, null);
+            SecretKey secretKey = secretKeyEntry.getSecretKey();
             Cipher cipher = Cipher.getInstance(KeyProperties.KEY_ALGORITHM_AES + "/" + KeyProperties.BLOCK_MODE_CBC + "/" + KeyProperties.ENCRYPTION_PADDING_PKCS7);
             cipher.init(Cipher.DECRYPT_MODE, secretKey, new IvParameterSpec(encryptionIv));
             byte[] passwordBytes = cipher.doFinal(encryptedPasswordBytes);
-            password = Base64.encodeToString(passwordBytes, Base64.DEFAULT);
+            password = new String(passwordBytes, EncryptionConfig.CHARSET_NAME);
         } catch (KeyStoreException e) {
             e.printStackTrace();
         } catch (CertificateException e) {
@@ -133,6 +142,9 @@ public class SecurePasswordSaver {
             e.printStackTrace();
         } catch (BadPaddingException e) {
             e.printStackTrace();
+        } catch (UnrecoverableEntryException e) {
+            Log.d("Login", "Unrecoverable Entry");
+            e.printStackTrace();
         }
         return password;
     }
@@ -146,12 +158,13 @@ public class SecurePasswordSaver {
         SecretKey secretKey = null;
         try {
             KeyGenerator keyGenerator = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, "AndroidKeyStore");
-            keyGenerator.init(new KeyGenParameterSpec.Builder("key", KeyProperties.PURPOSE_DECRYPT | KeyProperties.PURPOSE_ENCRYPT)
+            keyGenerator.init(new KeyGenParameterSpec.Builder(KEY_ALIAS, KeyProperties.PURPOSE_DECRYPT | KeyProperties.PURPOSE_ENCRYPT)
                     .setBlockModes(KeyProperties.BLOCK_MODE_CBC)
                     .setUserAuthenticationRequired(false)
                     .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_PKCS7)
                     .build());
             secretKey = keyGenerator.generateKey();
+            Log.d("login", "Key: " + secretKey.toString());
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         } catch (NoSuchProviderException e) {
