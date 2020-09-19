@@ -21,4 +21,5 @@
     <string name="hint_new_textbox">Was willst du erzählen?</string>
     <string name="take_picture_button_text">Take Picture</string>
     <string name="choose_picture_button_text">Choose Picture</string>
+    <string name="wrong_password">Wrong Password!</string>
 </resources>
