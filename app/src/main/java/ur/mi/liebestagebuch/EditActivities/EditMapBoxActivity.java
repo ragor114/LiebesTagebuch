@@ -2,11 +2,16 @@ package ur.mi.liebestagebuch.EditActivities;
 
 import android.Manifest;
 import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -17,6 +22,10 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import ur.mi.liebestagebuch.DetailAndEditActivity.DetailActivityConfig;
 import ur.mi.liebestagebuch.R;
@@ -30,6 +39,8 @@ public class EditMapBoxActivity extends AppCompatActivity implements OnMapReadyC
     private GoogleMap googleMap;
 
     private ImageButton finishButton;
+    private EditText searchBar;
+    private ImageButton searchButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -53,6 +64,40 @@ public class EditMapBoxActivity extends AppCompatActivity implements OnMapReadyC
                 finish();
             }
         });
+
+        searchBar = findViewById(R.id.map_box_search_bar);
+        searchButton = findViewById(R.id.map_box_search_button);
+        searchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                searchForLocation();
+            }
+        });
+    }
+
+    private void searchForLocation() {
+        String searchString = searchBar.getText().toString();
+        searchBar.setText("");
+        Geocoder geocoder = new Geocoder(this);
+        List<Address> foundAdresses = new ArrayList<>();
+        try {
+            foundAdresses = geocoder.getFromLocationName(searchString, 1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if(foundAdresses.size() > 0){
+            Address foundAdress = foundAdresses.get(0);
+            double lat = foundAdress.getLatitude();
+            double lng = foundAdress.getLongitude();
+            coordinates = new LatLng(lat, lng);
+            googleMap.clear();
+            markerOptions.position(coordinates);
+            googleMap.addMarker(markerOptions);
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(coordinates, zoom));
+            editMap.onResume();
+        } else{
+            Toast.makeText(this, "No Adress found", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
