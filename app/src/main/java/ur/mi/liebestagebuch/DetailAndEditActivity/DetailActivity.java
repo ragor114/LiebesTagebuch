@@ -2,7 +2,6 @@ package ur.mi.liebestagebuch.DetailAndEditActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,13 +17,15 @@ import androidx.core.content.res.ResourcesCompat;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import java.util.Arrays;
 import java.util.Date;
 
 import ur.mi.liebestagebuch.Boxes.Box;
 import ur.mi.liebestagebuch.Boxes.PictureBox;
 import ur.mi.liebestagebuch.Boxes.TextBox;
 import ur.mi.liebestagebuch.Boxes.Type;
+import ur.mi.liebestagebuch.EditActivities.EditPictureBoxActivity;
+import ur.mi.liebestagebuch.EditActivities.EditTextBoxActivity;
+import ur.mi.liebestagebuch.EditActivities.TypeChooserActivity;
 import ur.mi.liebestagebuch.Encryption.CryptoListener;
 import ur.mi.liebestagebuch.Encryption.StringTransformHelper;
 import ur.mi.liebestagebuch.GridView.Emotion;

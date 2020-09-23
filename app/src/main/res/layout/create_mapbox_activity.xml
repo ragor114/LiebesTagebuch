@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:weightSum="10"
+        android:padding="15dp"
+        android:orientation="vertical">
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:hint="Suche"/>
+
+        <com.google.android.gms.maps.MapView
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:map="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/map_view_edit_box"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="8"/>
+            <!--android:apiKey="AIzaSyAVI-lcunb1N55KZlD7M73FTwNJNpFWX8"/> -->
+            <!--android:apiKey="AIzaSyBxRAhXoLfQnZOh_zomQUNQ7DCvvcPdMu0"/> -->
+
+        <ImageButton
+            android:id="@+id/finish_map_edit"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@color/button_color"
+            android:src="@drawable/ic_check_black_24dp"/>
+
+    </LinearLayout>
+
+</RelativeLayout>

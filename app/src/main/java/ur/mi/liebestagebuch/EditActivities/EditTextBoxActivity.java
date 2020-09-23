@@ -1,4 +1,4 @@
-package ur.mi.liebestagebuch.DetailAndEditActivity;
+package ur.mi.liebestagebuch.EditActivities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,6 +8,7 @@ import android.widget.ImageButton;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import ur.mi.liebestagebuch.DetailAndEditActivity.DetailActivityConfig;
 import ur.mi.liebestagebuch.R;
 
 public class EditTextBoxActivity extends AppCompatActivity {
