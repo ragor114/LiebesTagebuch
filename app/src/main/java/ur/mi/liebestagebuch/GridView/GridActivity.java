@@ -291,6 +291,5 @@ public class GridActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     public void entryFound(ur.mi.liebestagebuch.database.data.Entry foundEntry) {
         return;
-
     }
 }
