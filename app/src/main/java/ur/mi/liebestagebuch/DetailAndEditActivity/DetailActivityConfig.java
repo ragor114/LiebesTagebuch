@@ -26,6 +26,7 @@ public class DetailActivityConfig {
     public static final String EXISTING_CONTENT_KEY = "Existing content";
     public static final String TEXTBOX_CONTENT_KEY = "Textbox Content";
     public static final String PICTUREBOX_CONTENT_KEY = "Picturebox Content";
+    public static final String MAP_BOX_CONTENT_KEY = "Mapbox Content";
 
     public static final int PERMISSION_REQUEST_CODE = 2000;
 
