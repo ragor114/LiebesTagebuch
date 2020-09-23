@@ -25,4 +25,5 @@
     <string name="set_password_first">Please set the password before using fingerprints</string>
     <string name="type_chooser_map">Add Map</string>
     <string name="title_activity_maps">Map</string>
+    <string name="edit_map">Edit Map/Location</string>
 </resources>

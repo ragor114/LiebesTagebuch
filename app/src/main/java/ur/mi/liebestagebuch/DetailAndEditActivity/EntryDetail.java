@@ -84,8 +84,9 @@ public class EntryDetail implements CryptoListener {
         return boxList.get(id);
     }
 
-    public void addBoxToBoxList(Box box){
+    public int addBoxToBoxList(Box box){
         boxList.add(box);
+        return boxList.indexOf(box);
     }
 
     public Emotion getEmotion(){

@@ -15,11 +15,18 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.Date;
 
 import ur.mi.liebestagebuch.Boxes.Box;
+import ur.mi.liebestagebuch.Boxes.MapBox;
 import ur.mi.liebestagebuch.Boxes.PictureBox;
 import ur.mi.liebestagebuch.Boxes.TextBox;
 import ur.mi.liebestagebuch.Boxes.Type;
@@ -34,7 +41,7 @@ import ur.mi.liebestagebuch.database.DBHelper;
 import ur.mi.liebestagebuch.database.DatabaseListener;
 import ur.mi.liebestagebuch.database.data.Entry;
 
-public class DetailActivity extends AppCompatActivity implements CryptoListener, DatabaseListener, BoxListEncryptionListener {
+public class DetailActivity extends AppCompatActivity implements CryptoListener, DatabaseListener, BoxListEncryptionListener{
 
     /*
      * In der DetailActivity werden das Datum, die ausgewählte Emotion und der Inhalt in Form von
@@ -320,6 +327,12 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
             Log.d("Detail", "Creating new PictureBox");
             PictureBox createdPictureBox = new PictureBox(extras.getString(DetailActivityConfig.PICTUREBOX_CONTENT_KEY));
             entryDetail.addBoxToBoxList(createdPictureBox);
+        } else if(extras.get(DetailActivityConfig.MAP_BOX_CONTENT_KEY) != null){
+            Log.d("Detail", "Creating new MapBox");
+            LatLng coordinates = (LatLng) extras.get(DetailActivityConfig.MAP_BOX_CONTENT_KEY);
+            Log.d("MapView", "Got LatLng with: " + coordinates.toString());
+            MapBox createdMapBox = new MapBox(coordinates);
+            entryDetail.addBoxToBoxList(createdMapBox);
         }
     }
 
@@ -427,7 +440,7 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
         setBoxListLongClickListener();
     }
 
-    private void setBoxListLongClickListener() {
+    private void setBoxListShortClickListener() {
         boxListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -446,12 +459,19 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
                         startPictureboxEditingIntent.putExtra(DetailActivityConfig.EXISTING_CONTENT_KEY, clickedBox.getString());
                         startActivityForResult(startPictureboxEditingIntent, DetailActivityConfig.EDIT_BOX_REQUEST_CODE);
                         break;
+                    case MAP:
+                        MapBox mapBox = (MapBox) clickedBox;
+                        Intent startMapBoxDetailIntent = new Intent(DetailActivity.this, MapBoxDetailActivity.class);
+                        startMapBoxDetailIntent.putExtra(DetailActivityConfig.POSITION_IN_LIST_KEY, position);
+                        startMapBoxDetailIntent.putExtra(DetailActivityConfig.EXISTING_CONTENT_KEY, mapBox.coordinates);
+                        startActivityForResult(startMapBoxDetailIntent, DetailActivityConfig.EDIT_BOX_REQUEST_CODE);
+                        break;
                 }
             }
         });
     }
 
-    private void setBoxListShortClickListener() {
+    private void setBoxListLongClickListener() {
         boxListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {

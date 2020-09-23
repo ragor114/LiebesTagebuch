@@ -1,5 +1,5 @@
 package ur.mi.liebestagebuch.Boxes;
 
 public enum Type {
-    TEXT, PICTURE;
+    TEXT, PICTURE, MAP;
 }

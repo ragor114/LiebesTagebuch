@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/map_box_lat_lng"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:text="Latitude and Longitude"
+        android:textColor="#222"
+        android:textSize="18sp"/>
+
+    <TextView
+        android:id="@+id/map_box_geocoding"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Geocoding"
+        android:color="#777"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
+        android:textSize="14sp"
+        android:layout_below="@id/map_box_lat_lng"/>
+
+</RelativeLayout>

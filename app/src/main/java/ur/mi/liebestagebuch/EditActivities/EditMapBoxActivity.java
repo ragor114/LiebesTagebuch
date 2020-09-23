@@ -50,10 +50,16 @@ public class EditMapBoxActivity extends AppCompatActivity implements OnMapReadyC
         String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
         requestPermissions(permissions, DetailActivityConfig.PERMISSION_REQUEST_CODE);
 
+        setUpMapView(savedInstanceState);
+    }
+
+    private void setUpMapView(Bundle savedInstanceState) {
         editMap = findViewById(R.id.map_view_edit_box);
         editMap.onCreate(savedInstanceState);
         editMap.getMapAsync(this);
+    }
 
+    private void setUpFinishButton() {
         finishButton = findViewById(R.id.finish_map_edit);
         finishButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -64,7 +70,9 @@ public class EditMapBoxActivity extends AppCompatActivity implements OnMapReadyC
                 finish();
             }
         });
+    }
 
+    private void setUpSearchBar() {
         searchBar = findViewById(R.id.map_box_search_bar);
         searchButton = findViewById(R.id.map_box_search_button);
         searchButton.setOnClickListener(new View.OnClickListener() {
@@ -96,7 +104,7 @@ public class EditMapBoxActivity extends AppCompatActivity implements OnMapReadyC
             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(coordinates, zoom));
             editMap.onResume();
         } else{
-            Toast.makeText(this, "No Adress found", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "No Address found", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -154,6 +162,10 @@ public class EditMapBoxActivity extends AppCompatActivity implements OnMapReadyC
         zoom = 15;
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(coordinates, zoom));
         this.googleMap = googleMap;
+
+        setUpFinishButton();
+        setUpSearchBar();
+
         editMap.onResume();
     }
 
