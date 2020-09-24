@@ -310,6 +310,9 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
         if(extras.getString(DetailActivityConfig.PICTUREBOX_CONTENT_KEY) != null){
             newContent = extras.getString(DetailActivityConfig.PICTUREBOX_CONTENT_KEY);
         }
+        if(extras.getString(DetailActivityConfig.MAP_BOX_CONTENT_KEY) != null){
+            newContent = extras.getString(DetailActivityConfig.MAP_BOX_CONTENT_KEY);
+        }
         entryDetail.getBoxList().get(positionInList).setContent(newContent);
     }
 

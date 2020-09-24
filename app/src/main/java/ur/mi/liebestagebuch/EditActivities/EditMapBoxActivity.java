@@ -42,6 +42,8 @@ public class EditMapBoxActivity extends AppCompatActivity implements OnMapReadyC
     private EditText searchBar;
     private ImageButton searchButton;
 
+    private Bundle extras;
+
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -49,6 +51,9 @@ public class EditMapBoxActivity extends AppCompatActivity implements OnMapReadyC
 
         String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
         requestPermissions(permissions, DetailActivityConfig.PERMISSION_REQUEST_CODE);
+
+        Intent callingIntent = getIntent();
+        extras = callingIntent.getExtras();
 
         setUpMapView(savedInstanceState);
     }
@@ -70,6 +75,19 @@ public class EditMapBoxActivity extends AppCompatActivity implements OnMapReadyC
                 finish();
             }
         });
+        if(extras != null){
+            finishButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent();
+                    String coordinatesString = "Lat: - " + coordinates.latitude + " - Long: - " + coordinates.longitude;
+                    intent.putExtra(DetailActivityConfig.MAP_BOX_CONTENT_KEY, coordinatesString);
+                    intent.putExtra(DetailActivityConfig.POSITION_IN_LIST_KEY, extras.getInt(DetailActivityConfig.POSITION_IN_LIST_KEY));
+                    setResult(RESULT_OK, intent);
+                    finish();
+                }
+            });
+        }
     }
 
     private void setUpSearchBar() {
@@ -154,6 +172,11 @@ public class EditMapBoxActivity extends AppCompatActivity implements OnMapReadyC
     public void onMapReady(GoogleMap googleMap) {
         Log.d("MapView", "Map is showing");
         coordinates = new LatLng(49,12);
+
+        if(extras != null){
+            coordinates = (LatLng) extras.get(DetailActivityConfig.EXISTING_CONTENT_KEY);
+        }
+
         googleMap.setOnMarkerDragListener(this);
         markerOptions = new MarkerOptions().position(coordinates)
                 .title("Marker")

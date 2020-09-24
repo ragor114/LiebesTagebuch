@@ -18,12 +18,14 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import ur.mi.liebestagebuch.EditActivities.EditMapBoxActivity;
 import ur.mi.liebestagebuch.R;
 
 public class MapBoxDetailActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private MapView mapView;
     private LatLng coordinates;
+    private int positionInList;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -33,6 +35,7 @@ public class MapBoxDetailActivity extends AppCompatActivity implements OnMapRead
         Intent callingIntent = getIntent();
         Bundle extras = callingIntent.getExtras();
         this.coordinates = (LatLng) extras.get(DetailActivityConfig.EXISTING_CONTENT_KEY);
+        this.positionInList = extras.getInt(DetailActivityConfig.POSITION_IN_LIST_KEY);
 
         mapView = findViewById(R.id.map_box_detail_map);
         mapView.onCreate(savedInstanceState);
@@ -91,9 +94,19 @@ public class MapBoxDetailActivity extends AppCompatActivity implements OnMapRead
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if(item.getItemId() == R.id.start_editing_map_box){
-            //TODO: Start EditMapBoxActivity for Editing
+            Intent intent = new Intent(MapBoxDetailActivity.this, EditMapBoxActivity.class);
+            intent.putExtra(DetailActivityConfig.EXISTING_CONTENT_KEY, coordinates);
+            intent.putExtra(DetailActivityConfig.POSITION_IN_LIST_KEY, positionInList);
+            startActivityForResult(intent, DetailActivityConfig.EDIT_BOX_REQUEST_CODE);
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        setResult(resultCode, data);
+        finish();
     }
 
     @Override
