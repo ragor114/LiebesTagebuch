@@ -30,6 +30,10 @@ public class MapBox implements Box {
         Log.d("MapView", "0:" + splits[0] + " 1:" + splits[1] + " 2:" + splits[2] + " 3:" + splits[3]);
     }
 
+    public MapBox(String content){
+        setContent(content);
+    }
+
     @Override
     public String getString() {
         return content;

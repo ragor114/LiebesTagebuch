@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -44,17 +45,25 @@ public class EditTextBoxActivity extends AppCompatActivity {
         doneButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent();
                 String content = editText.getText().toString();
-                intent.putExtra(DetailActivityConfig.TEXTBOX_CONTENT_KEY, content);
-                setResult(RESULT_OK, intent);
-                finish();
+                if(!content.contains("|") && !content.contains("<")) {
+                    Intent intent = new Intent();
+                    intent.putExtra(DetailActivityConfig.TEXTBOX_CONTENT_KEY, content);
+                    setResult(RESULT_OK, intent);
+                    finish();
+                } else{
+                    showWarningForIllegalChars();
+                }
             }
         });
 
         if (extras != null) {
             setUpForEdit(extras);
         }
+    }
+
+    private void showWarningForIllegalChars() {
+        Toast.makeText(this, "Please do not use '<' or '|' in your Text", Toast.LENGTH_SHORT).show();
     }
 
     /*
@@ -69,12 +78,16 @@ public class EditTextBoxActivity extends AppCompatActivity {
         doneButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent();
                 String content = editText.getText().toString();
-                intent.putExtra(DetailActivityConfig.TEXTBOX_CONTENT_KEY, content);
-                intent.putExtra(DetailActivityConfig.POSITION_IN_LIST_KEY, positionInList);
-                setResult(RESULT_OK, intent);
-                finish();
+                if(!content.contains("|") && !content.contains("<")) {
+                    Intent intent = new Intent();
+                    intent.putExtra(DetailActivityConfig.TEXTBOX_CONTENT_KEY, content);
+                    intent.putExtra(DetailActivityConfig.POSITION_IN_LIST_KEY, positionInList);
+                    setResult(RESULT_OK, intent);
+                    finish();
+                } else{
+                    showWarningForIllegalChars();
+                }
             }
         });
     }

@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.concurrent.Executors;
 
 import ur.mi.liebestagebuch.Boxes.Box;
+import ur.mi.liebestagebuch.Boxes.MapBox;
 import ur.mi.liebestagebuch.Boxes.PictureBox;
 import ur.mi.liebestagebuch.Boxes.TextBox;
 import ur.mi.liebestagebuch.Boxes.Type;
@@ -60,6 +61,9 @@ public class StringTransformHelper {
         switch (boxType){
             case PICTURE:
                 boxString += "Picture";
+                break;
+            case MAP:
+                boxString += "Map";
                 break;
             default:
                 boxString += "Text";
@@ -114,11 +118,12 @@ public class StringTransformHelper {
         if(parts[0].contains("Picture")) {
             PictureBox newPictureBox = new PictureBox(parts[1]);
             return newPictureBox;
+        } else if(parts[0].contains("Map")){
+            MapBox newMapBox = new MapBox(parts[1]);
+            return newMapBox;
         }
 
         TextBox newTextBox = new TextBox(parts[1]);
-
-
         return newTextBox;
     }
 
