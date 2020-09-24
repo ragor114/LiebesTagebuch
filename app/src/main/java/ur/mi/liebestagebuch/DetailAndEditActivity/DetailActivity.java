@@ -35,6 +35,7 @@ import ur.mi.liebestagebuch.EditActivities.EditTextBoxActivity;
 import ur.mi.liebestagebuch.EditActivities.TypeChooserActivity;
 import ur.mi.liebestagebuch.Encryption.CryptoListener;
 import ur.mi.liebestagebuch.Encryption.StringTransformHelper;
+import ur.mi.liebestagebuch.GridView.DateUtil;
 import ur.mi.liebestagebuch.GridView.Emotion;
 import ur.mi.liebestagebuch.R;
 import ur.mi.liebestagebuch.database.DBHelper;
@@ -83,7 +84,7 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
 
         Intent callingIntent = getIntent();
         Bundle extras = callingIntent.getExtras();
-        this.entryDate = (Date) extras.get(DetailActivityConfig.ENTRY_DATE_KEY);
+        this.entryDate = DateUtil.setToMidnight((Date) extras.get(DetailActivityConfig.ENTRY_DATE_KEY));
         Log.d("Detail", "Date loaded: " + entryDate.toString());
         dbHelper = new DBHelper(this, this);
         dbHelper.getEntryByDate(this.entryDate);
@@ -247,7 +248,7 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
         if(isReadyToFinish == true){
             Intent returnIntent = new Intent();
 
-            Date entryDate = entryDetail.getDate();
+            Date entryDate = DateUtil.setToMidnight(entryDetail.getDate());
             Emotion entryEmotion = entryDetail.getEmotion();
             String boxListString = entryDetail.getBoxListString();
 

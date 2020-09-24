@@ -148,7 +148,7 @@ public class GridActivity extends AppCompatActivity implements AdapterView.OnIte
         Emotion clickedEntryEmotion = clickedEntry.getEmotion();
 
         Intent intent = new Intent (GridActivity.this, DetailActivity.class);
-        intent.putExtra(DetailActivityConfig.ENTRY_DATE_KEY, clickedEntryDate);
+        intent.putExtra(DetailActivityConfig.ENTRY_DATE_KEY, DateUtil.setToMidnight(clickedEntryDate));
         startActivityForResult(intent, DetailActivityConfig.START_DETAIL_ACTIVITY_REQUEST_CODE);
     }
 
@@ -207,7 +207,9 @@ public class GridActivity extends AppCompatActivity implements AdapterView.OnIte
 
                 // Die Informationen des EntryDetails müssen zwischengespeichert werden, während
                 // asynchron Datenbank- und Verschlüsselungsoperationen durchgeführt werden.
-                lastEditedEntryDate = entryDate;
+                Log.d("Date", "Before formatting milliseconds: " + entryDate.getTime());
+                lastEditedEntryDate = DateUtil.setToMidnight(entryDate);
+                Log.d("Date", "After formattting milliseconds: " + entryDate.getTime());
                 lastEditedBoxListString = boxListString;
                 lastEditedEntryEmotion = emotionInt;
                 dbHelper.newEntry(entryDate, emotionInt, "", null, null);
