@@ -34,4 +34,7 @@ public class DetailActivityConfig {
     public static final int DECRYPTION_FAILED_CODE = 1;
     public static final int ENCRYPTION_FAILED_CODE = 2;
 
+    public static final String CLIENT_ID = "ce7c78a74aa7477989eae35bc8725657";
+    public static final String REDIRECT_URI = "ur.mi.liebestagebuch://callback";
+
 }
