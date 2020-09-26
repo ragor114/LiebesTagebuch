@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:layout_margin="15dp">
+
+    <TextView
+        android:id="@+id/please_note"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/spotify_explanation"
+        android:textSize="18sp"/>
+
+    <TextView
+        android:id="@+id/note_spotify"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_below="@id/please_note"
+        android:text="@string/note_about_spotify"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="10"
+        android:layout_margin="10dp"
+        android:layout_below="@id/note_spotify"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/spotify_link_edit"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="8"
+            android:hint="@string/spotify_link_hint" />
+
+        <Button
+            android:id="@+id/spotify_link_ok"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:background="@color/button_color"
+            android:layout_weight="2"
+            android:layout_margin="5dp"
+            android:text="@string/ok"
+            android:textColor="@color/white"/>
+
+    </LinearLayout>
+
+    <ImageButton
+        android:id="@+id/edit_spotify_play"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/ic_play_circle_outline_black_24dp"
+        android:background="@color/button_color"
+        android:layout_centerInParent="true"/>
+
+    <ImageButton
+        android:id="@+id/finish_spotify_edit"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:src="@drawable/ic_check_black_24dp"
+        android:background="@color/button_color"
+        android:layout_marginLeft="40dp"
+        android:layout_marginRight="40dp"
+        android:layout_alignParentBottom="true"/>
+
+</RelativeLayout>

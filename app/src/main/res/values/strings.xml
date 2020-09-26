@@ -27,4 +27,8 @@
     <string name="title_activity_maps">Map</string>
     <string name="edit_map">Edit Map/Location</string>
     <string name="type_chooser_music">Add Song</string>
+    <string name="spotify_explanation">Please note:</string>
+    <string name="note_about_spotify">For this Feature to work properly you need to have the Spotify App installed and be logged in with a premium account.</string>
+    <string name="spotify_link_hint">Paste a link to a song</string>
+    <string name="ok">Ok</string>
 </resources>
