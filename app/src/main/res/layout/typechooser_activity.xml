@@ -36,6 +36,16 @@
             android:text="@string/type_chooser_map"
             android:textSize="18sp"/>
 
+        <Button
+            android:id="@+id/button_choose_music"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/button_color"
+            android:layout_marginBottom="20dp"
+            android:text="@string/type_chooser_music"
+            android:textSize="18sp"/>
+
+
     </LinearLayout>
 
 </RelativeLayout>

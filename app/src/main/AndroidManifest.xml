@@ -57,6 +57,7 @@
         <activity android:name=".EditActivities.EditTextBoxActivity" />
         <activity android:name=".EditActivities.EditPictureBoxActivity" />
         <activity android:name=".EditActivities.EditMapBoxActivity" />
+        <activity android:name=".EditActivities.EditMusicBoxActivity" />
     </application>
 
 </manifest>

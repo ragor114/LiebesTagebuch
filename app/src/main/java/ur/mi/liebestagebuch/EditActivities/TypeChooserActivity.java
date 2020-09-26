@@ -22,6 +22,7 @@ public class TypeChooserActivity extends AppCompatActivity {
     private Button chooseText;
     private Button choosePicture;
     private Button chooseMap;
+    private Button chooseMusic;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +35,7 @@ public class TypeChooserActivity extends AppCompatActivity {
         chooseText = findViewById(R.id.button_choose_text);
         choosePicture = findViewById(R.id.button_choose_picture);
         chooseMap = findViewById(R.id.button_choose_map);
+        chooseMusic = findViewById(R.id.button_choose_music);
         setOnClickListeners();
     }
 
@@ -56,6 +58,17 @@ public class TypeChooserActivity extends AppCompatActivity {
                 startNewMapBoxRequest();
             }
         });
+        chooseMusic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startNewMusicBoxRequest();
+            }
+        });
+    }
+
+    private void startNewMusicBoxRequest() {
+        Intent intent = new Intent(TypeChooserActivity.this, EditMusicBoxActivity.class);
+        startActivityForResult(intent, DetailActivityConfig.NEW_MUSIC_BOX_REQUEST_CODE);
     }
 
     private void startNewMapBoxRequest() {
