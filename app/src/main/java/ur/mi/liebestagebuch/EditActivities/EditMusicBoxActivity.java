@@ -15,7 +15,7 @@ import ur.mi.liebestagebuch.R;
 public class EditMusicBoxActivity extends AppCompatActivity {
 
     private static final String CLIENT_ID = "ce7c78a74aa7477989eae35bc8725657";
-    private static final String REDIRECT_URI = "localhost://callback";
+    private static final String REDIRECT_URI = "ur.mi.liebestagebuch://callback";
     private SpotifyAppRemote appRemote;
 
     @Override
