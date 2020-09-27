@@ -20,11 +20,12 @@
         android:layout_toRightOf="@id/music_box_play_button"/>
 
     <TextView
+        android:id="@+id/music_box_song_artist"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/music_box_artist_default"
         android:layout_below="@id/music_box_song_title"
         android:layout_toRightOf="@id/music_box_play_button"
-        android:layout_marginLeft="20dp"
+        android:layout_marginLeft="20dp"/>
 
 </RelativeLayout>

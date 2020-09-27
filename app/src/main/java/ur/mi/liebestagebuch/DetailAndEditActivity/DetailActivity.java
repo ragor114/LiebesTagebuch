@@ -22,12 +22,17 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.spotify.sdk.android.authentication.AuthenticationClient;
+import com.spotify.sdk.android.authentication.AuthenticationRequest;
+import com.spotify.sdk.android.authentication.AuthenticationResponse;
 
 import java.util.Date;
 
 import ur.mi.liebestagebuch.Boxes.Box;
 import ur.mi.liebestagebuch.Boxes.MapBox;
 import ur.mi.liebestagebuch.Boxes.PictureBox;
+import ur.mi.liebestagebuch.Boxes.SpotifyBox;
+import ur.mi.liebestagebuch.Boxes.SpotifyBoxReadyListener;
 import ur.mi.liebestagebuch.Boxes.TextBox;
 import ur.mi.liebestagebuch.Boxes.Type;
 import ur.mi.liebestagebuch.EditActivities.EditPictureBoxActivity;
@@ -42,7 +47,7 @@ import ur.mi.liebestagebuch.database.DBHelper;
 import ur.mi.liebestagebuch.database.DatabaseListener;
 import ur.mi.liebestagebuch.database.data.Entry;
 
-public class DetailActivity extends AppCompatActivity implements CryptoListener, DatabaseListener, BoxListEncryptionListener{
+public class DetailActivity extends AppCompatActivity implements CryptoListener, DatabaseListener, BoxListEncryptionListener, SpotifyBoxReadyListener {
 
     /*
      * In der DetailActivity werden das Datum, die ausgewählte Emotion und der Inhalt in Form von
@@ -288,12 +293,35 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
         if(resultCode == RESULT_OK){
             Log.d("Detail", "Result in Detail OK");
             Bundle extras = data.getExtras();
-            if(requestCode != DetailActivityConfig.EDIT_BOX_REQUEST_CODE) {
+            if(requestCode == DetailActivityConfig.SPOTIFY_AUTH_REQUEST_CODE){
+                gotAccessToken(resultCode, data);
+            } else if(requestCode != DetailActivityConfig.EDIT_BOX_REQUEST_CODE) {
                 newBoxResult(extras);
             } else if (requestCode == DetailActivityConfig.EDIT_BOX_REQUEST_CODE){
                 editBoxResult(extras);
             }
             boxListAdapter.notifyDataSetChanged();
+        }
+    }
+
+    private void gotAccessToken(int resultCode, Intent data) {
+        AuthenticationResponse response = AuthenticationClient.getResponse(resultCode, data);
+        switch (response.getType()){
+            case TOKEN:
+                DetailActivityConfig.ACCESS_TOKEN = response.getAccessToken();
+                setUpSpotifyWebApis();
+                break;
+            case ERROR:
+                Toast.makeText(this, "Error trying to authentificate Spotify", Toast.LENGTH_SHORT).show();
+                break;
+        }
+    }
+
+    private void setUpSpotifyWebApis() {
+        for(Box current : entryDetail.getBoxList()){
+            if(current.getType() == Type.MUSIC){
+                ((SpotifyBox) current).gotAccessToken();
+            }
         }
     }
 
@@ -337,6 +365,11 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
             Log.d("MapView", "Got LatLng with: " + coordinates.toString());
             MapBox createdMapBox = new MapBox(coordinates);
             entryDetail.addBoxToBoxList(createdMapBox);
+        } else if(extras.getString(DetailActivityConfig.MUSIC_BOX_CONTENT_KEY) != null){
+            Log.d("Spotify", "Creating new MusicBox");
+            String songUri = extras.getString(DetailActivityConfig.MUSIC_BOX_CONTENT_KEY);
+            SpotifyBox createdSpotifyBox = new SpotifyBox(songUri, this, this);
+            entryDetail.addBoxToBoxList(createdSpotifyBox);
         }
     }
 
@@ -479,10 +512,25 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
         boxListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                Log.d("Detail", "LongClicked Position: " + position);
                 entryDetail.getBoxList().remove(position);
                 boxListAdapter.notifyDataSetChanged();
                 return true;
             }
         });
+    }
+
+    @Override
+    public void needsAccessToken() {
+        AuthenticationRequest.Builder builder = new AuthenticationRequest.Builder(DetailActivityConfig.CLIENT_ID, AuthenticationResponse.Type.TOKEN, DetailActivityConfig.REDIRECT_URI);
+        builder.setScopes(new String[]{"streaming"});
+        AuthenticationRequest request = builder.build();
+        AuthenticationClient.openLoginActivity(this, DetailActivityConfig.SPOTIFY_AUTH_REQUEST_CODE, request);
+    }
+
+    @Override
+    public void updatedViews() {
+        Log.d("Spotify", "Callback: updatedView()");
+        boxListAdapter.notifyDataSetChanged();
     }
 }

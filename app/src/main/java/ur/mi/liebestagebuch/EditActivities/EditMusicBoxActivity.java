@@ -119,6 +119,16 @@ public class EditMusicBoxActivity extends AppCompatActivity {
         } else{
             setUpSpotifyWebApi();
         }
+
+        finishButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                intent.putExtra(DetailActivityConfig.MUSIC_BOX_CONTENT_KEY, songUri);
+                setResult(RESULT_OK, intent);
+                finish();
+            }
+        });
     }
 
     @Override
