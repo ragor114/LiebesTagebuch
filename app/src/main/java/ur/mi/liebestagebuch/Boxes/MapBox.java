@@ -48,10 +48,12 @@ public class MapBox implements Box {
     public View getView(Context context) {
         LayoutInflater inflater = LayoutInflater.from(context);
         View convertView = inflater.inflate(R.layout.map_box_layout, null);
-        TextView latLngView = convertView.findViewById(R.id.map_box_lat_lng);
+        TextView latView = convertView.findViewById(R.id.map_box_lat);
+        TextView lngView = convertView.findViewById(R.id.map_box_lng);
         TextView geocodingView = convertView.findViewById(R.id.map_box_geocoding);
 
-        latLngView.setText("Lat: " + coordinates.latitude + " Long: " + coordinates.longitude);
+        latView.setText("Lat: " + coordinates.latitude);
+        lngView.setText("Long: " + coordinates.longitude);
         Geocoder geocoder = new Geocoder(context);
         List<Address> adresses = new ArrayList<>();
         try {

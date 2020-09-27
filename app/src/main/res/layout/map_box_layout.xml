@@ -4,25 +4,37 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/map_box_lat_lng"
+        android:id="@+id/map_box_lat"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
-        android:text="Latitude and Longitude"
-        android:textColor="#222"
+        android:text="Latitude"
+        android:textColor="#777"
         android:textSize="18sp"/>
+
+    <TextView
+        android:id="@+id/map_box_lng"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:text="Longitude"
+        android:textColor="#777"
+        android:textSize="18sp"
+        android:layout_below="@id/map_box_lat"/>
 
     <TextView
         android:id="@+id/map_box_geocoding"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Geocoding"
-        android:color="#777"
+        android:color="#333"
         android:layout_marginLeft="50dp"
         android:layout_marginRight="50dp"
         android:textSize="14sp"
-        android:layout_below="@id/map_box_lat_lng"/>
+        android:layout_below="@id/map_box_lng"/>
 
 </RelativeLayout>
