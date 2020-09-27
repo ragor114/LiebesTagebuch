@@ -33,4 +33,6 @@
     <string name="ok">Ok</string>
     <string name="spotify_title_name_default">Title of current track</string>
     <string name="spotify_artist_default">Artist of current track</string>
+    <string name="music_box_title_default">Empty Song title</string>
+    <string name="music_box_artist_default">Empty Artist Name</string>
 </resources>

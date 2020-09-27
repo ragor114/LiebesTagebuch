@@ -111,10 +111,14 @@ public class EditMusicBoxActivity extends AppCompatActivity {
             }
         });
 
-        AuthenticationRequest.Builder builder = new AuthenticationRequest.Builder(DetailActivityConfig.CLIENT_ID, AuthenticationResponse.Type.TOKEN, DetailActivityConfig.REDIRECT_URI);
-        builder.setScopes(new String[]{"streaming"});
-        AuthenticationRequest request = builder.build();
-        AuthenticationClient.openLoginActivity(this, DetailActivityConfig.SPOTIFY_AUTH_REQUEST_CODE, request);
+        if(DetailActivityConfig.ACCESS_TOKEN == null || DetailActivityConfig.ACCESS_TOKEN.equals("")){
+            AuthenticationRequest.Builder builder = new AuthenticationRequest.Builder(DetailActivityConfig.CLIENT_ID, AuthenticationResponse.Type.TOKEN, DetailActivityConfig.REDIRECT_URI);
+            builder.setScopes(new String[]{"streaming"});
+            AuthenticationRequest request = builder.build();
+            AuthenticationClient.openLoginActivity(this, DetailActivityConfig.SPOTIFY_AUTH_REQUEST_CODE, request);
+        } else{
+            setUpSpotifyWebApi();
+        }
     }
 
     @Override
