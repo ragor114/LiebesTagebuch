@@ -36,5 +36,7 @@ public class DetailActivityConfig {
 
     public static final String CLIENT_ID = "ce7c78a74aa7477989eae35bc8725657";
     public static final String REDIRECT_URI = "ur.mi.liebestagebuch://callback";
+    public static final int SPOTIFY_AUTH_REQUEST_CODE = 1337;
+    public static String ACCESS_TOKEN;
 
 }

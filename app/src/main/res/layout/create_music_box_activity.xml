@@ -46,6 +46,27 @@
 
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/spotify_edit_track_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/spotify_edit_artist_name"
+        android:text="@string/spotify_title_name_default"
+        android:gravity="center"
+        android:textSize="17sp"
+        android:textColor="#666"
+        android:layout_marginBottom="5dp"/>
+
+    <TextView
+        android:id="@+id/spotify_edit_artist_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/spotify_artist_default"
+        android:layout_above="@id/edit_spotify_play"
+        android:textColor="#888"
+        android:layout_marginBottom="15dp"/>
+
     <ImageButton
         android:id="@+id/edit_spotify_play"
         android:layout_width="50dp"

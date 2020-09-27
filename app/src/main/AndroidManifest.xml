@@ -58,6 +58,9 @@
         <activity android:name=".EditActivities.EditPictureBoxActivity" />
         <activity android:name=".EditActivities.EditMapBoxActivity" />
         <activity android:name=".EditActivities.EditMusicBoxActivity" />
+        <activity
+            android:name="com.spotify.sdk.android.authentication.LoginActivity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
     </application>
 
 </manifest>

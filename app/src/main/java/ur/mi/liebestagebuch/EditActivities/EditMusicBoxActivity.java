@@ -1,11 +1,14 @@
 package ur.mi.liebestagebuch.EditActivities;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.telecom.Call;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -14,9 +17,18 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.spotify.android.appremote.api.ConnectionParams;
 import com.spotify.android.appremote.api.Connector;
 import com.spotify.android.appremote.api.SpotifyAppRemote;
+import com.spotify.sdk.android.authentication.AuthenticationClient;
+import com.spotify.sdk.android.authentication.AuthenticationRequest;
+import com.spotify.sdk.android.authentication.AuthenticationResponse;
 
 import java.util.Arrays;
 
+import kaaes.spotify.webapi.android.SpotifyApi;
+import kaaes.spotify.webapi.android.SpotifyService;
+import kaaes.spotify.webapi.android.models.Track;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 import ur.mi.liebestagebuch.DetailAndEditActivity.DetailActivityConfig;
 import ur.mi.liebestagebuch.R;
 
@@ -28,8 +40,12 @@ public class EditMusicBoxActivity extends AppCompatActivity {
     private Button linkOkButton;
     private ImageButton playButton;
     private ImageButton finishButton;
+    private TextView trackNameView;
+    private TextView artistNameView;
 
     private String songUri;
+    private SpotifyApi api;
+    private SpotifyService spotify;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -40,15 +56,22 @@ public class EditMusicBoxActivity extends AppCompatActivity {
         songUri = "";
 
         playButton = findViewById(R.id.edit_spotify_play);
-        if(songUri.equals("")){
-            playButton.setVisibility(View.INVISIBLE);
-        }
+        trackNameView = findViewById(R.id.spotify_edit_track_name);
+        artistNameView = findViewById(R.id.spotify_edit_artist_name);
+
         playButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 appRemote.getPlayerApi().play(songUri);
             }
         });
+
+        if(songUri.equals("")){
+            playButton.setVisibility(View.INVISIBLE);
+            trackNameView.setVisibility(View.INVISIBLE);
+            artistNameView.setVisibility(View.INVISIBLE);
+        }
+
     }
 
     @Override
@@ -87,6 +110,34 @@ public class EditMusicBoxActivity extends AppCompatActivity {
                 linkOkPressed();
             }
         });
+
+        AuthenticationRequest.Builder builder = new AuthenticationRequest.Builder(DetailActivityConfig.CLIENT_ID, AuthenticationResponse.Type.TOKEN, DetailActivityConfig.REDIRECT_URI);
+        builder.setScopes(new String[]{"streaming"});
+        AuthenticationRequest request = builder.build();
+        AuthenticationClient.openLoginActivity(this, DetailActivityConfig.SPOTIFY_AUTH_REQUEST_CODE, request);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == DetailActivityConfig.SPOTIFY_AUTH_REQUEST_CODE){
+            AuthenticationResponse response = AuthenticationClient.getResponse(resultCode, data);
+            switch (response.getType()){
+                case TOKEN:
+                    DetailActivityConfig.ACCESS_TOKEN = response.getAccessToken();
+                    setUpSpotifyWebApi();
+                    break;
+                case ERROR:
+                    Toast.makeText(this, "Error trying to authentificate Spotify", Toast.LENGTH_SHORT).show();
+                    break;
+            }
+        }
+    }
+
+    private void setUpSpotifyWebApi() {
+        api = new SpotifyApi();
+        api.setAccessToken(DetailActivityConfig.ACCESS_TOKEN);
+        spotify = api.getService();
     }
 
     private void linkOkPressed() {
@@ -116,6 +167,22 @@ public class EditMusicBoxActivity extends AppCompatActivity {
         Log.d("Spotify", "songUri is set to: " + songUri);
         //appRemote.getPlayerApi().play(songUri);
         playButton.setVisibility(View.VISIBLE);
+        spotify.getTrack(trackId, new Callback<Track>() {
+            @Override
+            public void success(Track track, Response response) {
+                Log.d("Spotify", "Title of track: " + track.name);
+                trackNameView.setText(track.name);
+                artistNameView.setText(track.artists.get(0).name);
+                trackNameView.setVisibility(View.VISIBLE);
+                artistNameView.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                Log.d("Spotify", "Error getting track information");
+                Toast.makeText(getApplicationContext(), "Error getting Song Information, check connection and try again later.", Toast.LENGTH_SHORT).show();;
+            }
+        });
     }
 
     private void logSecondSplit(String[] secondSplit) {

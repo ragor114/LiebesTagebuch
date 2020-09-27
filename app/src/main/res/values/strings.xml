@@ -31,4 +31,6 @@
     <string name="note_about_spotify">For this Feature to work properly you need to have the Spotify App installed and be logged in with a premium account.</string>
     <string name="spotify_link_hint">Paste a link to a song</string>
     <string name="ok">Ok</string>
+    <string name="spotify_title_name_default">Title of current track</string>
+    <string name="spotify_artist_default">Artist of current track</string>
 </resources>
