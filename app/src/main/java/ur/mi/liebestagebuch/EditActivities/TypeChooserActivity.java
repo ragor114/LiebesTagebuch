@@ -23,6 +23,7 @@ public class TypeChooserActivity extends AppCompatActivity {
     private Button choosePicture;
     private Button chooseMap;
     private Button chooseMusic;
+    private Button chooseHeader;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +37,7 @@ public class TypeChooserActivity extends AppCompatActivity {
         choosePicture = findViewById(R.id.button_choose_picture);
         chooseMap = findViewById(R.id.button_choose_map);
         chooseMusic = findViewById(R.id.button_choose_music);
+        chooseHeader = findViewById(R.id.button_choose_header);
         setOnClickListeners();
     }
 
@@ -64,6 +66,17 @@ public class TypeChooserActivity extends AppCompatActivity {
                 startNewMusicBoxRequest();
             }
         });
+        chooseHeader.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startNewHeaderBoxRequest();
+            }
+        });
+    }
+
+    private void startNewHeaderBoxRequest() {
+        Intent intent = new Intent(TypeChooserActivity.this, EditHeaderBoxActivity.class);
+        startActivityForResult(intent, DetailActivityConfig.NEW_HEADER_BOX_REQUEST_CODE);
     }
 
     private void startNewMusicBoxRequest() {

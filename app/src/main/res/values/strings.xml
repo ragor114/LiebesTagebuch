@@ -36,4 +36,6 @@
     <string name="music_box_title_default">Loading Song title...</string>
     <string name="music_box_artist_default">If you have connection and this does not change you can still play the song and reopen the entry to get information.</string>
     <string name="search_hint">Search for track</string>
+    <string name="hint_new_header">Überschrift einfügen</string>
+    <string name="type_chooser_header">Add Header</string>
 </resources>

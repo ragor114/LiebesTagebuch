@@ -29,12 +29,14 @@ import com.spotify.sdk.android.authentication.AuthenticationResponse;
 import java.util.Date;
 
 import ur.mi.liebestagebuch.Boxes.Box;
+import ur.mi.liebestagebuch.Boxes.HeaderBox;
 import ur.mi.liebestagebuch.Boxes.MapBox;
 import ur.mi.liebestagebuch.Boxes.PictureBox;
 import ur.mi.liebestagebuch.Boxes.SpotifyBox;
 import ur.mi.liebestagebuch.Boxes.SpotifyBoxReadyListener;
 import ur.mi.liebestagebuch.Boxes.TextBox;
 import ur.mi.liebestagebuch.Boxes.Type;
+import ur.mi.liebestagebuch.EditActivities.EditHeaderBoxActivity;
 import ur.mi.liebestagebuch.EditActivities.EditMusicBoxActivity;
 import ur.mi.liebestagebuch.EditActivities.EditPictureBoxActivity;
 import ur.mi.liebestagebuch.EditActivities.EditTextBoxActivity;
@@ -347,6 +349,9 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
             newContent = extras.getString(DetailActivityConfig.MUSIC_BOX_CONTENT_KEY);
             Log.d("Spotify", "Position " +positionInList + " changed to: " + newContent);
         }
+        if(extras.getString(DetailActivityConfig.HEADER_BOX_CONTENT_KEY) != null){
+            newContent = extras.getString(DetailActivityConfig.HEADER_BOX_CONTENT_KEY);
+        }
         entryDetail.getBoxList().get(positionInList).setContent(newContent);
     }
 
@@ -376,6 +381,11 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
             SpotifyBox createdSpotifyBox = new SpotifyBox(songUri, this, this);
             entryDetail.addBoxToBoxList(createdSpotifyBox);
             Log.d("Spotify", "Added to BoxList: " + entryDetail.getBoxList().toString());
+        } else if(extras.getString(DetailActivityConfig.HEADER_BOX_CONTENT_KEY) != null){
+            Log.d("Detail", "Creating new Headerbox");
+            String header = extras.getString(DetailActivityConfig.HEADER_BOX_CONTENT_KEY);
+            HeaderBox createdHeaderBox = new HeaderBox(header);
+            entryDetail.addBoxToBoxList(createdHeaderBox);
         }
     }
 
@@ -517,6 +527,11 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
                         startMusicboxEditingIntent.putExtra(DetailActivityConfig.POSITION_IN_LIST_KEY, position);
                         startMusicboxEditingIntent.putExtra(DetailActivityConfig.EXISTING_CONTENT_KEY, clickedBox.getString());
                         startActivityForResult(startMusicboxEditingIntent, DetailActivityConfig.EDIT_BOX_REQUEST_CODE);
+                    case HEADER:
+                        Intent startHeaderboxEditingIntent = new Intent(DetailActivity.this, EditHeaderBoxActivity.class);
+                        startHeaderboxEditingIntent.putExtra(DetailActivityConfig.POSITION_IN_LIST_KEY, position);
+                        startHeaderboxEditingIntent.putExtra(DetailActivityConfig.EXISTING_CONTENT_KEY, clickedBox.getString());
+                        startActivityForResult(startHeaderboxEditingIntent, DetailActivityConfig.EDIT_BOX_REQUEST_CODE);
                 }
             }
         });

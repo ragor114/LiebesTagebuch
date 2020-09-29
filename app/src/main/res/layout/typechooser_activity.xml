@@ -10,6 +10,15 @@
         android:padding="20dp">
 
         <Button
+            android:id="@+id/button_choose_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:background="@color/button_color"
+            android:text="@string/type_chooser_header"
+            android:textSize="18sp"/>
+
+        <Button
             android:id="@+id/button_choose_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

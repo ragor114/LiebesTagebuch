@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.concurrent.Executors;
 
 import ur.mi.liebestagebuch.Boxes.Box;
+import ur.mi.liebestagebuch.Boxes.HeaderBox;
 import ur.mi.liebestagebuch.Boxes.MapBox;
 import ur.mi.liebestagebuch.Boxes.PictureBox;
 import ur.mi.liebestagebuch.Boxes.SpotifyBox;
@@ -70,6 +71,8 @@ public class StringTransformHelper {
                 break;
             case MUSIC:
                 boxString += "Music";
+            case HEADER:
+                boxString += "Header";
             default:
                 boxString += "Text";
                 break;
@@ -129,6 +132,9 @@ public class StringTransformHelper {
         } else if(parts[0].contains("Music")){
             SpotifyBox newSpotifyBox = new SpotifyBox(parts[1], context, spotifyListener);
             return newSpotifyBox;
+        } else if(parts[0].contains("Header")){
+            HeaderBox newHeaderBox = new HeaderBox(parts[1]);
+            return newHeaderBox;
         }
 
         TextBox newTextBox = new TextBox(parts[1]);
