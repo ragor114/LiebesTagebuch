@@ -26,6 +26,7 @@ import java.util.Arrays;
 import kaaes.spotify.webapi.android.SpotifyApi;
 import kaaes.spotify.webapi.android.SpotifyService;
 import kaaes.spotify.webapi.android.models.Track;
+import kaaes.spotify.webapi.android.models.TracksPager;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -42,6 +43,7 @@ public class EditMusicBoxActivity extends AppCompatActivity {
     private ImageButton finishButton;
     private TextView trackNameView;
     private TextView artistNameView;
+    private EditText searchEditText;
 
     private String songUri;
     private SpotifyApi api;
@@ -103,6 +105,7 @@ public class EditMusicBoxActivity extends AppCompatActivity {
 
     private void setUpViews() {
         linkEditText = findViewById(R.id.spotify_link_edit);
+        searchEditText = findViewById(R.id.spotify_search_edit);
         linkOkButton = findViewById(R.id.spotify_link_ok);
         finishButton = findViewById(R.id.finish_spotify_edit);
 
@@ -183,21 +186,55 @@ public class EditMusicBoxActivity extends AppCompatActivity {
     }
 
     private void linkOkPressed() {
-        String pastedLink = linkEditText.getText().toString();
-        String[] splits = pastedLink.split("/");
-        if(splits.length > 3) {
-            if (splits[3].equals("track")) {
-                logSplit(splits);
-                String[] secondSplit = splits[4].split("\\Q?\\E");
-                logSecondSplit(secondSplit);
-                setSongUri(secondSplit[0]);
-                linkEditText.setText("");
-            } else {
+        if(linkEditText.getText().toString() != null && !linkEditText.getText().toString().equals("")){
+            String pastedLink = linkEditText.getText().toString();
+            String[] splits = pastedLink.split("/");
+            if(splits.length > 3) {
+                if (splits[3].equals("track")) {
+                    logSplit(splits);
+                    String[] secondSplit = splits[4].split("\\Q?\\E");
+                    logSecondSplit(secondSplit);
+                    setSongUri(secondSplit[0]);
+                    linkEditText.setText("");
+                } else {
+                    invalidLinkMessage();
+                }
+            } else{
                 invalidLinkMessage();
+            }
+        } else if(searchEditText.getText().toString() != null && !searchEditText.getText().toString().equals("")){
+            if(spotify != null){
+                spotify.searchTracks(searchEditText.getText().toString(), new Callback<TracksPager>() {
+                    @Override
+                    public void success(TracksPager tracksPager, Response response) {
+                        searchEditText.setText("");
+                        if(tracksPager.tracks.items.size() > 0){
+                            String songId = tracksPager.tracks.items.get(0).id;
+                            setSongUri(songId);
+                        } else{
+                            sendNoItemsFoundMessage();
+                        }
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        sendCantReachSpotifyError();
+                    }
+                });
+            } else{
+                sendCantReachSpotifyError();
             }
         } else{
             invalidLinkMessage();
         }
+    }
+
+    private void sendNoItemsFoundMessage() {
+        Toast.makeText(this, "Can't find song", Toast.LENGTH_SHORT).show();
+    }
+
+    private void sendCantReachSpotifyError() {
+        Toast.makeText(this, "Can not reach Spotify, please check connection.", Toast.LENGTH_SHORT).show();
     }
 
     private void invalidLinkMessage() {
