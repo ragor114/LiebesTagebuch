@@ -46,12 +46,14 @@ public class EditMusicBoxActivity extends AppCompatActivity {
     private String songUri;
     private SpotifyApi api;
     private SpotifyService spotify;
+    private boolean editMode;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.create_music_box_activity);
         Log.d("Spotify", "EditMusicBox created");
+        editMode = false;
 
         songUri = "";
 
@@ -123,12 +125,22 @@ public class EditMusicBoxActivity extends AppCompatActivity {
         finishButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent();
-                intent.putExtra(DetailActivityConfig.MUSIC_BOX_CONTENT_KEY, songUri);
-                setResult(RESULT_OK, intent);
-                finish();
+                finishEditing();
             }
         });
+    }
+
+    private void finishEditing() {
+        Intent intent = new Intent();
+        intent.putExtra(DetailActivityConfig.MUSIC_BOX_CONTENT_KEY, songUri);
+
+        if(editMode){
+            Bundle callingExtras = getCallingExtras();
+            intent.putExtra(DetailActivityConfig.POSITION_IN_LIST_KEY, callingExtras.getInt(DetailActivityConfig.POSITION_IN_LIST_KEY));
+        }
+
+        setResult(RESULT_OK, intent);
+        finish();
     }
 
     @Override
@@ -152,6 +164,22 @@ public class EditMusicBoxActivity extends AppCompatActivity {
         api = new SpotifyApi();
         api.setAccessToken(DetailActivityConfig.ACCESS_TOKEN);
         spotify = api.getService();
+
+        Bundle extras = getCallingExtras();
+        if(extras != null){
+            if(extras.getString(DetailActivityConfig.EXISTING_CONTENT_KEY) != null){
+                songUri = extras.getString(DetailActivityConfig.EXISTING_CONTENT_KEY);
+                String[] splits = songUri.split(":");
+                String trackId = splits[2];
+                setSongUri(trackId);
+                editMode = true;
+            }
+        }
+    }
+
+    private Bundle getCallingExtras() {
+        Intent callingIntent = getIntent();
+        return callingIntent.getExtras();
     }
 
     private void linkOkPressed() {

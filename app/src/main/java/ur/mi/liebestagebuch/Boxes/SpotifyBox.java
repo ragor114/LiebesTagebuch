@@ -27,9 +27,10 @@ import ur.mi.liebestagebuch.R;
 public class SpotifyBox implements Box {
 
     private String content;
-    private TextView songTitle;
-    private TextView songArtist;
-    private ImageButton playButton;
+
+    private String songTitleString;
+    private String songArtistString;
+    private View.OnClickListener playButtonOnClickListener;
 
     private SpotifyAppRemote appRemote;
     private SpotifyApi api;
@@ -64,7 +65,7 @@ public class SpotifyBox implements Box {
                 appRemote = spotifyAppRemote;
                 //DEBUG: appRemote.getPlayerApi().play("spotify:playlist:6uJdeXLzNtFPEhuZ0XFid0");
                 Log.d("Spotify", "App Remote connected!");
-                if(playButton != null){
+                if(playButtonOnClickListener == null){
                     setPlayButtonClickListener();
                     listener.updatedViews();
                 }
@@ -84,7 +85,7 @@ public class SpotifyBox implements Box {
         api = new SpotifyApi();
         api.setAccessToken(DetailActivityConfig.ACCESS_TOKEN);
         spotify = api.getService();
-        if(songTitle != null){
+        if(songTitleString == null){
             fillInTextViews();
         }
     }
@@ -103,22 +104,18 @@ public class SpotifyBox implements Box {
     public View getView(Context context) {
         LayoutInflater inflater = LayoutInflater.from(context);
         View convertView = inflater.inflate(R.layout.music_box_layout, null);
-        if(songTitle == null){
-            songTitle = convertView.findViewById(R.id.music_box_song_title);
-            songArtist = convertView.findViewById(R.id.music_box_song_artist);
-            playButton = convertView.findViewById(R.id.music_box_play_button);
-        } else{
-            TextView songTitleView = convertView.findViewById(R.id.music_box_song_title);;
-            TextView songArtistView = convertView.findViewById(R.id.music_box_song_artist);
-            ImageButton playButtonView = convertView.findViewById(R.id.music_box_play_button);
-            songTitleView.setText(songTitle.getText().toString());
-            songArtistView.setText(songArtist.getText().toString());
-            playButtonView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    appRemote.getPlayerApi().play(content);
-                }
-            });
+
+        TextView songTitleView = (TextView) convertView.findViewById(R.id.music_box_song_title);;
+        TextView songArtistView = (TextView) convertView.findViewById(R.id.music_box_song_artist);
+        ImageButton playButtonView = (ImageButton) convertView.findViewById(R.id.music_box_play_button);
+
+        if(songTitleString != null){
+            songTitleView.setText(songTitleString);
+            songArtistView.setText(songArtistString);
+        }
+
+        if(playButtonOnClickListener != null){
+            playButtonView.setOnClickListener(playButtonOnClickListener);
         }
 
         if(appRemote != null){
@@ -128,6 +125,9 @@ public class SpotifyBox implements Box {
         if(spotify != null){
             fillInTextViews();
         }
+
+        playButtonView.setFocusable(false);
+        playButtonView.setFocusableInTouchMode(false);
 
         return convertView;
     }
@@ -141,8 +141,8 @@ public class SpotifyBox implements Box {
             spotify.getTrack(trackId, new Callback<Track>() {
                 @Override
                 public void success(Track track, Response response) {
-                    songTitle.setText(track.name);
-                    songArtist.setText(track.artists.get(0).name);
+                    songTitleString = track.name;
+                    songArtistString = track.artists.get(0).name;
                     listener.updatedViews();
                 }
                 @Override
@@ -150,22 +150,22 @@ public class SpotifyBox implements Box {
                     Log.d("Spotify", "Connection Error!");
                 }
             });
-            textViewssetUp = true;
         }
     }
 
     private void setPlayButtonClickListener() {
-        playButton.setOnClickListener(new View.OnClickListener() {
+        playButtonOnClickListener = new View.OnClickListener(){
             @Override
             public void onClick(View v) {
                 appRemote.getPlayerApi().play(content);
             }
-        });
+        };
         Log.d("Spotify", "PlayButton onClickListener set.");
     }
 
     @Override
     public void setContent(String content) {
-
+        this.content = content;
+        fillInTextViews();
     }
 }

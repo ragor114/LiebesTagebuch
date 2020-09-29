@@ -28,11 +28,11 @@
     <string name="edit_map">Edit Map/Location</string>
     <string name="type_chooser_music">Add Song</string>
     <string name="spotify_explanation">Please note:</string>
-    <string name="note_about_spotify">For this Feature to work properly you need to have the Spotify App installed and be logged in with a premium account.</string>
+    <string name="note_about_spotify">For this Feature to work properly you need to have the Spotify App installed and be logged in with a premium account. Moreover, the Spotify App should NOT be in offline mode, because this could cause crashes.</string>
     <string name="spotify_link_hint">Paste a link to a song</string>
     <string name="ok">Ok</string>
     <string name="spotify_title_name_default">Title of current track</string>
     <string name="spotify_artist_default">Artist of current track</string>
-    <string name="music_box_title_default">Empty Song title</string>
-    <string name="music_box_artist_default">Empty Artist Name</string>
+    <string name="music_box_title_default">Loading Song title...</string>
+    <string name="music_box_artist_default">Loading Artist name...</string>
 </resources>

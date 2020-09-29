@@ -35,6 +35,7 @@ import ur.mi.liebestagebuch.Boxes.SpotifyBox;
 import ur.mi.liebestagebuch.Boxes.SpotifyBoxReadyListener;
 import ur.mi.liebestagebuch.Boxes.TextBox;
 import ur.mi.liebestagebuch.Boxes.Type;
+import ur.mi.liebestagebuch.EditActivities.EditMusicBoxActivity;
 import ur.mi.liebestagebuch.EditActivities.EditPictureBoxActivity;
 import ur.mi.liebestagebuch.EditActivities.EditTextBoxActivity;
 import ur.mi.liebestagebuch.EditActivities.TypeChooserActivity;
@@ -342,6 +343,10 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
         if(extras.getString(DetailActivityConfig.MAP_BOX_CONTENT_KEY) != null){
             newContent = extras.getString(DetailActivityConfig.MAP_BOX_CONTENT_KEY);
         }
+        if(extras.getString(DetailActivityConfig.MUSIC_BOX_CONTENT_KEY) != null){
+            newContent = extras.getString(DetailActivityConfig.MUSIC_BOX_CONTENT_KEY);
+            Log.d("Spotify", "Position " +positionInList + " changed to: " + newContent);
+        }
         entryDetail.getBoxList().get(positionInList).setContent(newContent);
     }
 
@@ -370,6 +375,7 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
             String songUri = extras.getString(DetailActivityConfig.MUSIC_BOX_CONTENT_KEY);
             SpotifyBox createdSpotifyBox = new SpotifyBox(songUri, this, this);
             entryDetail.addBoxToBoxList(createdSpotifyBox);
+            Log.d("Spotify", "Added to BoxList: " + entryDetail.getBoxList().toString());
         }
     }
 
@@ -481,6 +487,8 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
         boxListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Log.d("Detail", "BoxList Entry clicked at position " + position + " clicked.");
+                Log.d("Detail", "Boxlist is: " + entryDetail.getBoxList().toString());
                 Box clickedBox = entryDetail.getBoxFromBoxList(position);
                 Type boxType = clickedBox.getType();
                 switch (boxType){
@@ -503,6 +511,12 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
                         startMapBoxDetailIntent.putExtra(DetailActivityConfig.EXISTING_CONTENT_KEY, mapBox.coordinates);
                         startActivityForResult(startMapBoxDetailIntent, DetailActivityConfig.EDIT_BOX_REQUEST_CODE);
                         break;
+                    case MUSIC:
+                        Log.d("Spotify", "Spotifybox at position " + position + " clicked.");
+                        Intent startMusicboxEditingIntent = new Intent(DetailActivity.this, EditMusicBoxActivity.class);
+                        startMusicboxEditingIntent.putExtra(DetailActivityConfig.POSITION_IN_LIST_KEY, position);
+                        startMusicboxEditingIntent.putExtra(DetailActivityConfig.EXISTING_CONTENT_KEY, clickedBox.getString());
+                        startActivityForResult(startMusicboxEditingIntent, DetailActivityConfig.EDIT_BOX_REQUEST_CODE);
                 }
             }
         });

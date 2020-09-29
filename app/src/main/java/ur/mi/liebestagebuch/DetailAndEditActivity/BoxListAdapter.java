@@ -56,4 +56,13 @@ public class BoxListAdapter extends BaseAdapter {
         return boxList.get(position).getView(context);
     }
 
+    @Override
+    public boolean isEnabled(int position) {
+        return true;
+    }
+
+    @Override
+    public boolean areAllItemsEnabled() {
+        return true;
+    }
 }
