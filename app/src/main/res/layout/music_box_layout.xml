@@ -10,7 +10,9 @@
         android:background="@color/button_color"
         android:src="@drawable/ic_play_circle_outline_black_24dp"
         android:layout_marginRight="10dp"
-        android:focusable="false"/>
+        android:focusable="false"
+        android:layout_centerInParent="true"
+        android:layout_alignParentLeft="true"/>
 
     <TextView
         android:id="@+id/music_box_song_title"
@@ -19,7 +21,8 @@
         android:text="@string/music_box_title_default"
         android:textSize="17sp"
         android:layout_toRightOf="@id/music_box_play_button"
-        android:focusable="false"/>
+        android:focusable="false"
+        android:layout_marginTop="10dp"/>
 
     <TextView
         android:id="@+id/music_box_song_artist"
@@ -29,6 +32,7 @@
         android:layout_below="@id/music_box_song_title"
         android:layout_toRightOf="@id/music_box_play_button"
         android:layout_marginLeft="20dp"
-        android:focusable="false"/>
+        android:focusable="false"
+        android:layout_marginBottom="10dp"/>
 
 </RelativeLayout>

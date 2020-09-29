@@ -1,5 +1,6 @@
 package ur.mi.liebestagebuch.DetailAndEditActivity;
 
+import android.content.Context;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -9,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import ur.mi.liebestagebuch.Boxes.Box;
+import ur.mi.liebestagebuch.Boxes.SpotifyBoxReadyListener;
 import ur.mi.liebestagebuch.Encryption.CryptoListener;
 import ur.mi.liebestagebuch.Encryption.StringTransformHelper;
 import ur.mi.liebestagebuch.GridView.Emotion;
@@ -32,11 +34,15 @@ public class EntryDetail implements CryptoListener {
     private Date entryDate;
 
     private BoxListEncryptionListener listener;
+    private SpotifyBoxReadyListener spotifyListener;
+    private Context context;
 
     //Initialisierungs-Methoden:
 
-    public EntryDetail(Entry dbEntry, BoxListEncryptionListener listener){
+    public EntryDetail(Entry dbEntry, BoxListEncryptionListener listener, SpotifyBoxReadyListener spotifyListener, Context context){
         this.listener = listener;
+        this.spotifyListener = spotifyListener;
+        this.context = context;
         Log.d("Detail", "Creating Entry Detail");
         this.entryDate = dbEntry.getDate();
         setEmotion(dbEntry);
@@ -142,7 +148,7 @@ public class EntryDetail implements CryptoListener {
     public void onDecryptionFinished(String result) {
         Log.d("Detail", "Decryption finished");
         Log.d("Detail", "Decrypted String: " + result);
-        this.boxList = StringTransformHelper.getBoxListFromString(result);
+        this.boxList = StringTransformHelper.getBoxListFromString(result, spotifyListener, context);
         listener.onBoxListDecryptionFinished();
     }
 

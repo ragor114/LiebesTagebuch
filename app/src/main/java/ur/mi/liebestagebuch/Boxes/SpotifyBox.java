@@ -112,6 +112,8 @@ public class SpotifyBox implements Box {
         if(songTitleString != null){
             songTitleView.setText(songTitleString);
             songArtistView.setText(songArtistString);
+        } else{
+            setUpSpotifyWebApi();
         }
 
         if(playButtonOnClickListener != null){

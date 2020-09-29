@@ -432,7 +432,7 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
             Log.d("Detail", "Entry found");
             isReadyToFinish = true;
             Log.d("Encryption", "found Entry: " + foundEntry.toString());
-            entryDetail = new EntryDetail(foundEntry, this);
+            entryDetail = new EntryDetail(foundEntry, this, this, this);
             setUpViews();
         }
     }
