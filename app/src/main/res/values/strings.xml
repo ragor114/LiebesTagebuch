@@ -23,4 +23,8 @@
     <string name="choose_picture_button_text">Choose Picture</string>
     <string name="wrong_password">Wrong Password!</string>
     <string name="set_password_first">Please set the password before using fingerprints</string>
+
+
+    <string name="notification_title">Dear Diary...</string>
+    <string name="notification_text">Don\'t forget to write a diary entry today!</string>
 </resources>
