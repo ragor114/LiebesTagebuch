@@ -3,6 +3,7 @@
     package="ur.mi.liebestagebuch">
     
     <uses-permission android:name="android.permission.USE_BIOMETRIC" />
+    <uses-permission android:name="android.permission.SET_ALARM"/>
 
     <application
         android:allowBackup="true"
@@ -24,6 +25,12 @@
         <activity android:name=".DetailAndEditActivity.TypeChooserActivity"/>
         <activity android:name=".DetailAndEditActivity.EditTextBoxActivity"/>
         <activity android:name=".DetailAndEditActivity.EditPictureBoxActivity"/>
+        <activity android:name=".Notification.RepeatingActivity"/>
+
+        <receiver android:name=".Notification.Reminder"/>
+
+
+
     </application>
 
 </manifest>
