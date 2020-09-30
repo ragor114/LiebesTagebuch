@@ -7,7 +7,11 @@ import androidx.biometric.BiometricPrompt;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.app.AlarmManager;
 import android.app.KeyguardManager;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -29,6 +33,7 @@ import java.util.concurrent.Executors;
 
 import ur.mi.liebestagebuch.Encryption.SecurePasswordSaver;
 import ur.mi.liebestagebuch.GridView.GridActivity;
+import ur.mi.liebestagebuch.Notification.Reminder;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -51,12 +56,16 @@ public class LoginActivity extends AppCompatActivity {
     private EditText editTextPassword ;
     private boolean isFirstRun;
 
+
     public static String correctPassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        createNotificationChannel();
+
 
         isFirstRun = false;
 
@@ -75,6 +84,7 @@ public class LoginActivity extends AppCompatActivity {
                 Log.d("login", "Stored password: " + storedPassword);
                 if(storedPassword.equals(editTextPassword.getText().toString())){
                     Log.d("login", "Password correct");
+                    setNotificationTime();
                     loginSuccess();
                 } else{
                     loginFingerprintText.setText(R.string.wrong_password);
@@ -93,6 +103,34 @@ public class LoginActivity extends AppCompatActivity {
                 }
             });
             prefs.edit().putBoolean("firstrun", false).commit();
+
+        }
+    }
+
+    private void setNotificationTime() {
+        Calendar calendar = Calendar.getInstance();
+
+        calendar.set(Calendar.HOUR_OF_DAY, 18);
+        calendar.set(Calendar.MINUTE, 48);
+
+        Intent intent = new Intent(LoginActivity.this, Reminder.class);
+        PendingIntent pendingIntent = PendingIntent. getBroadcast(LoginActivity.this, 0, intent, 0);
+
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+    }
+
+    private void createNotificationChannel(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "DearDiaryReminderChannel";
+            String description = "Channel for Dear Diary Reminder";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel("notification", name, importance);
+            channel.setDescription(description);
+
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
         }
     }
 
@@ -185,6 +223,7 @@ public class LoginActivity extends AppCompatActivity {
             loginSuccess();
         }
     }
+
     
 }
 
