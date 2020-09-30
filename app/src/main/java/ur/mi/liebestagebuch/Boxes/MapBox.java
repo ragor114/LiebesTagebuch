@@ -59,17 +59,51 @@ public class MapBox implements Box {
         try {
             adresses = geocoder.getFromLocation(coordinates.latitude, coordinates.longitude, 1);
             Address address = adresses.get(0);
-            String addressString = "No corresponding Address found.";
-            if(address.getFeatureName() != null){
-                addressString = address.getFeatureName();
-            } else if(address.getThoroughfare() != null){
-                addressString = address.getThoroughfare();
-            } else if(address.getCountryName() != null){
-                addressString = address.getCountryName();
+            String addressString = "";
+
+            Log.d("Maps", "Address found: " + address.toString());
+
+            if(address.getCountryName() != null){
+                addressString += address.getCountryName();
             }
-            geocodingView.setText(addressString);
+            if(address.getLocality() != null){
+                if(addressString.equals("")){
+                    addressString += address.getLocality();
+                } else{
+                    addressString += ", " + address.getLocality();
+                }
+            }
+            if(address.getAdminArea() != null){
+                if(addressString.equals("")){
+                    addressString += address.getAdminArea();
+                } else{
+                    addressString += ", " + address.getAdminArea();
+                }
+            }
+            if(address.getThoroughfare() != null){
+                if(address.equals("")){
+                    addressString += address.getThoroughfare();
+                } else{
+                    addressString += ", " + address.getThoroughfare();
+                }
+            }
+            if(address.getFeatureName() != null){
+                if(addressString.equals("")){
+                    addressString += address.getFeatureName();
+                } else{
+                    addressString += ", " + address.getFeatureName();
+                }
+            }
+
+            if(addressString.equals("")){
+                geocodingView.setText("No corresponding Address found.");
+            } else{
+                geocodingView.setText(addressString);
+            }
+
         } catch (IOException e) {
             geocodingView.setText("No corresponding Address found.");
+            e.printStackTrace();
         }
 
         return convertView;
