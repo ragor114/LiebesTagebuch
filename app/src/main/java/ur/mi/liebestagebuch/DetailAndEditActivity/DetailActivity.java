@@ -528,11 +528,13 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
                         startMusicboxEditingIntent.putExtra(DetailActivityConfig.POSITION_IN_LIST_KEY, position);
                         startMusicboxEditingIntent.putExtra(DetailActivityConfig.EXISTING_CONTENT_KEY, clickedBox.getString());
                         startActivityForResult(startMusicboxEditingIntent, DetailActivityConfig.EDIT_BOX_REQUEST_CODE);
+                        break;
                     case HEADER:
                         Intent startHeaderboxEditingIntent = new Intent(DetailActivity.this, EditHeaderBoxActivity.class);
                         startHeaderboxEditingIntent.putExtra(DetailActivityConfig.POSITION_IN_LIST_KEY, position);
                         startHeaderboxEditingIntent.putExtra(DetailActivityConfig.EXISTING_CONTENT_KEY, clickedBox.getString());
                         startActivityForResult(startHeaderboxEditingIntent, DetailActivityConfig.EDIT_BOX_REQUEST_CODE);
+                        break;
                 }
             }
         });
