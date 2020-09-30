@@ -20,20 +20,32 @@ import ur.mi.liebestagebuch.R;
 
 public class MapBox implements Box {
 
+    /*
+     * Eine MapBox repräsentiert in der Liste eine gespeicherte GoogleMap. Da es laut Google nicht
+     * wirklich möglich ist mehrere GoogleMaps in einer Activity an zu zeigen (es kann dabei zu vielen
+     * Fehlern kommen) zeigt die MapBox nur die Koordinaten und die durch Geocoding erhaltene
+     * Addresse an.
+     *
+     * Entwickelt von Jannik Wiese.
+     */
+
     private String content;
     public LatLng coordinates;
 
-    public MapBox(LatLng coordinates){
+    // Dem Konstruktor wird ein LatLng-Objekt übergeben, zu dem dann eine Stringrepräsentation erstellt wird.
+    public MapBox(LatLng coordinates) {
         this.coordinates = coordinates;
         content = "Lat: - " + coordinates.latitude + " - Long: - " + coordinates.longitude;
         String[] splits = content.split(" - ");
         Log.d("MapView", "0:" + splits[0] + " 1:" + splits[1] + " 2:" + splits[2] + " 3:" + splits[3]);
     }
 
-    public MapBox(String content){
+    // Dem Konstruktor kann auch ein String übergeben werden, aus dem dann ein LatLng-Objekt generiert wird.
+    public MapBox(String content) {
         setContent(content);
     }
 
+    // Gespeichert wird die String-Repräsentation des LatLng-Objekts
     @Override
     public String getString() {
         return content;
@@ -54,50 +66,13 @@ public class MapBox implements Box {
 
         latView.setText("Lat: " + coordinates.latitude);
         lngView.setText("Long: " + coordinates.longitude);
-        Geocoder geocoder = new Geocoder(context);
-        List<Address> adresses = new ArrayList<>();
+
         try {
-            adresses = geocoder.getFromLocation(coordinates.latitude, coordinates.longitude, 1);
-            Address address = adresses.get(0);
-            String addressString = "";
+            String addressString = getGeocodedString(context);
 
-            Log.d("Maps", "Address found: " + address.toString());
-
-            if(address.getCountryName() != null){
-                addressString += address.getCountryName();
-            }
-            if(address.getLocality() != null){
-                if(addressString.equals("")){
-                    addressString += address.getLocality();
-                } else{
-                    addressString += ", " + address.getLocality();
-                }
-            }
-            if(address.getAdminArea() != null){
-                if(addressString.equals("")){
-                    addressString += address.getAdminArea();
-                } else{
-                    addressString += ", " + address.getAdminArea();
-                }
-            }
-            if(address.getThoroughfare() != null){
-                if(address.equals("")){
-                    addressString += address.getThoroughfare();
-                } else{
-                    addressString += ", " + address.getThoroughfare();
-                }
-            }
-            if(address.getFeatureName() != null){
-                if(addressString.equals("")){
-                    addressString += address.getFeatureName();
-                } else{
-                    addressString += ", " + address.getFeatureName();
-                }
-            }
-
-            if(addressString.equals("")){
+            if (addressString.equals("")) {
                 geocodingView.setText("No corresponding Address found.");
-            } else{
+            } else {
                 geocodingView.setText(addressString);
             }
 
@@ -109,6 +84,59 @@ public class MapBox implements Box {
         return convertView;
     }
 
+    /*
+     * Mithilfe eines Geocoders werden aus den Koordinaten Adressen gemacht und der Adressstring
+     * sofern bestimmte Informationen vorhanden sind immer erweitert.
+     * Sollte keine Adresse gefunden werden können wird der Inhalt des TextViews (in der getView()-
+     * Methode) auf "No corresponding Address found." gesetzt.
+     */
+    private String getGeocodedString(Context context) throws IOException {
+        Geocoder geocoder = new Geocoder(context);
+        List<Address> adresses = geocoder.getFromLocation(coordinates.latitude, coordinates.longitude, 1);
+        Address address = adresses.get(0);
+        String addressString = "";
+
+        Log.d("Maps", "Address found: " + address.toString());
+
+        if (address.getCountryName() != null) {
+            addressString += address.getCountryName();
+        }
+        if (address.getLocality() != null) {
+            if (addressString.equals("")) {
+                addressString += address.getLocality();
+            } else {
+                addressString += ", " + address.getLocality();
+            }
+        }
+        if (address.getAdminArea() != null) {
+            if (addressString.equals("")) {
+                addressString += address.getAdminArea();
+            } else {
+                addressString += ", " + address.getAdminArea();
+            }
+        }
+        if (address.getThoroughfare() != null) {
+            if (address.equals("")) {
+                addressString += address.getThoroughfare();
+            } else {
+                addressString += ", " + address.getThoroughfare();
+            }
+        }
+        if (address.getFeatureName() != null) {
+            if (addressString.equals("")) {
+                addressString += address.getFeatureName();
+            } else {
+                addressString += ", " + address.getFeatureName();
+            }
+        }
+
+        return addressString;
+    }
+
+    /*
+     * Wenn der Inhaltsstring geändert wird ändert diese Methode das LatLng-Objekt. Wichtig dabei ist
+     * nur, dass das Format "Lat - <Zahl> - Long - <Zahl>" eingahalten wird.
+     */
     @Override
     public void setContent(String content) {
         this.content = content;

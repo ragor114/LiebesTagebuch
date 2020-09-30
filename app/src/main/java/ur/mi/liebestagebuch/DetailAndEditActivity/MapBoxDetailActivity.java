@@ -23,6 +23,15 @@ import ur.mi.liebestagebuch.R;
 
 public class MapBoxDetailActivity extends AppCompatActivity implements OnMapReadyCallback {
 
+    /*
+     * Da eine Activity laut Google nicht mehrere Maps anzeigen soll, wird diese Activity genutzt,
+     * um den Inhalt von MapBoxen an zu zeigen.
+     * Dazu wird eine Karte mit der nicht interagiert werden kann angezeigt.
+     * Per Klick auf das Stift Icon in der Action Bar gelangt man in die Bearbeitungs-Activity für Maps.
+     *
+     * Entwickelt von Jannik Wiese.
+     */
+
     private MapView mapView;
     private LatLng coordinates;
     private int positionInList;
@@ -32,6 +41,7 @@ public class MapBoxDetailActivity extends AppCompatActivity implements OnMapRead
         super.onCreate(savedInstanceState);
         setContentView(R.layout.map_box_detail_activity);
 
+        // Aus dem Intent werden die Koordinaten und (falls bearbeitet werden soll die Position der Box geladen)
         Intent callingIntent = getIntent();
         Bundle extras = callingIntent.getExtras();
         this.coordinates = (LatLng) extras.get(DetailActivityConfig.EXISTING_CONTENT_KEY);
@@ -43,6 +53,7 @@ public class MapBoxDetailActivity extends AppCompatActivity implements OnMapRead
         mapView.setClickable(false);
     }
 
+    // MapViews müssen über jede Änderung im Lifecycle informiert werden:
     @Override
     protected void onStart() {
         super.onStart();
@@ -91,6 +102,8 @@ public class MapBoxDetailActivity extends AppCompatActivity implements OnMapRead
         return super.onCreateOptionsMenu(menu);
     }
 
+    // Wird der Stift in der Action Bar geklickt wird die Bearbeitungsactivity gestartet und dieser
+    // die Koordinaten und die Position der Box weiter gereicht.
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if(item.getItemId() == R.id.start_editing_map_box){
@@ -102,6 +115,8 @@ public class MapBoxDetailActivity extends AppCompatActivity implements OnMapRead
         return super.onOptionsItemSelected(item);
     }
 
+    // Meldet sich die Bearbeitungs-Activity zurück wird das Ergebnis genau so an die DetailActivity
+    // zurück übergeben.
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -109,6 +124,8 @@ public class MapBoxDetailActivity extends AppCompatActivity implements OnMapRead
         finish();
     }
 
+    // Wurde die GoogleMap asynchron erfolgreich geladen wird die Interaktion mit der Map deaktiviert
+    // und ein Marker an den Koordinaten platziert.
     @Override
     public void onMapReady(GoogleMap googleMap) {
         Log.d("MapView", "Map is showing");

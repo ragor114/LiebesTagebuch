@@ -27,13 +27,10 @@ public class BoxListAdapter extends BaseAdapter {
 
     private ArrayList<Box> boxList;
     private Context context;
-    private boolean lastMapViewReady;
-    private MapView lastMapView;
 
     public BoxListAdapter(ArrayList<Box> boxList, Context context){
         this.boxList = boxList;
         this.context = context;
-        lastMapViewReady = true;
     }
 
     @Override

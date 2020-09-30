@@ -10,12 +10,21 @@ import ur.mi.liebestagebuch.R;
 
 public class HeaderBox implements Box {
 
+    /*
+     * Eine HeaderBox beinhaltet eine Überschrift in Form eines TextViews.
+     *
+     * Entwickelt von Jannik Wiese.
+     */
+
+    //Die Überschrift:
     private String header;
 
+    // Der Text der Überschrift wird im Konsruktor übergeben.
     public HeaderBox(String header){
         this.header = header;
     }
 
+    //In die Datenbank wird der Text der Überschrift gespeichert.
     @Override
     public String getString() {
         return header;
@@ -26,6 +35,7 @@ public class HeaderBox implements Box {
         return Type.HEADER;
     }
 
+    // Das Layout einer Headerbox wird inflated und der Inhalt des TextViews auf den Inhalt der Headerbox gesetzt.
     @Override
     public View getView(Context context) {
         LayoutInflater inflater = LayoutInflater.from(context);

@@ -2,7 +2,6 @@ package ur.mi.liebestagebuch.EditActivities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.telecom.Call;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -35,6 +34,17 @@ import ur.mi.liebestagebuch.R;
 
 public class EditMusicBoxActivity extends AppCompatActivity {
 
+    /*
+     * Die EditMusicBoxActivity dient dazu eine SpotifyBox zu erzeugen. Dazu können Links zu Songs
+     * auf Spotify oder die Suchleiste genutzt werden.
+     * Dafür sind aber bestimmte Voraussetzungen nötig, ohne die das Spotify SDK und die Spotify Web
+     * API nicht wie geplant funktionieren. So muss die Spotify App installiert und in Online-Modus sein
+     * und der Nutzer muss über einen Premium Account verfügen. Sind diese Bedingungen nicht erfüllt
+     * treten leider unschöne Fehler auf.
+     *
+     * Entwickelt von Jannik Wiese.
+     */
+
     private SpotifyAppRemote appRemote;
 
     private EditText linkEditText;
@@ -55,6 +65,12 @@ public class EditMusicBoxActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.create_music_box_activity);
         Log.d("Spotify", "EditMusicBox created");
+        setUpInvisibleViews();
+    }
+
+    // Die drei Views am unteren Bildschirmrand werden erst sichtbar (und sinnvoll) wenn ein Song
+    // gewählt wurde.
+    private void setUpInvisibleViews() {
         editMode = false;
 
         songUri = "";
@@ -70,14 +86,13 @@ public class EditMusicBoxActivity extends AppCompatActivity {
             }
         });
 
-        if(songUri.equals("")){
-            playButton.setVisibility(View.INVISIBLE);
-            trackNameView.setVisibility(View.INVISIBLE);
-            artistNameView.setVisibility(View.INVISIBLE);
-        }
-
+        playButton.setVisibility(View.INVISIBLE);
+        trackNameView.setVisibility(View.INVISIBLE);
+        artistNameView.setVisibility(View.INVISIBLE);
     }
 
+    // Kann sich der Nutzer als Premium-Member authentifizieren, wird die SpotifyAppRemote verbunden.
+    // Erst wenn das möglich ist werden die anderen Views mit Funktionalität ausgestattet.
     @Override
     protected void onStart() {
         super.onStart();
@@ -103,27 +118,32 @@ public class EditMusicBoxActivity extends AppCompatActivity {
         Log.d("Spotify", "Tried to connect");
     }
 
+    /*
+     * Ist noch kein Access Token vorhanden wird ein neuer angefragt, ansonsten wird die Spotify
+     * Web API initialisiert.
+     * Wird der linkOkButton gedrückt wird die mit dem Link korrespondierende SongUri gespeichert
+     * und die Informationen über den Song angezeigt.
+     * Wird der finishButton geklickt wird die SongUri und eventuell die Position der aufrufenden
+     * Box an die aufrufende Activity zurück kommuniziert.
+     */
     private void setUpViews() {
         linkEditText = findViewById(R.id.spotify_link_edit);
         searchEditText = findViewById(R.id.spotify_search_edit);
         linkOkButton = findViewById(R.id.spotify_link_ok);
         finishButton = findViewById(R.id.finish_spotify_edit);
 
-        linkOkButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                linkOkPressed();
-            }
-        });
-
         if(DetailActivityConfig.ACCESS_TOKEN == null || DetailActivityConfig.ACCESS_TOKEN.equals("")){
-            AuthenticationRequest.Builder builder = new AuthenticationRequest.Builder(DetailActivityConfig.CLIENT_ID, AuthenticationResponse.Type.TOKEN, DetailActivityConfig.REDIRECT_URI);
-            builder.setScopes(new String[]{"streaming"});
-            AuthenticationRequest request = builder.build();
-            AuthenticationClient.openLoginActivity(this, DetailActivityConfig.SPOTIFY_AUTH_REQUEST_CODE, request);
+            getAccessToken();
         } else{
             setUpSpotifyWebApi();
         }
+
+        linkOkButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                okPressed();
+            }
+        });
 
         finishButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -131,6 +151,13 @@ public class EditMusicBoxActivity extends AppCompatActivity {
                 finishEditing();
             }
         });
+    }
+
+    private void getAccessToken() {
+        AuthenticationRequest.Builder builder = new AuthenticationRequest.Builder(DetailActivityConfig.CLIENT_ID, AuthenticationResponse.Type.TOKEN, DetailActivityConfig.REDIRECT_URI);
+        builder.setScopes(new String[]{"streaming"});
+        AuthenticationRequest request = builder.build();
+        AuthenticationClient.openLoginActivity(this, DetailActivityConfig.SPOTIFY_AUTH_REQUEST_CODE, request);
     }
 
     private void finishEditing() {
@@ -163,6 +190,10 @@ public class EditMusicBoxActivity extends AppCompatActivity {
         }
     }
 
+    /*
+     * Konnte die Spotify Web API erfolgreich initialisiert werden, können die Informationen über den
+     * übergebenen Song (beim Bearbeiten) abgerufen und in die Views platziert werden.
+     */
     private void setUpSpotifyWebApi() {
         api = new SpotifyApi();
         api.setAccessToken(DetailActivityConfig.ACCESS_TOKEN);
@@ -185,44 +216,62 @@ public class EditMusicBoxActivity extends AppCompatActivity {
         return callingIntent.getExtras();
     }
 
-    private void linkOkPressed() {
+    // Wurde der Ok-Button gedrückt wird überprüft ob eine Suche oder eine Link-Umwandlung ausgeführt werden soll.
+    private void okPressed() {
         if(linkEditText.getText().toString() != null && !linkEditText.getText().toString().equals("")){
-            String pastedLink = linkEditText.getText().toString();
-            String[] splits = pastedLink.split("/");
-            if(splits.length > 3) {
-                if (splits[3].equals("track")) {
-                    logSplit(splits);
-                    String[] secondSplit = splits[4].split("\\Q?\\E");
-                    logSecondSplit(secondSplit);
-                    setSongUri(secondSplit[0]);
-                    linkEditText.setText("");
-                } else {
-                    invalidLinkMessage();
-                }
-            } else{
-                invalidLinkMessage();
-            }
+            linkOkPressed();
         } else if(searchEditText.getText().toString() != null && !searchEditText.getText().toString().equals("")){
-            if(spotify != null){
-                spotify.searchTracks(searchEditText.getText().toString(), new Callback<TracksPager>() {
-                    @Override
-                    public void success(TracksPager tracksPager, Response response) {
-                        searchEditText.setText("");
-                        if(tracksPager.tracks.items.size() > 0){
-                            String songId = tracksPager.tracks.items.get(0).id;
-                            setSongUri(songId);
-                        } else{
-                            sendNoItemsFoundMessage();
-                        }
-                    }
+            searchOkPressed();
+        } else{
+            invalidLinkMessage();
+        }
+    }
 
-                    @Override
-                    public void failure(RetrofitError error) {
-                        sendCantReachSpotifyError();
+    /*
+     * Soll eine Suche ausgeführt werden, wird der Inhalt der Suchleiste an die Spotify Web API
+     * übergeben, die nach der ID des bestmöglichen Ergebnisses sucht.
+     * Auf Basis dieser ID werden dann die SongUri und die Views aktualisiert.
+     */
+    private void searchOkPressed() {
+        if(spotify != null){
+            spotify.searchTracks(searchEditText.getText().toString(), new Callback<TracksPager>() {
+                @Override
+                public void success(TracksPager tracksPager, Response response) {
+                    searchEditText.setText("");
+                    if(tracksPager.tracks.items.size() > 0){
+                        String songId = tracksPager.tracks.items.get(0).id;
+                        setSongUri(songId);
+                    } else{
+                        sendNoItemsFoundMessage();
                     }
-                });
-            } else{
-                sendCantReachSpotifyError();
+                }
+                @Override
+                public void failure(RetrofitError error) {
+                    sendCantReachSpotifyError();
+                }
+            });
+        } else{
+            sendCantReachSpotifyError();
+        }
+    }
+
+    /*
+     * Soll ein Link umgewandelt werden wird überprüft ob es sich um einen Link zu einem Spotify-Song
+     * handelt. Falls ja wird die Id des Songs aus dem Link extrahiert und in die SongUri gespeichert
+     * und die Views aktualisiert.
+     */
+    private void linkOkPressed() {
+        String pastedLink = linkEditText.getText().toString();
+        String[] splits = pastedLink.split("/");
+        if(splits.length > 3) {
+            if (splits[3].equals("track")) {
+                logSplit(splits);
+                String[] secondSplit = splits[4].split("\\Q?\\E");
+                logSecondSplit(secondSplit);
+                setSongUri(secondSplit[0]);
+                linkEditText.setText("");
+            } else {
+                invalidLinkMessage();
             }
         } else{
             invalidLinkMessage();
@@ -241,6 +290,11 @@ public class EditMusicBoxActivity extends AppCompatActivity {
         Toast.makeText(this, "Please enter a valid Link to a Song on Spotify", Toast.LENGTH_SHORT).show();
     }
 
+    /*
+     * Aus einer trackId wird eine SongUri gemacht, mit der der Song abgespielt werden kann.
+     * Außerdem werden mit Hilfe der Spotify Web API die Informationen über den Track geladen und
+     * die Views entsprechend angepasst.
+     */
     private void setSongUri(String trackId) {
         songUri = "spotify:track:" + trackId;
         Log.d("Spotify", "songUri is set to: " + songUri);
@@ -250,18 +304,22 @@ public class EditMusicBoxActivity extends AppCompatActivity {
             @Override
             public void success(Track track, Response response) {
                 Log.d("Spotify", "Title of track: " + track.name);
-                trackNameView.setText(track.name);
-                artistNameView.setText(track.artists.get(0).name);
-                trackNameView.setVisibility(View.VISIBLE);
-                artistNameView.setVisibility(View.VISIBLE);
+                refreshViews(track);
             }
 
             @Override
             public void failure(RetrofitError error) {
                 Log.d("Spotify", "Error getting track information");
-                Toast.makeText(getApplicationContext(), "Error getting Song Information, check connection and try again later.", Toast.LENGTH_SHORT).show();;
+                sendCantReachSpotifyError();
             }
         });
+    }
+
+    private void refreshViews(Track track) {
+        trackNameView.setText(track.name);
+        artistNameView.setText(track.artists.get(0).name);
+        trackNameView.setVisibility(View.VISIBLE);
+        artistNameView.setVisibility(View.VISIBLE);
     }
 
     private void logSecondSplit(String[] secondSplit) {
@@ -279,8 +337,5 @@ public class EditMusicBoxActivity extends AppCompatActivity {
         Log.d("Spotify", "4: " + splits[4]);
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-    }
+
 }

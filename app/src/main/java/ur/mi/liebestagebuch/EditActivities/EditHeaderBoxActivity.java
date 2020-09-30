@@ -16,6 +16,13 @@ import ur.mi.liebestagebuch.R;
 
 public class EditHeaderBoxActivity extends AppCompatActivity {
 
+    /*
+     * Mit hilfe der EditHeaderBoxActivity kann eine neue Überschrift erzeugt werden, die dann in der
+     * Liste angezeigt wird.
+     *
+     * Entwickelt von Jannik Wiese.
+     */
+
     private EditText headerInputET;
     private ImageButton headerFinishedButton;
 
@@ -30,14 +37,14 @@ public class EditHeaderBoxActivity extends AppCompatActivity {
         headerInputET = (EditText) findViewById(R.id.new_header_edittext);
         headerFinishedButton = (ImageButton) findViewById(R.id.button_finish_header);
 
-        Intent callingIntent = getIntent();
-        Bundle extras = callingIntent.getExtras();
+        setUpForEditing();
 
-        if(extras != null){
-            String existingHeader = extras.getString(DetailActivityConfig.EXISTING_CONTENT_KEY);
-            headerInputET.setText(existingHeader);
-        }
-
+        /*
+         * Wird der Fertigstellen Button geklickt wird überprüft, ob der eingegebene Text '<' oder
+         * '|' enthält, was zu Problemen beim Speichern führen könnte. Falls das der Fall ist wird
+         * ein Toast angezeigt, falls nicht wird der Inhalt des EditTexts und eventuell die Position
+         * der zubearbeitenden Box an die aufrufende Activity zurück übergeben.
+         */
         headerFinishedButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -51,6 +58,16 @@ public class EditHeaderBoxActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void setUpForEditing() {
+        Intent callingIntent = getIntent();
+        Bundle extras = callingIntent.getExtras();
+
+        if(extras != null){
+            String existingHeader = extras.getString(DetailActivityConfig.EXISTING_CONTENT_KEY);
+            headerInputET.setText(existingHeader);
+        }
     }
 
     private void showInvalidCharsError() {

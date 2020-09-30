@@ -320,6 +320,7 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
         }
     }
 
+    // Alle Spotify Boxen werden informiert, dass jetzt ein Access Token zur Verfügung steht.
     private void setUpSpotifyWebApis() {
         for(Box current : entryDetail.getBoxList()){
             if(current.getType() == Type.MUSIC){
@@ -549,6 +550,11 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
         });
     }
 
+    /*
+     * Falls eine SpotifyBox meldet keinen Access Token zu haben startet die DetailActivity eine
+     * Abfrage für den Access Token, wofür entweder die Spotify App oder eine Website geöffnet wird.
+     * Ist der Nutzer angemeldet, erhält die DetailActivity sofort einen validen Token.
+     */
     @Override
     public void needsAccessToken() {
         AuthenticationRequest.Builder builder = new AuthenticationRequest.Builder(DetailActivityConfig.CLIENT_ID, AuthenticationResponse.Type.TOKEN, DetailActivityConfig.REDIRECT_URI);
@@ -557,6 +563,11 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
         AuthenticationClient.openLoginActivity(this, DetailActivityConfig.SPOTIFY_AUTH_REQUEST_CODE, request);
     }
 
+    /*
+     * Meldet eine SpotifyBox, dass sie asynchron neuen Inhalt erhalten hat, wird der Adapter über
+     * eine Veränderung im ListView informiert, wodurch dieser wieder die getView() Methode der SpotifyBox
+     * aufruft, die dadurch den veränderten Inhalt anzeigt.
+     */
     @Override
     public void updatedViews() {
         Log.d("Spotify", "Callback: updatedView()");
