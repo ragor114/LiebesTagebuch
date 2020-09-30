@@ -1,19 +1,24 @@
 package ur.mi.liebestagebuch.EditActivities;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.location.Address;
+import android.location.Criteria;
 import android.location.Geocoder;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -171,12 +176,21 @@ public class EditMapBoxActivity extends AppCompatActivity implements OnMapReadyC
     @Override
     public void onMapReady(GoogleMap googleMap) {
         Log.d("MapView", "Map is showing");
-        coordinates = new LatLng(49,12);
 
         if(extras != null){
             coordinates = (LatLng) extras.get(DetailActivityConfig.EXISTING_CONTENT_KEY);
+        } else{
+            setCoordinatesToDevicePosition();
         }
 
+        this.googleMap = googleMap;
+        setUpMarkerOnMap();
+
+        setUpFinishButton();
+        setUpSearchBar();
+    }
+
+    private void setUpMarkerOnMap() {
         googleMap.setOnMarkerDragListener(this);
         markerOptions = new MarkerOptions().position(coordinates)
                 .title("Marker")
@@ -184,12 +198,41 @@ public class EditMapBoxActivity extends AppCompatActivity implements OnMapReadyC
         googleMap.addMarker(markerOptions);
         zoom = 15;
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(coordinates, zoom));
-        this.googleMap = googleMap;
-
-        setUpFinishButton();
-        setUpSearchBar();
-
         editMap.onResume();
+    }
+
+
+    private void setCoordinatesToDevicePosition() {
+        if(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                || ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED){
+            Criteria criteria = new Criteria();
+            criteria.setAccuracy(Criteria.ACCURACY_FINE);
+            criteria.setPowerRequirement(Criteria.POWER_MEDIUM);
+            criteria.setAltitudeRequired(false);
+            criteria.setBearingRequired(false);
+            criteria.setSpeedRequired(false);
+            LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            String bestProvider = locationManager.getBestProvider(criteria, true);
+            Location lastLoc = locationManager.getLastKnownLocation(bestProvider);
+            coordinates = new LatLng(lastLoc.getLatitude(), lastLoc.getLongitude());
+            if(googleMap != null){
+                googleMap.clear();
+                setUpMarkerOnMap();
+            }
+        } else{
+            coordinates = new LatLng(49,12);
+            Toast.makeText(this, "Please grant location permissions.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if(requestCode == DetailActivityConfig.PERMISSION_REQUEST_CODE){
+            if(extras == null) {
+                setCoordinatesToDevicePosition();
+            }
+        }
     }
 
     @Override
