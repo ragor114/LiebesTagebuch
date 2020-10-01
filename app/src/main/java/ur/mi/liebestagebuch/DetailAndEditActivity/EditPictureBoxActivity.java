@@ -167,7 +167,7 @@ public class EditPictureBoxActivity extends AppCompatActivity {
         byte[] BYTE;
         BitmapFactory bitmapFactory = new BitmapFactory();
 
-        bmp.compress(Bitmap.CompressFormat.JPEG, 15, by);
+        bmp.compress(Bitmap.CompressFormat.JPEG, 10, by);
         BYTE = by.toByteArray();
 
         return BitmapFactory.decodeByteArray(BYTE, 0, BYTE.length);
