@@ -52,7 +52,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-<<<<<<< HEAD
         <activity android:name=".GridView.GridActivity" />
         <activity android:name=".Settings.SettingsActivity" />
         <activity android:name=".DetailAndEditActivity.DetailActivity" />
@@ -66,19 +65,11 @@
         <activity
             android:name="com.spotify.sdk.android.authentication.LoginActivity"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
-=======
-        <activity android:name=".GridView.GridActivity"/>
-        <activity android:name=".Settings.SettingsActivity"/>
-        <activity android:name=".DetailAndEditActivity.DetailActivity"/>
-        <activity android:name=".DetailAndEditActivity.TypeChooserActivity"/>
-        <activity android:name=".DetailAndEditActivity.EditTextBoxActivity"/>
-        <activity android:name=".DetailAndEditActivity.EditPictureBoxActivity"/>
       
         <receiver android:name=".Notification.Reminder"/>
 
 
 
->>>>>>> origin/moben-notifictaion-richtig
     </application>
 
 </manifest>
