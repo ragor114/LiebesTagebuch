@@ -25,8 +25,7 @@
         <activity android:name=".DetailAndEditActivity.TypeChooserActivity"/>
         <activity android:name=".DetailAndEditActivity.EditTextBoxActivity"/>
         <activity android:name=".DetailAndEditActivity.EditPictureBoxActivity"/>
-        <activity android:name=".Notification.RepeatingActivity"/>
-
+      
         <receiver android:name=".Notification.Reminder"/>
 
 
