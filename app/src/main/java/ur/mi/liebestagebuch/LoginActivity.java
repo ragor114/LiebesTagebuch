@@ -34,6 +34,7 @@ import java.util.concurrent.Executors;
 import ur.mi.liebestagebuch.Encryption.SecurePasswordSaver;
 import ur.mi.liebestagebuch.GridView.GridActivity;
 import ur.mi.liebestagebuch.Notification.Reminder;
+import ur.mi.liebestagebuch.Settings.SettingsActivity;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -78,7 +79,6 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Log.d("login", "clicked not firsttime");
                 String storedPassword = SecurePasswordSaver.getStoredPassword(getApplicationContext());
-                setNotificationTime();
                 Log.d("login", "Stored password: " + storedPassword);
                 if(storedPassword.equals(editTextPassword.getText().toString())){
                     Log.d("login", "Password correct");
@@ -104,21 +104,7 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    private void setNotificationTime() {
-        Calendar calendar = Calendar.getInstance();
 
-        calendar.set(Calendar.HOUR_OF_DAY, 18);
-        calendar.set(Calendar.MINUTE, 4);
-        calendar.set(Calendar.SECOND, 0);
-
-        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-
-        Intent intent = new Intent(LoginActivity.this, Reminder.class);
-        PendingIntent pendingIntent = PendingIntent. getBroadcast(LoginActivity.this, 1, intent, 0);
-
-
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
-    }
 
 
     protected void onResume(){
