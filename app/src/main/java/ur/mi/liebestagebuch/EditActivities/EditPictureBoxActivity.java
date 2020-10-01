@@ -4,16 +4,22 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import ur.mi.liebestagebuch.DetailAndEditActivity.DetailActivityConfig;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
 import ur.mi.liebestagebuch.Encryption.StringTransformHelper;
 import ur.mi.liebestagebuch.R;
 
@@ -36,6 +42,11 @@ public class EditPictureBoxActivity extends AppCompatActivity {
     private ImageButton finishChoosing;
     private ImageView previewImage;
 
+    private String currentPhotoPath;
+
+    private static final int REQUEST_IMAGE_CAPTURE = 1;
+    private static final int PICK_IMAGE = 2;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,6 +63,20 @@ public class EditPictureBoxActivity extends AppCompatActivity {
 
         Intent callingIntent = getIntent();
         Bundle extras = callingIntent.getExtras();
+
+        takePictureButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                takePhoto();
+            }
+        });
+
+        choosePictureButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                choosePhoto();
+            }
+        });
 
         finishChoosing.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -103,4 +128,49 @@ public class EditPictureBoxActivity extends AppCompatActivity {
         });
     }
 
+    private void takePhoto(){
+        Intent takeImage = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takeImage.resolveActivity(getPackageManager()) != null){
+            startActivityForResult(takeImage, REQUEST_IMAGE_CAPTURE);
+        }
+    }
+
+    private void choosePhoto(){
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent,"Choose Image"),PICK_IMAGE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        //Foto aufnehmen
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            Bundle extras = data.getExtras();
+            Bitmap bitmap = (Bitmap) extras.get("data");
+            previewImage.setImageBitmap(bitmap);
+        }
+        //Foto aus Galerie wählen
+        if (requestCode == PICK_IMAGE && resultCode == RESULT_OK){
+            Uri imageUri = data.getData();
+            try {
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(),imageUri);
+                previewImage.setImageBitmap(compressBitmap(bitmap));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private Bitmap compressBitmap(Bitmap bmp) {
+        ByteArrayOutputStream by = new ByteArrayOutputStream();
+        byte[] BYTE;
+        BitmapFactory bitmapFactory = new BitmapFactory();
+
+        bmp.compress(Bitmap.CompressFormat.JPEG, 10, by);
+        BYTE = by.toByteArray();
+
+        return BitmapFactory.decodeByteArray(BYTE, 0, BYTE.length);
+    }
 }
