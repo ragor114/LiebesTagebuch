@@ -60,10 +60,14 @@ public class GridActivity extends AppCompatActivity implements AdapterView.OnIte
     private byte[] lastEditedSalt;
     private int lastEditedEntryEmotion;
 
+    private boolean savingLastEntryFinished;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.grid_activity);
+
+        savingLastEntryFinished = true;
 
         initGrid();
         dbHelper = new DBHelper(this, this);
@@ -143,13 +147,17 @@ public class GridActivity extends AppCompatActivity implements AdapterView.OnIte
     // dieses der DetailActivity als Extra übergeben, die forResult gestartet wird.
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Entry clickedEntry = entries.get(position);
-        Date clickedEntryDate = clickedEntry.getDate();
-        Emotion clickedEntryEmotion = clickedEntry.getEmotion();
+        if(savingLastEntryFinished) {
+            Entry clickedEntry = entries.get(position);
+            Date clickedEntryDate = clickedEntry.getDate();
+            Emotion clickedEntryEmotion = clickedEntry.getEmotion();
 
-        Intent intent = new Intent (GridActivity.this, DetailActivity.class);
-        intent.putExtra(DetailActivityConfig.ENTRY_DATE_KEY, clickedEntryDate);
-        startActivityForResult(intent, DetailActivityConfig.START_DETAIL_ACTIVITY_REQUEST_CODE);
+            Intent intent = new Intent(GridActivity.this, DetailActivity.class);
+            intent.putExtra(DetailActivityConfig.ENTRY_DATE_KEY, DateUtil.setToMidnight(clickedEntryDate));
+            startActivityForResult(intent, DetailActivityConfig.START_DETAIL_ACTIVITY_REQUEST_CODE);
+        } else{
+            Toast.makeText(this, "Please wait while last Entry is saved, this can take a minute.", Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void requestAllEmotions(){
@@ -207,9 +215,12 @@ public class GridActivity extends AppCompatActivity implements AdapterView.OnIte
 
                 // Die Informationen des EntryDetails müssen zwischengespeichert werden, während
                 // asynchron Datenbank- und Verschlüsselungsoperationen durchgeführt werden.
-                lastEditedEntryDate = entryDate;
+                Log.d("Date", "Before formatting milliseconds: " + entryDate.getTime());
+                lastEditedEntryDate = DateUtil.setToMidnight(entryDate);
+                Log.d("Date", "After formattting milliseconds: " + entryDate.getTime());
                 lastEditedBoxListString = boxListString;
                 lastEditedEntryEmotion = emotionInt;
+                savingLastEntryFinished = false;
                 dbHelper.newEntry(entryDate, emotionInt, "", null, null);
             }
         }
@@ -284,6 +295,7 @@ public class GridActivity extends AppCompatActivity implements AdapterView.OnIte
             case DetailActivityConfig.EMOTION_UPDATE_CODE:
                 Log.d("Detail", "Entry update complete");
                 lastEditedEntryEmotion = 0;
+                savingLastEntryFinished = true;
                 break;
         }
     }

@@ -3,15 +3,17 @@ package ur.mi.liebestagebuch.DetailAndEditActivity;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 
-import androidx.annotation.NonNull;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.OnMapReadyCallback;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import ur.mi.liebestagebuch.Boxes.Box;
+import ur.mi.liebestagebuch.Boxes.Type;
+import ur.mi.liebestagebuch.R;
 
 public class BoxListAdapter extends BaseAdapter {
 
@@ -49,5 +51,15 @@ public class BoxListAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         return boxList.get(position).getView(context);
+    }
+
+    @Override
+    public boolean isEnabled(int position) {
+        return true;
+    }
+
+    @Override
+    public boolean areAllItemsEnabled() {
+        return true;
     }
 }

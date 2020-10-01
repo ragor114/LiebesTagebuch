@@ -2,7 +2,6 @@ package ur.mi.liebestagebuch.DetailAndEditActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -16,24 +15,42 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.spotify.sdk.android.authentication.AuthenticationClient;
+import com.spotify.sdk.android.authentication.AuthenticationRequest;
+import com.spotify.sdk.android.authentication.AuthenticationResponse;
 
-import java.util.Arrays;
 import java.util.Date;
 
 import ur.mi.liebestagebuch.Boxes.Box;
+import ur.mi.liebestagebuch.Boxes.HeaderBox;
+import ur.mi.liebestagebuch.Boxes.MapBox;
 import ur.mi.liebestagebuch.Boxes.PictureBox;
+import ur.mi.liebestagebuch.Boxes.SpotifyBox;
+import ur.mi.liebestagebuch.Boxes.SpotifyBoxReadyListener;
 import ur.mi.liebestagebuch.Boxes.TextBox;
 import ur.mi.liebestagebuch.Boxes.Type;
+import ur.mi.liebestagebuch.EditActivities.EditHeaderBoxActivity;
+import ur.mi.liebestagebuch.EditActivities.EditMusicBoxActivity;
+import ur.mi.liebestagebuch.EditActivities.EditPictureBoxActivity;
+import ur.mi.liebestagebuch.EditActivities.EditTextBoxActivity;
+import ur.mi.liebestagebuch.EditActivities.TypeChooserActivity;
 import ur.mi.liebestagebuch.Encryption.CryptoListener;
 import ur.mi.liebestagebuch.Encryption.StringTransformHelper;
+import ur.mi.liebestagebuch.GridView.DateUtil;
 import ur.mi.liebestagebuch.GridView.Emotion;
 import ur.mi.liebestagebuch.R;
 import ur.mi.liebestagebuch.database.DBHelper;
 import ur.mi.liebestagebuch.database.DatabaseListener;
 import ur.mi.liebestagebuch.database.data.Entry;
 
-public class DetailActivity extends AppCompatActivity implements CryptoListener, DatabaseListener, BoxListEncryptionListener {
+public class DetailActivity extends AppCompatActivity implements CryptoListener, DatabaseListener, BoxListEncryptionListener, SpotifyBoxReadyListener {
 
     /*
      * In der DetailActivity werden das Datum, die ausgewählte Emotion und der Inhalt in Form von
@@ -75,7 +92,7 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
 
         Intent callingIntent = getIntent();
         Bundle extras = callingIntent.getExtras();
-        this.entryDate = (Date) extras.get(DetailActivityConfig.ENTRY_DATE_KEY);
+        this.entryDate = DateUtil.setToMidnight((Date) extras.get(DetailActivityConfig.ENTRY_DATE_KEY));
         Log.d("Detail", "Date loaded: " + entryDate.toString());
         dbHelper = new DBHelper(this, this);
         dbHelper.getEntryByDate(this.entryDate);
@@ -239,7 +256,7 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
         if(isReadyToFinish == true){
             Intent returnIntent = new Intent();
 
-            Date entryDate = entryDetail.getDate();
+            Date entryDate = DateUtil.setToMidnight(entryDetail.getDate());
             Emotion entryEmotion = entryDetail.getEmotion();
             String boxListString = entryDetail.getBoxListString();
 
@@ -279,12 +296,36 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
         if(resultCode == RESULT_OK){
             Log.d("Detail", "Result in Detail OK");
             Bundle extras = data.getExtras();
-            if(requestCode != DetailActivityConfig.EDIT_BOX_REQUEST_CODE) {
+            if(requestCode == DetailActivityConfig.SPOTIFY_AUTH_REQUEST_CODE){
+                gotAccessToken(resultCode, data);
+            } else if(requestCode != DetailActivityConfig.EDIT_BOX_REQUEST_CODE) {
                 newBoxResult(extras);
             } else if (requestCode == DetailActivityConfig.EDIT_BOX_REQUEST_CODE){
                 editBoxResult(extras);
             }
             boxListAdapter.notifyDataSetChanged();
+        }
+    }
+
+    private void gotAccessToken(int resultCode, Intent data) {
+        AuthenticationResponse response = AuthenticationClient.getResponse(resultCode, data);
+        switch (response.getType()){
+            case TOKEN:
+                DetailActivityConfig.ACCESS_TOKEN = response.getAccessToken();
+                setUpSpotifyWebApis();
+                break;
+            case ERROR:
+                Toast.makeText(this, "Error trying to authentificate Spotify", Toast.LENGTH_SHORT).show();
+                break;
+        }
+    }
+
+    // Alle Spotify Boxen werden informiert, dass jetzt ein Access Token zur Verfügung steht.
+    private void setUpSpotifyWebApis() {
+        for(Box current : entryDetail.getBoxList()){
+            if(current.getType() == Type.MUSIC){
+                ((SpotifyBox) current).gotAccessToken();
+            }
         }
     }
 
@@ -301,6 +342,16 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
         }
         if(extras.getString(DetailActivityConfig.PICTUREBOX_CONTENT_KEY) != null){
             newContent = extras.getString(DetailActivityConfig.PICTUREBOX_CONTENT_KEY);
+        }
+        if(extras.getString(DetailActivityConfig.MAP_BOX_CONTENT_KEY) != null){
+            newContent = extras.getString(DetailActivityConfig.MAP_BOX_CONTENT_KEY);
+        }
+        if(extras.getString(DetailActivityConfig.MUSIC_BOX_CONTENT_KEY) != null){
+            newContent = extras.getString(DetailActivityConfig.MUSIC_BOX_CONTENT_KEY);
+            Log.d("Spotify", "Position " +positionInList + " changed to: " + newContent);
+        }
+        if(extras.getString(DetailActivityConfig.HEADER_BOX_CONTENT_KEY) != null){
+            newContent = extras.getString(DetailActivityConfig.HEADER_BOX_CONTENT_KEY);
         }
         entryDetail.getBoxList().get(positionInList).setContent(newContent);
     }
@@ -319,6 +370,23 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
             Log.d("Detail", "Creating new PictureBox");
             PictureBox createdPictureBox = new PictureBox(extras.getString(DetailActivityConfig.PICTUREBOX_CONTENT_KEY));
             entryDetail.addBoxToBoxList(createdPictureBox);
+        } else if(extras.get(DetailActivityConfig.MAP_BOX_CONTENT_KEY) != null){
+            Log.d("Detail", "Creating new MapBox");
+            LatLng coordinates = (LatLng) extras.get(DetailActivityConfig.MAP_BOX_CONTENT_KEY);
+            Log.d("MapView", "Got LatLng with: " + coordinates.toString());
+            MapBox createdMapBox = new MapBox(coordinates);
+            entryDetail.addBoxToBoxList(createdMapBox);
+        } else if(extras.getString(DetailActivityConfig.MUSIC_BOX_CONTENT_KEY) != null){
+            Log.d("Spotify", "Creating new MusicBox");
+            String songUri = extras.getString(DetailActivityConfig.MUSIC_BOX_CONTENT_KEY);
+            SpotifyBox createdSpotifyBox = new SpotifyBox(songUri, this, this);
+            entryDetail.addBoxToBoxList(createdSpotifyBox);
+            Log.d("Spotify", "Added to BoxList: " + entryDetail.getBoxList().toString());
+        } else if(extras.getString(DetailActivityConfig.HEADER_BOX_CONTENT_KEY) != null){
+            Log.d("Detail", "Creating new Headerbox");
+            String header = extras.getString(DetailActivityConfig.HEADER_BOX_CONTENT_KEY);
+            HeaderBox createdHeaderBox = new HeaderBox(header);
+            entryDetail.addBoxToBoxList(createdHeaderBox);
         }
     }
 
@@ -375,7 +443,7 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
             Log.d("Detail", "Entry found");
             isReadyToFinish = true;
             Log.d("Encryption", "found Entry: " + foundEntry.toString());
-            entryDetail = new EntryDetail(foundEntry, this);
+            entryDetail = new EntryDetail(foundEntry, this, this, this);
             setUpViews();
         }
     }
@@ -426,10 +494,12 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
         setBoxListLongClickListener();
     }
 
-    private void setBoxListLongClickListener() {
+    private void setBoxListShortClickListener() {
         boxListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Log.d("Detail", "BoxList Entry clicked at position " + position + " clicked.");
+                Log.d("Detail", "Boxlist is: " + entryDetail.getBoxList().toString());
                 Box clickedBox = entryDetail.getBoxFromBoxList(position);
                 Type boxType = clickedBox.getType();
                 switch (boxType){
@@ -445,19 +515,64 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
                         startPictureboxEditingIntent.putExtra(DetailActivityConfig.EXISTING_CONTENT_KEY, clickedBox.getString());
                         startActivityForResult(startPictureboxEditingIntent, DetailActivityConfig.EDIT_BOX_REQUEST_CODE);
                         break;
+                    case MAP:
+                        MapBox mapBox = (MapBox) clickedBox;
+                        Intent startMapBoxDetailIntent = new Intent(DetailActivity.this, MapBoxDetailActivity.class);
+                        startMapBoxDetailIntent.putExtra(DetailActivityConfig.POSITION_IN_LIST_KEY, position);
+                        startMapBoxDetailIntent.putExtra(DetailActivityConfig.EXISTING_CONTENT_KEY, mapBox.coordinates);
+                        startActivityForResult(startMapBoxDetailIntent, DetailActivityConfig.EDIT_BOX_REQUEST_CODE);
+                        break;
+                    case MUSIC:
+                        Log.d("Spotify", "Spotifybox at position " + position + " clicked.");
+                        Intent startMusicboxEditingIntent = new Intent(DetailActivity.this, EditMusicBoxActivity.class);
+                        startMusicboxEditingIntent.putExtra(DetailActivityConfig.POSITION_IN_LIST_KEY, position);
+                        startMusicboxEditingIntent.putExtra(DetailActivityConfig.EXISTING_CONTENT_KEY, clickedBox.getString());
+                        startActivityForResult(startMusicboxEditingIntent, DetailActivityConfig.EDIT_BOX_REQUEST_CODE);
+                        break;
+                    case HEADER:
+                        Intent startHeaderboxEditingIntent = new Intent(DetailActivity.this, EditHeaderBoxActivity.class);
+                        startHeaderboxEditingIntent.putExtra(DetailActivityConfig.POSITION_IN_LIST_KEY, position);
+                        startHeaderboxEditingIntent.putExtra(DetailActivityConfig.EXISTING_CONTENT_KEY, clickedBox.getString());
+                        startActivityForResult(startHeaderboxEditingIntent, DetailActivityConfig.EDIT_BOX_REQUEST_CODE);
+                        break;
                 }
             }
         });
     }
 
-    private void setBoxListShortClickListener() {
+    private void setBoxListLongClickListener() {
         boxListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                Log.d("Detail", "LongClicked Position: " + position);
                 entryDetail.getBoxList().remove(position);
                 boxListAdapter.notifyDataSetChanged();
                 return true;
             }
         });
+    }
+
+    /*
+     * Falls eine SpotifyBox meldet keinen Access Token zu haben startet die DetailActivity eine
+     * Abfrage für den Access Token, wofür entweder die Spotify App oder eine Website geöffnet wird.
+     * Ist der Nutzer angemeldet, erhält die DetailActivity sofort einen validen Token.
+     */
+    @Override
+    public void needsAccessToken() {
+        AuthenticationRequest.Builder builder = new AuthenticationRequest.Builder(DetailActivityConfig.CLIENT_ID, AuthenticationResponse.Type.TOKEN, DetailActivityConfig.REDIRECT_URI);
+        builder.setScopes(new String[]{"streaming"});
+        AuthenticationRequest request = builder.build();
+        AuthenticationClient.openLoginActivity(this, DetailActivityConfig.SPOTIFY_AUTH_REQUEST_CODE, request);
+    }
+
+    /*
+     * Meldet eine SpotifyBox, dass sie asynchron neuen Inhalt erhalten hat, wird der Adapter über
+     * eine Veränderung im ListView informiert, wodurch dieser wieder die getView() Methode der SpotifyBox
+     * aufruft, die dadurch den veränderten Inhalt anzeigt.
+     */
+    @Override
+    public void updatedViews() {
+        Log.d("Spotify", "Callback: updatedView()");
+        boxListAdapter.notifyDataSetChanged();
     }
 }

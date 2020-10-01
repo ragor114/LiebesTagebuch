@@ -1,8 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="ur.mi.liebestagebuch">
-    
+
+    <!--
+         The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
+         Google Maps Android API v2, but you must specify either coarse or fine
+         location permissions for the 'MyLocation' functionality.
+    -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.USE_BIOMETRIC" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
         android:allowBackup="true"
@@ -11,6 +20,28 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+        <!--
+             The API key for Google Maps-based APIs is defined as a string resource.
+             (See the file "res/values/google_maps_api.xml").
+             Note that the API key is linked to the encryption key used to sign the APK.
+             You need a different API key for each encryption key, including the release key that is used to
+             sign the APK for publishing.
+             You can define the keys for the debug and release targets in src/debug/ and src/release/.
+        -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key" />
+
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+
+        <uses-library
+            android:name="org.apache.http.legacy"
+            android:required="false" />
+        <uses-library android:name="com.google.android.maps" />
+
         <activity android:name=".LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -18,12 +49,19 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".GridView.GridActivity"/>
-        <activity android:name=".Settings.SettingsActivity"/>
-        <activity android:name=".DetailAndEditActivity.DetailActivity"/>
-        <activity android:name=".DetailAndEditActivity.TypeChooserActivity"/>
-        <activity android:name=".DetailAndEditActivity.EditTextBoxActivity"/>
-        <activity android:name=".DetailAndEditActivity.EditPictureBoxActivity"/>
+        <activity android:name=".GridView.GridActivity" />
+        <activity android:name=".Settings.SettingsActivity" />
+        <activity android:name=".DetailAndEditActivity.DetailActivity" />
+        <activity android:name=".DetailAndEditActivity.MapBoxDetailActivity" />
+        <activity android:name=".EditActivities.TypeChooserActivity" />
+        <activity android:name=".EditActivities.EditTextBoxActivity" />
+        <activity android:name=".EditActivities.EditPictureBoxActivity" />
+        <activity android:name=".EditActivities.EditMapBoxActivity" />
+        <activity android:name=".EditActivities.EditMusicBoxActivity" />
+        <activity android:name=".EditActivities.EditHeaderBoxActivity" />
+        <activity
+            android:name="com.spotify.sdk.android.authentication.LoginActivity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
     </application>
 
 </manifest>

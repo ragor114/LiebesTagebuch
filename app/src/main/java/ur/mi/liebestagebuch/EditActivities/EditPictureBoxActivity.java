@@ -1,4 +1,4 @@
-package ur.mi.liebestagebuch.DetailAndEditActivity;
+package ur.mi.liebestagebuch.EditActivities;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -13,6 +13,7 @@ import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import ur.mi.liebestagebuch.DetailAndEditActivity.DetailActivityConfig;
 import ur.mi.liebestagebuch.Encryption.StringTransformHelper;
 import ur.mi.liebestagebuch.R;
 

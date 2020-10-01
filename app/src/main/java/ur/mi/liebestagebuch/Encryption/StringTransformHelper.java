@@ -1,5 +1,6 @@
 package ur.mi.liebestagebuch.Encryption;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Handler;
@@ -13,7 +14,11 @@ import java.util.ArrayList;
 import java.util.concurrent.Executors;
 
 import ur.mi.liebestagebuch.Boxes.Box;
+import ur.mi.liebestagebuch.Boxes.HeaderBox;
+import ur.mi.liebestagebuch.Boxes.MapBox;
 import ur.mi.liebestagebuch.Boxes.PictureBox;
+import ur.mi.liebestagebuch.Boxes.SpotifyBox;
+import ur.mi.liebestagebuch.Boxes.SpotifyBoxReadyListener;
 import ur.mi.liebestagebuch.Boxes.TextBox;
 import ur.mi.liebestagebuch.Boxes.Type;
 import ur.mi.liebestagebuch.LoginActivity;
@@ -61,6 +66,13 @@ public class StringTransformHelper {
             case PICTURE:
                 boxString += "Picture";
                 break;
+            case MAP:
+                boxString += "Map";
+                break;
+            case MUSIC:
+                boxString += "Music";
+            case HEADER:
+                boxString += "Header";
             default:
                 boxString += "Text";
                 break;
@@ -78,7 +90,7 @@ public class StringTransformHelper {
     * @param Liste der Boxen in String Form
     * @return Liste von Boxen auf Basis des Strings
      */
-    public static ArrayList<Box> getBoxListFromString(String boxListString){
+    public static ArrayList<Box> getBoxListFromString(String boxListString, SpotifyBoxReadyListener spotifyListener, Context context){
         Log.d("Detail", "Getting BoxList");
         //Log.d("TestConfigTest", "getBoxListFromString started");
         ArrayList<Box> boxList = new ArrayList<>();
@@ -87,7 +99,7 @@ public class StringTransformHelper {
         Log.d("Detail", "splitted 0: " + singleBoxStrings[0]);
         for(String current : singleBoxStrings){
             if(current.length() > 0) {
-                Box currentNewBox = getSingleBoxFromString(current);
+                Box currentNewBox = getSingleBoxFromString(current, spotifyListener, context);
                 boxList.add(currentNewBox);
             }
             else continue;
@@ -105,7 +117,7 @@ public class StringTransformHelper {
      * @param String repräsentation einer Box
      * @return eine Box des entsprechenden Typs.
      */
-    private static Box getSingleBoxFromString(String current) {
+    private static Box getSingleBoxFromString(String current, SpotifyBoxReadyListener spotifyListener, Context context) {
         //Log.d("StringTransformHelper", current);
         String[] parts = current.split(" \\Q|\\E ");
         Log.d("Detail", "parts 0: " + parts[0]);
@@ -114,11 +126,18 @@ public class StringTransformHelper {
         if(parts[0].contains("Picture")) {
             PictureBox newPictureBox = new PictureBox(parts[1]);
             return newPictureBox;
+        } else if(parts[0].contains("Map")){
+            MapBox newMapBox = new MapBox(parts[1]);
+            return newMapBox;
+        } else if(parts[0].contains("Music")){
+            SpotifyBox newSpotifyBox = new SpotifyBox(parts[1], context, spotifyListener);
+            return newSpotifyBox;
+        } else if(parts[0].contains("Header")){
+            HeaderBox newHeaderBox = new HeaderBox(parts[1]);
+            return newHeaderBox;
         }
 
         TextBox newTextBox = new TextBox(parts[1]);
-
-
         return newTextBox;
     }
 

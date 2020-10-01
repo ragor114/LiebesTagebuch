@@ -23,4 +23,19 @@
     <string name="choose_picture_button_text">Choose Picture</string>
     <string name="wrong_password">Wrong Password!</string>
     <string name="set_password_first">Please set the password before using fingerprints</string>
+    <string name="type_chooser_map">Add Map</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="edit_map">Edit Map/Location</string>
+    <string name="type_chooser_music">Add Song</string>
+    <string name="spotify_explanation">Please note:</string>
+    <string name="note_about_spotify">For this Feature to work properly you need to have the Spotify App installed and be logged in with a premium account. Moreover, the Spotify App should NOT be in offline mode, because this could cause crashes.</string>
+    <string name="spotify_link_hint">Paste a link to a song</string>
+    <string name="ok">Ok</string>
+    <string name="spotify_title_name_default">Title of current track</string>
+    <string name="spotify_artist_default">Artist of current track</string>
+    <string name="music_box_title_default">Loading Song title...</string>
+    <string name="music_box_artist_default">If you have connection and this does not change you can still play the song and reopen the entry to get information.</string>
+    <string name="search_hint">Search for track</string>
+    <string name="hint_new_header">Überschrift einfügen</string>
+    <string name="type_chooser_header">Add Header</string>
 </resources>
