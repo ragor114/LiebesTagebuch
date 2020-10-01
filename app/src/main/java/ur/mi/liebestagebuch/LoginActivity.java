@@ -7,7 +7,11 @@ import androidx.biometric.BiometricPrompt;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.app.AlarmManager;
 import android.app.KeyguardManager;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -29,6 +33,8 @@ import java.util.concurrent.Executors;
 
 import ur.mi.liebestagebuch.Encryption.SecurePasswordSaver;
 import ur.mi.liebestagebuch.GridView.GridActivity;
+import ur.mi.liebestagebuch.Notification.Reminder;
+import ur.mi.liebestagebuch.Settings.SettingsActivity;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -50,6 +56,7 @@ public class LoginActivity extends AppCompatActivity {
     private Button okButton;
     private EditText editTextPassword ;
     private boolean isFirstRun;
+
 
     public static String correctPassword;
 
@@ -93,8 +100,12 @@ public class LoginActivity extends AppCompatActivity {
                 }
             });
             prefs.edit().putBoolean("firstrun", false).commit();
+
         }
     }
+
+
+
 
     protected void onResume(){
         super.onResume();
@@ -185,6 +196,7 @@ public class LoginActivity extends AppCompatActivity {
             loginSuccess();
         }
     }
+
     
 }
 

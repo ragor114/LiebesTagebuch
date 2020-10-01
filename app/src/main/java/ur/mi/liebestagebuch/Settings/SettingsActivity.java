@@ -1,5 +1,8 @@
 package ur.mi.liebestagebuch.Settings;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,12 +14,16 @@ import android.widget.TimePicker;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.util.Calendar;
+
+import ur.mi.liebestagebuch.LoginActivity;
+import ur.mi.liebestagebuch.Notification.Reminder;
 import ur.mi.liebestagebuch.R;
 
 public class SettingsActivity extends AppCompatActivity {
 
     private Switch sw_encrypt;
-    private Switch sw_remind;
+    public Switch sw_remind;
     private TimePicker reminder_picker;
     private LinearLayout password;
     private ImageButton passwordArrow;
@@ -49,6 +56,7 @@ public class SettingsActivity extends AppCompatActivity {
         load();
         update();
         toggleTimePicker();
+
     }
 
     private void initListeners(){
@@ -102,6 +110,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         editor.apply();
         toggleTimePicker();
+
     }
 
     public void load(){
@@ -122,8 +131,25 @@ public class SettingsActivity extends AppCompatActivity {
     private void toggleTimePicker(){
         if(sw_remind.isChecked()){
             reminder_picker.setVisibility(View.VISIBLE);
+            setNotificationTime();
         }else{
             reminder_picker.setVisibility(View.GONE);
         }
+    }
+
+    private void setNotificationTime() {
+        Calendar calendar = Calendar.getInstance();
+
+        calendar.set(Calendar.HOUR_OF_DAY, reminder_picker.getHour());
+        calendar.set(Calendar.MINUTE, reminder_picker.getMinute());
+        calendar.set(Calendar.SECOND, 0);
+
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+
+        Intent intent = new Intent(SettingsActivity.this, Reminder.class);
+        PendingIntent pendingIntent = PendingIntent. getBroadcast(SettingsActivity.this, 1, intent, 0);
+
+
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
     }
 }
