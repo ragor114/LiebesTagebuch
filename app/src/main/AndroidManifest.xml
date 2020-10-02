@@ -68,8 +68,6 @@
       
         <receiver android:name=".Notification.Reminder"/>
 
-
-
     </application>
 
 </manifest>
