@@ -338,4 +338,17 @@ public class DBHelper{
         }
     }
 
+    public void getAllEntries(){
+        GetAllEntries getAllEntriesRunnable = new GetAllEntries();
+        Executors.newSingleThreadExecutor().submit(getAllEntriesRunnable);
+    }
+
+    private class GetAllEntries implements Runnable{
+        @Override
+        public void run() {
+            List<Entry> allEntries = diaryDB.getDiaryDao().getAll();
+            listener.allEntriesFound(allEntries);
+        }
+    }
+
 }

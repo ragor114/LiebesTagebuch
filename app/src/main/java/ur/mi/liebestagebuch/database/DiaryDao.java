@@ -48,4 +48,5 @@ public interface DiaryDao {
 
     @Query("UPDATE diary SET emotion = :emotion WHERE date = :date")
     void updateEmotion(Date date, int emotion);
+
 }
