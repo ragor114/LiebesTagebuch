@@ -16,7 +16,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.Calendar;
 
-import ur.mi.liebestagebuch.LoginActivity;
 import ur.mi.liebestagebuch.Notification.Reminder;
 import ur.mi.liebestagebuch.R;
 
@@ -63,6 +62,7 @@ public class SettingsActivity extends AppCompatActivity {
         sw_encrypt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                startEntriesDeOrEncryption();
                 save();
             }
         });
@@ -86,6 +86,7 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Log.println(Log.DEBUG,"DB","Password Button Pressed");
+                startPasswordChangeActivity();
             }
         });
 
@@ -93,8 +94,18 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Log.println(Log.DEBUG,"DB","Password Button Pressed");
+                startPasswordChangeActivity();
             }
         });
+    }
+
+    private void startEntriesDeOrEncryption() {
+        //TODO: Activity starten, die Einträge ver- oder entschlüsselt und sich dann beendet.
+    }
+
+    private void startPasswordChangeActivity() {
+        Intent intent = new Intent(SettingsActivity.this, ChangePasswordActivity.class);
+        startActivityForResult(intent, 12345);
     }
 
     private void save(){

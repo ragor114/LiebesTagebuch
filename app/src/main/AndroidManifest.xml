@@ -62,6 +62,7 @@
         <activity android:name=".EditActivities.EditMapBoxActivity" />
         <activity android:name=".EditActivities.EditMusicBoxActivity" />
         <activity android:name=".EditActivities.EditHeaderBoxActivity" />
+        <activity android:name=".Settings.ChangePasswordActivity"/>
         <activity
             android:name="com.spotify.sdk.android.authentication.LoginActivity"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />

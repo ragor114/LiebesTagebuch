@@ -40,4 +40,7 @@
     <string name="type_chooser_header">Add Header</string>
     <string name="notification_title">Dear Diary...</string>
     <string name="notification_text">Don\'t forget to write a diary entry today!</string>
+    <string name="old_password_hint">Enter current password</string>
+    <string name="new_password_hint">Enter new Password</string>
+    <string name="new_password_repeat_hint">Repeat new password</string>
 </resources>
