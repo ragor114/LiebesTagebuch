@@ -23,9 +23,12 @@ public class Reminder extends BroadcastReceiver{
         boolean remind = sharedPreferences.getBoolean(SettingsConfig.SWITCH_REMIND, false);
 
         if(remind){
+            Log.d("notification", "Reminding ...");
             NotificationHelper notificationHelper =new NotificationHelper(context);
             NotificationCompat.Builder nb = notificationHelper.getChannelNotification();
             notificationHelper.getManager().notify(1, nb.build());
+        } else{
+            Log.d("notification", "Reminder deactivated");
         }
     }
 
