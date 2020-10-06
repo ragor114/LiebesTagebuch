@@ -1,5 +1,6 @@
 package ur.mi.liebestagebuch.Settings;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -102,11 +103,19 @@ public class ChangePasswordActivity extends AppCompatActivity implements Databas
 
     private void startReencryption(String oldPassword, String newPassword) {
         Log.d("Password", "Starting reencryption");
-        encryptionRunningView.setVisibility(View.VISIBLE);
-        isReadyToFinish = false;
-        this.oldPassword = oldPassword;
-        this.newPassword = newPassword;
-        dbHelper.getAllEntries();
+        SharedPreferences sharedPreferences = getSharedPreferences(SettingsConfig.SHARED_PREFS, MODE_PRIVATE);
+        boolean isEncrypted = sharedPreferences.getBoolean(SettingsConfig.SWITCH_ENCRYPT, true);
+        if(isEncrypted) {
+            encryptionRunningView.setVisibility(View.VISIBLE);
+            isReadyToFinish = false;
+            this.oldPassword = oldPassword;
+            this.newPassword = newPassword;
+            dbHelper.getAllEntries();
+        } else{
+            Log.d("Password", "Entries are not encrypted");
+            SecurePasswordSaver.storePasswordSecure(newPassword, this);
+            finishEditing();
+        }
     }
 
     private void finishEditing() {

@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TimePicker;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.Calendar;
@@ -59,7 +60,6 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startEntriesDeOrEncryption();
-                save();
             }
         });
 
@@ -96,7 +96,28 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void startEntriesDeOrEncryption() {
-        //TODO: Activity starten, die Einträge ver- oder entschlüsselt und sich dann beendet.
+        if(!sw_encrypt.isChecked()){
+            Intent intent = new Intent(SettingsActivity.this, DisableEncryptionActivity.class);
+            startActivityForResult(intent, SettingsConfig.DECRYPTION_REQUEST_CODE);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == RESULT_OK){
+            if(requestCode == SettingsConfig.DECRYPTION_REQUEST_CODE){
+                Bundle extras = data.getExtras();
+                if(extras != null){
+                    boolean decrypted = extras.getBoolean(SettingsConfig.HAS_DECRYPTED_KEY);
+                    sw_encrypt.setChecked(decrypted);
+                    save();
+                }
+            }
+        } else {
+            sw_encrypt.setChecked(true);
+            save();
+        }
     }
 
     private void startPasswordChangeActivity() {

@@ -46,4 +46,7 @@
     <string name="please_note_change_pw">Please Note</string>
     <string name="note_about_changing_pw">Changing the password will have to reencrypt all Entries, depending on how many Entries you have made, this could take a while.</string>
     <string name="change_pw_running">Reencryption running, please wait</string>
+    <string name="disable_encryption_button">Disable</string>
+    <string name="disable_decryption_running">Decryption running, please wait</string>
+    <string name="note_disable">Disabling Encryption will have to Decrypt all existing Entries.</string>
 </resources>
