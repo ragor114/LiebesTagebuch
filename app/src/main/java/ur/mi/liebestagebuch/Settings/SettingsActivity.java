@@ -27,11 +27,7 @@ public class SettingsActivity extends AppCompatActivity {
     private LinearLayout password;
     private ImageButton passwordArrow;
 
-    private static final String SHARED_PREFS = "sharedPrefs";
-    private static final String SWITCH_ENCRYPT = "sw_encrypt";
-    private static final String SWITCH_REMIND = "sw_remind";
-    private static final String TIMEPICKER_HOUR = "time_hour";
-    private static final String TIMEPICKER_MINUTE = "time_minute";
+
 
     private boolean switchEncrypt;
     private boolean switchRemind;
@@ -109,13 +105,13 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void save(){
-        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences(SettingsConfig.SHARED_PREFS, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
-        editor.putBoolean(SWITCH_ENCRYPT,sw_encrypt.isChecked());
-        editor.putBoolean(SWITCH_REMIND,sw_remind.isChecked());
-        editor.putInt(TIMEPICKER_HOUR,reminder_picker.getHour());
-        editor.putInt(TIMEPICKER_MINUTE,reminder_picker.getMinute());
+        editor.putBoolean(SettingsConfig.SWITCH_ENCRYPT,sw_encrypt.isChecked());
+        editor.putBoolean(SettingsConfig.SWITCH_REMIND,sw_remind.isChecked());
+        editor.putInt(SettingsConfig.TIMEPICKER_HOUR,reminder_picker.getHour());
+        editor.putInt(SettingsConfig.TIMEPICKER_MINUTE,reminder_picker.getMinute());
 
         Log.println(Log.DEBUG,"DB","Preferences saved");
 
@@ -125,11 +121,11 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     public void load(){
-        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
-        switchEncrypt = sharedPreferences.getBoolean(SWITCH_ENCRYPT,true);
-        switchRemind = sharedPreferences.getBoolean(SWITCH_REMIND,false);
-        timeHour = sharedPreferences.getInt(TIMEPICKER_HOUR,18);
-        timeMinute = sharedPreferences.getInt(TIMEPICKER_MINUTE,0);
+        SharedPreferences sharedPreferences = getSharedPreferences(SettingsConfig.SHARED_PREFS, MODE_PRIVATE);
+        switchEncrypt = sharedPreferences.getBoolean(SettingsConfig.SWITCH_ENCRYPT,true);
+        switchRemind = sharedPreferences.getBoolean(SettingsConfig.SWITCH_REMIND,false);
+        timeHour = sharedPreferences.getInt(SettingsConfig.TIMEPICKER_HOUR,18);
+        timeMinute = sharedPreferences.getInt(SettingsConfig.TIMEPICKER_MINUTE,0);
     }
 
     public void update(){
