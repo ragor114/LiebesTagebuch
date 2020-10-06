@@ -118,7 +118,7 @@ public class StringTransformHelper {
      * @return eine Box des entsprechenden Typs.
      */
     private static Box getSingleBoxFromString(String current, SpotifyBoxReadyListener spotifyListener, Context context) {
-        //Log.d("StringTransformHelper", current);
+        Log.d("StringTransformHelper", current);
         String[] parts = current.split(" \\Q|\\E ");
         Log.d("Detail", "parts 0: " + parts[0]);
         Log.d("Detail", "parts 1: " + parts[1]);
@@ -147,8 +147,12 @@ public class StringTransformHelper {
      * über die Fertigstellung informiert.
      */
     public static void startEncryption (String toEncrypt, CryptoListener listener){
+        startEncryptionWithNewPw(toEncrypt, listener, LoginActivity.correctPassword);
+    }
+
+    public static void startEncryptionWithNewPw(String toEncrypt, CryptoListener listener, String newPw){
         Handler mainThreadHandler = new Handler(Looper.getMainLooper());
-        AsyncEncryptor encryptor = new AsyncEncryptor(mainThreadHandler, listener, toEncrypt, LoginActivity.correctPassword);
+        AsyncEncryptor encryptor = new AsyncEncryptor(mainThreadHandler, listener, toEncrypt, newPw);
         Executors.newSingleThreadExecutor().submit(encryptor);
     }
 

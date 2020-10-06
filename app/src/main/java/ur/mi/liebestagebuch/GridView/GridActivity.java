@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import ur.mi.liebestagebuch.DetailAndEditActivity.DetailActivity;
@@ -303,5 +304,10 @@ public class GridActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     public void entryFound(ur.mi.liebestagebuch.database.data.Entry foundEntry) {
         return;
+    }
+
+    @Override
+    public void allEntriesFound(List<ur.mi.liebestagebuch.database.data.Entry> allEntries) {
+
     }
 }

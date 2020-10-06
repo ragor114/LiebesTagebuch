@@ -27,6 +27,7 @@ import com.spotify.sdk.android.authentication.AuthenticationRequest;
 import com.spotify.sdk.android.authentication.AuthenticationResponse;
 
 import java.util.Date;
+import java.util.List;
 
 import ur.mi.liebestagebuch.Boxes.Box;
 import ur.mi.liebestagebuch.Boxes.HeaderBox;
@@ -446,6 +447,11 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
             entryDetail = new EntryDetail(foundEntry, this, this, this);
             setUpViews();
         }
+    }
+
+    @Override
+    public void allEntriesFound(List<Entry> allEntries) {
+
     }
 
     @Override

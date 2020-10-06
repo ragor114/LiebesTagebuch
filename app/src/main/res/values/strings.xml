@@ -43,4 +43,7 @@
     <string name="old_password_hint">Enter current password</string>
     <string name="new_password_hint">Enter new Password</string>
     <string name="new_password_repeat_hint">Repeat new password</string>
+    <string name="please_note_change_pw">Please Note</string>
+    <string name="note_about_changing_pw">Changing the password will have to reencrypt all Entries, depending on how many Entries you have made, this could take a while.</string>
+    <string name="change_pw_running">Reencryption running, please wait</string>
 </resources>
