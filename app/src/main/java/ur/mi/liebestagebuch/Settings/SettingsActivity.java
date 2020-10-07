@@ -99,6 +99,9 @@ public class SettingsActivity extends AppCompatActivity {
         if(!sw_encrypt.isChecked()){
             Intent intent = new Intent(SettingsActivity.this, DisableEncryptionActivity.class);
             startActivityForResult(intent, SettingsConfig.DECRYPTION_REQUEST_CODE);
+        } else{
+            Intent intent = new Intent(SettingsActivity.this, EnableEncryptionActivity.class);
+            startActivityForResult(intent, SettingsConfig.ENCRYPTION_REQUEST_CODE);
         }
     }
 
@@ -112,11 +115,20 @@ public class SettingsActivity extends AppCompatActivity {
                     boolean decrypted = extras.getBoolean(SettingsConfig.HAS_DECRYPTED_KEY);
                     sw_encrypt.setChecked(false);
                     save();
+                } else {
+                    sw_encrypt.setChecked(true);
+                    save();
+                }
+            } else if(requestCode == SettingsConfig.ENCRYPTION_REQUEST_CODE){
+                Bundle extras = data.getExtras();
+                if(extras != null){
+                    sw_encrypt.setChecked(true);
+                    save();
+                } else{
+                    sw_encrypt.setChecked(false);
+                    save();
                 }
             }
-        } else {
-            sw_encrypt.setChecked(true);
-            save();
         }
     }
 

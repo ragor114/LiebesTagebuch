@@ -49,4 +49,7 @@
     <string name="disable_encryption_button">Disable</string>
     <string name="disable_decryption_running">Decryption running, please wait</string>
     <string name="note_disable">Disabling Encryption will have to Decrypt all existing Entries.</string>
+    <string name="enable_encryption_botton">Enable</string>
+    <string name="note_enable_encryption">Enabling encryption will have to reencrypt all entries. Depending on the number and size of you entries this might take a while.</string>
+    <string name="encryption_running">Encryption running, please wait</string>
 </resources>
