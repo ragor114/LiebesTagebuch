@@ -19,6 +19,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import ur.mi.liebestagebuch.DetailAndEditActivity.DetailActivityConfig;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 import ur.mi.liebestagebuch.Encryption.StringTransformHelper;
 import ur.mi.liebestagebuch.R;
@@ -172,5 +175,14 @@ public class EditPictureBoxActivity extends AppCompatActivity {
         BYTE = by.toByteArray();
 
         return BitmapFactory.decodeByteArray(BYTE, 0, BYTE.length);
+    }
+
+    private String getFileName(){
+        Calendar cal = Calendar.getInstance();
+        Date currentDate = cal.getTime();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss-SSS");
+        String dateString = sdf.format(currentDate);
+        String fileName = dateString + "-photo";
+        return fileName;
     }
 }
