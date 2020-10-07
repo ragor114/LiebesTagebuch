@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -73,6 +74,7 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
     private TextView dateTextView;
     private ListView boxListView;
     private ImageButton[] emotionButtons;
+    private ProgressBar progressBar;
 
     private DBHelper dbHelper;
     private EntryDetail entryDetail;
@@ -89,6 +91,9 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
         super.onCreate(savedInstanceState);
         isReadyToFinish = true;
         setContentView(R.layout.detail_activity);
+
+        progressBar = findViewById(R.id.loading);
+        progressBar.setVisibility(View.VISIBLE);
 
         Intent callingIntent = getIntent();
         Bundle extras = callingIntent.getExtras();
@@ -480,6 +485,8 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
         dateTextView.setText(entryDetail.getDateString());
 
         setBoxListClickListener();
+
+        progressBar.setVisibility(View.GONE);
     }
 
     /*

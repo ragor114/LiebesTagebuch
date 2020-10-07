@@ -53,7 +53,8 @@
                 android:id="@+id/edit_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Passwort"
+                android:hint="Password"
+                android:textColor="@color/colorPrimary"
                 android:textColorHint="@color/colorPrimary"
                 android:inputType="textPassword"
                 />
@@ -64,7 +65,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:text="OK"
-                android:background="@color/colorAccent"
+                android:background="@drawable/button_round_corners"
                 android:layout_margin="1dp"
                 />
 

@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="match_parent"
-    android:gravity="center">
+    android:gravity="center"
+    android:background="@color/backgroundColor">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -14,45 +15,55 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
-            android:background="@color/button_color"
+            android:layout_marginHorizontal="60dp"
+            android:background="@drawable/button_round_corners"
             android:text="@string/type_chooser_header"
-            android:textSize="18sp"/>
+            android:textSize="18sp"
+            android:textColor="@color/backgroundColor" />
 
         <Button
             android:id="@+id/button_choose_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
-            android:background="@color/button_color"
+            android:layout_marginHorizontal="60dp"
+            android:background="@drawable/button_round_corners"
             android:text="@string/type_chooser_text"
-            android:textSize="18sp"/>
+            android:textSize="18sp"
+            android:textColor="@color/backgroundColor"/>
 
         <Button
             android:id="@+id/button_choose_picture"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
-            android:background="@color/button_color"
+            android:layout_marginHorizontal="60dp"
+            android:background="@drawable/button_round_corners"
             android:text="@string/type_chooser_picture"
-            android:textSize="18sp"/>
+            android:textSize="18sp"
+            android:textColor="@color/backgroundColor"/>
 
         <Button
             android:id="@+id/button_choose_map"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
-            android:background="@color/button_color"
+            android:layout_marginHorizontal="60dp"
+            android:background="@drawable/button_round_corners"
             android:text="@string/type_chooser_map"
-            android:textSize="18sp"/>
+            android:textSize="18sp"
+            android:textColor="@color/backgroundColor"/>
 
         <Button
             android:id="@+id/button_choose_music"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/button_color"
+            android:background="@drawable/button_round_corners"
+            android:layout_marginHorizontal="60dp"
             android:layout_marginBottom="20dp"
             android:text="@string/type_chooser_music"
-            android:textSize="18sp"/>
+            android:textSize="18sp"
+            android:textColor="@color/backgroundColor"/>
 
 
     </LinearLayout>
