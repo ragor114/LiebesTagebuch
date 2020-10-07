@@ -451,8 +451,12 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
             Log.d("Detail", "Entry found");
             isReadyToFinish = true;
             Log.d("Encryption", "found Entry: " + foundEntry.toString());
-            entryDetail = new EntryDetail(foundEntry, this, this, this);
+            this.entryDetail = new EntryDetail(foundEntry, this, this, this);
+            Log.d("Passwort", "EntryDetail created: " + entryDetail.toString());
             setUpViews();
+            if(!CheckEncryptionSettingHelper.encryptionActivated(this)){
+                setUpBoxlistView();
+            }
         }
     }
 
@@ -470,6 +474,7 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
     // wird diese an den Adapter angeschlossen.
     @Override
     public void onBoxListDecryptionFinished() {
+        Log.d("Passwort", "EntryDetail is: " + entryDetail.getBoxListString());
         setUpBoxlistView();
     }
 
@@ -486,6 +491,7 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
      * auf das Datum gesetzt und die onClickListener der boxListView gesetzt.
      */
     private void setUpBoxlistView() {
+        Log.d("Passwort", "EntryDetail is: " + entryDetail.getBoxListString());
         boxListAdapter = new BoxListAdapter(this.entryDetail.getBoxList(), this);
         boxListView.setAdapter(boxListAdapter);
         boxListAdapter.notifyDataSetChanged();

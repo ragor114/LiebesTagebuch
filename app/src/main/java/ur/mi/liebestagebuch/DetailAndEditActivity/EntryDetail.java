@@ -47,14 +47,15 @@ public class EntryDetail implements CryptoListener {
         Log.d("Detail", "Creating Entry Detail");
         this.entryDate = dbEntry.getDate();
         setEmotion(dbEntry);
+
         if(CheckEncryptionSettingHelper.encryptionActivated(context)){
             startContentDecryption(dbEntry);
         } else{
+            Log.d("Passwort", "Encryption in Entry Detail not activated");
             String contentString = dbEntry.getContent();
             Log.d("Passwort", "Content String is: " + contentString);
             this.boxList = StringTransformHelper.getBoxListFromString(contentString, spotifyListener, context);
             Log.d("Passwort", "Boxlist is: " + boxList.toString());
-            listener.onBoxListDecryptionFinished();
         }
     }
 

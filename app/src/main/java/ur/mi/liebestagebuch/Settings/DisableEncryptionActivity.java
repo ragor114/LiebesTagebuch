@@ -138,4 +138,10 @@ public class DisableEncryptionActivity extends AppCompatActivity implements Data
     public void onDecryptionFailed() {
 
     }
+
+    @Override
+    public void onBackPressed() {
+        setResult(RESULT_CANCELED);
+        finish();
+    }
 }

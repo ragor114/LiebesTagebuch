@@ -124,4 +124,10 @@ public class EnableEncryptionActivity extends AppCompatActivity implements Datab
     public void onDecryptionFailed() {
 
     }
+
+    @Override
+    public void onBackPressed() {
+        setResult(RESULT_CANCELED);
+        finish();
+    }
 }

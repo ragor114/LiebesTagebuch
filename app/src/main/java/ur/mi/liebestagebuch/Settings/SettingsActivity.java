@@ -129,6 +129,8 @@ public class SettingsActivity extends AppCompatActivity {
                     save();
                 }
             }
+        } else if(resultCode == RESULT_CANCELED){
+            sw_encrypt.setChecked(!sw_encrypt.isChecked());
         }
     }
 
