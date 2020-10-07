@@ -110,7 +110,7 @@ public class SettingsActivity extends AppCompatActivity {
                 Bundle extras = data.getExtras();
                 if(extras != null){
                     boolean decrypted = extras.getBoolean(SettingsConfig.HAS_DECRYPTED_KEY);
-                    sw_encrypt.setChecked(decrypted);
+                    sw_encrypt.setChecked(false);
                     save();
                 }
             }

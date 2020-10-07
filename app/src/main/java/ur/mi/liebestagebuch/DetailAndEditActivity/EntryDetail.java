@@ -14,6 +14,7 @@ import ur.mi.liebestagebuch.Boxes.SpotifyBoxReadyListener;
 import ur.mi.liebestagebuch.Encryption.CryptoListener;
 import ur.mi.liebestagebuch.Encryption.StringTransformHelper;
 import ur.mi.liebestagebuch.GridView.Emotion;
+import ur.mi.liebestagebuch.Settings.CheckEncryptionSettingHelper;
 import ur.mi.liebestagebuch.database.data.Entry;
 
 public class EntryDetail implements CryptoListener {
@@ -46,7 +47,15 @@ public class EntryDetail implements CryptoListener {
         Log.d("Detail", "Creating Entry Detail");
         this.entryDate = dbEntry.getDate();
         setEmotion(dbEntry);
-        startContentDecryption(dbEntry);
+        if(CheckEncryptionSettingHelper.encryptionActivated(context)){
+            startContentDecryption(dbEntry);
+        } else{
+            String contentString = dbEntry.getContent();
+            Log.d("Passwort", "Content String is: " + contentString);
+            this.boxList = StringTransformHelper.getBoxListFromString(contentString, spotifyListener, context);
+            Log.d("Passwort", "Boxlist is: " + boxList.toString());
+            listener.onBoxListDecryptionFinished();
+        }
     }
 
     // Die für die Entschlüsselung nötigen Informationen werden aus dem Datenbank-Entry geladen und

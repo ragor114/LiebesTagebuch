@@ -23,10 +23,10 @@ public class EntryGridAdapter extends BaseAdapter {
      * Entwickelt von Moritz Schnell und Jannik Wiese.
      */
 
-    private ArrayList<Entry> entries;
+    private ArrayList<GridEntry> entries;
     private Context context;
 
-    public EntryGridAdapter(ArrayList <Entry> entries, Context context){
+    public EntryGridAdapter(ArrayList <GridEntry> entries, Context context){
         this.entries = entries;
         this.context = context;
     }
@@ -50,7 +50,7 @@ public class EntryGridAdapter extends BaseAdapter {
     //Check: EmotionColorView muss durch einen Smiley in der entsprechenden Farbe ersetzt werden.
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        Entry currentEntry = entries.get(position);
+        GridEntry currentGridEntry = entries.get(position);
 
         LayoutInflater inflater = LayoutInflater.from(context);
         View gridElementView = inflater.inflate(R.layout.grid_element, null);
@@ -58,11 +58,11 @@ public class EntryGridAdapter extends BaseAdapter {
         TextView dateTextView = (TextView) gridElementView.findViewById(R.id.date_text);
         View emotionColorView = gridElementView.findViewById(R.id.emotion_color_view);
 
-        emotionColorView.setBackground(context.getDrawable(getColorResourceForEmotion(currentEntry.getEmotion())));
+        emotionColorView.setBackground(context.getDrawable(getColorResourceForEmotion(currentGridEntry.getEmotion())));
         //emotionColorView.setBackgroundColor(context.getColor(getColorResourceForEmotion(currentEntry.getEmotion())));
 
 
-        Date entryDate = currentEntry.getDate();
+        Date entryDate = currentGridEntry.getDate();
         DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
         String dateString = dateFormat.format(entryDate);
         dateTextView.setText(dateString);

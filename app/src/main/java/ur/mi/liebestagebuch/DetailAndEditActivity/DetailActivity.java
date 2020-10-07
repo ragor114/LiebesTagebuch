@@ -47,6 +47,7 @@ import ur.mi.liebestagebuch.Encryption.StringTransformHelper;
 import ur.mi.liebestagebuch.GridView.DateUtil;
 import ur.mi.liebestagebuch.GridView.Emotion;
 import ur.mi.liebestagebuch.R;
+import ur.mi.liebestagebuch.Settings.CheckEncryptionSettingHelper;
 import ur.mi.liebestagebuch.database.DBHelper;
 import ur.mi.liebestagebuch.database.DatabaseListener;
 import ur.mi.liebestagebuch.database.data.Entry;
@@ -439,7 +440,13 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
             Log.d("Detail", "No Entry found");
             isReadyToFinish = false;
             String emptyContent = "|<Text | Schreib deine Erlebnisse auf.";
-            StringTransformHelper.startEncryption(emptyContent, this);
+            if(CheckEncryptionSettingHelper.encryptionActivated(this)){
+                StringTransformHelper.startEncryption(emptyContent, this);
+            } else{
+                byte[] emptyIv = new byte[]{00,00};
+                byte[] emptySalt = new byte[]{00,00};
+                dbHelper.newEntry(entryDate, 2, emptyContent, emptySalt, emptyIv);
+            }
         } else{
             Log.d("Detail", "Entry found");
             isReadyToFinish = true;
@@ -474,16 +481,16 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
     }
 
     /*
-     * Wenn Datenbankabfrage und Entschlüsselung erfolgreich waren wird die ArrayList von Boxen im
+     * Wenn Datenbankabfrage und Entschlüsselung erfolgreich waren, wird die ArrayList von Boxen im
      * EntryDetail-Objekt über einen BoxListAdapter an die boxListView angeschloßen, dass dateTextView
      * auf das Datum gesetzt und die onClickListener der boxListView gesetzt.
      */
     private void setUpBoxlistView() {
-        boxListAdapter = new BoxListAdapter(entryDetail.getBoxList(), this);
+        boxListAdapter = new BoxListAdapter(this.entryDetail.getBoxList(), this);
         boxListView.setAdapter(boxListAdapter);
         boxListAdapter.notifyDataSetChanged();
 
-        dateTextView.setText(entryDetail.getDateString());
+        dateTextView.setText(this.entryDetail.getDateString());
 
         setBoxListClickListener();
     }

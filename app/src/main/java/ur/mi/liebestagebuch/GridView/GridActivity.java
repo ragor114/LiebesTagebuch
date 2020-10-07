@@ -23,6 +23,7 @@ import ur.mi.liebestagebuch.DetailAndEditActivity.DetailActivityConfig;
 import ur.mi.liebestagebuch.Encryption.CryptoListener;
 import ur.mi.liebestagebuch.Encryption.StringTransformHelper;
 import ur.mi.liebestagebuch.R;
+import ur.mi.liebestagebuch.Settings.CheckEncryptionSettingHelper;
 import ur.mi.liebestagebuch.Settings.SettingsActivity;
 import ur.mi.liebestagebuch.database.DBHelper;
 import ur.mi.liebestagebuch.database.DatabaseListener;
@@ -52,7 +53,7 @@ public class GridActivity extends AppCompatActivity implements AdapterView.OnIte
     //Notwendige Attribute der Gridactivity
     private GridView grid;
     private EntryGridAdapter gridAdapter;
-    private ArrayList<Entry> entries;
+    private ArrayList<GridEntry> entries;
 
     private DBHelper dbHelper;
     private Date lastEditedEntryDate;
@@ -102,8 +103,8 @@ public class GridActivity extends AppCompatActivity implements AdapterView.OnIte
             c.setTime(maxDate);
             c.add(Calendar.DATE, -i);
             Date currentDate = c.getTime();
-            Entry currentEntry = new Entry(currentDate);
-            entries.add(currentEntry);
+            GridEntry currentGridEntry = new GridEntry(currentDate);
+            entries.add(currentGridEntry);
         }
     }
 
@@ -149,9 +150,9 @@ public class GridActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         if(savingLastEntryFinished) {
-            Entry clickedEntry = entries.get(position);
-            Date clickedEntryDate = clickedEntry.getDate();
-            Emotion clickedEntryEmotion = clickedEntry.getEmotion();
+            GridEntry clickedGridEntry = entries.get(position);
+            Date clickedEntryDate = clickedGridEntry.getDate();
+            Emotion clickedEntryEmotion = clickedGridEntry.getEmotion();
 
             Intent intent = new Intent(GridActivity.this, DetailActivity.class);
             intent.putExtra(DetailActivityConfig.ENTRY_DATE_KEY, DateUtil.setToMidnight(clickedEntryDate));
@@ -279,15 +280,30 @@ public class GridActivity extends AppCompatActivity implements AdapterView.OnIte
     public void updateFinished(int updateCode) {
         switch (updateCode){
             case DetailActivityConfig.NEW_ENTRY_UPDATE_CODE:
-                StringTransformHelper.startEncryption(lastEditedBoxListString, this);
-                lastEditedBoxListString = "";
+                if(CheckEncryptionSettingHelper.encryptionActivated(this)){
+                    StringTransformHelper.startEncryption(lastEditedBoxListString, this);
+                    lastEditedBoxListString = "";
+                } else{
+                    dbHelper.updateEntryContent(lastEditedEntryDate, lastEditedBoxListString);
+                    lastEditedBoxListString = "";
+                }
                 break;
             case DetailActivityConfig.CONTENT_UPDATE_CODE:
-                dbHelper.updateEntryIV(lastEditedEntryDate, lastEditedIV);
+                if(CheckEncryptionSettingHelper.encryptionActivated(this)){
+                    dbHelper.updateEntryIV(lastEditedEntryDate, lastEditedIV);
+                } else{
+                    byte[] emptyIv = new byte[]{00,00};
+                    dbHelper.updateEntryIV(lastEditedEntryDate, emptyIv);
+                }
                 break;
             case DetailActivityConfig.IV_UPDATE_CODE:
                 lastEditedIV = null;
-                dbHelper.updateEntrySalt(lastEditedEntryDate, lastEditedSalt);
+                if(CheckEncryptionSettingHelper.encryptionActivated(this)){
+                    dbHelper.updateEntrySalt(lastEditedEntryDate, lastEditedSalt);
+                } else{
+                    byte[] emptySalt = new byte[]{00,00};
+                    dbHelper.updateEntrySalt(lastEditedEntryDate, emptySalt);
+                }
                 break;
             case DetailActivityConfig.SALT_UPDATE_CODE:
                 lastEditedSalt = null;

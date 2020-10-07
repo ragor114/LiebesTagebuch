@@ -2,12 +2,12 @@ package ur.mi.liebestagebuch.GridView;
 
 import java.util.Date;
 
-public class Entry {
+public class GridEntry {
 
     private Emotion emotion;
     private Date date;
 
-    public Entry(Date date){
+    public GridEntry(Date date){
         this.date = date;
         emotion = Emotion.NORMAL;
     }
