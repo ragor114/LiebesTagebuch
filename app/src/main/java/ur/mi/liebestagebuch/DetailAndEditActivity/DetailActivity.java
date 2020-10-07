@@ -26,6 +26,7 @@ import com.spotify.sdk.android.authentication.AuthenticationClient;
 import com.spotify.sdk.android.authentication.AuthenticationRequest;
 import com.spotify.sdk.android.authentication.AuthenticationResponse;
 
+import java.io.File;
 import java.util.Date;
 import java.util.List;
 
@@ -564,8 +565,18 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 Log.d("Detail", "LongClicked Position: " + position);
+                String filePath = null;
+                if(entryDetail.getBoxList().get(position).getType() == Type.PICTURE){
+                    filePath = entryDetail.getBoxList().get(position).getString();
+                }
                 entryDetail.getBoxList().remove(position);
                 boxListAdapter.notifyDataSetChanged();
+                if(filePath != null){
+                    File fileToDelete = new File(filePath);
+                    if(fileToDelete.exists()){
+                        fileToDelete.delete();
+                    }
+                }
                 return true;
             }
         });
