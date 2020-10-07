@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -141,7 +142,15 @@ public class DisableEncryptionActivity extends AppCompatActivity implements Data
 
     @Override
     public void onBackPressed() {
-        setResult(RESULT_CANCELED);
-        finish();
+        if(!isRunning){
+            setResult(RESULT_CANCELED);
+            finish();
+        } else{
+            sendIsRunningToast();
+        }
+    }
+
+    public void sendIsRunningToast(){
+        Toast.makeText(this, "Please wait until decryption is finished", Toast.LENGTH_SHORT).show();
     }
 }

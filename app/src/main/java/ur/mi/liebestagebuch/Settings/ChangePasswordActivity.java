@@ -114,6 +114,7 @@ public class ChangePasswordActivity extends AppCompatActivity implements Databas
         } else{
             Log.d("Password", "Entries are not encrypted");
             SecurePasswordSaver.storePasswordSecure(newPassword, this);
+            LoginActivity.correctPassword = newPassword;
             finishEditing();
         }
     }
