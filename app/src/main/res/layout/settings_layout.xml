@@ -121,7 +121,8 @@
             android:layout_height="30dp"
             android:layout_weight=".5"
             android:background="@null"
-            android:src="@drawable/ic_baseline_arrow_forward_ios_24"/>
+            android:src="@drawable/ic_baseline_arrow_forward_ios_24"
+            android:outlineAmbientShadowColor="@color/backgroundColor"/>
 
     </LinearLayout>
         </LinearLayout>

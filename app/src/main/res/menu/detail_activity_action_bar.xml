@@ -11,5 +11,5 @@
         android:id="@+id/add_box_menu_item"
         android:title="@string/add_menu_button_title"
         app:showAsAction="ifRoom"
-        android:icon="@drawable/ic_add_black_24dp"/>
+        android:icon="@drawable/ic_add_white_24dp"/>
 </menu>

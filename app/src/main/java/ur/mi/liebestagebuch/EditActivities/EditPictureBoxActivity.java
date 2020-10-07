@@ -136,10 +136,13 @@ public class EditPictureBoxActivity extends AppCompatActivity {
     }
 
     private void choosePhoto(){
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent,"Choose Image"),PICK_IMAGE);
+        Intent pick = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        pick.setType("image/*");
+
+        Intent choose = Intent.createChooser(getIntent(), "Select Image");
+        choose.putExtra(Intent.EXTRA_INITIAL_INTENTS,new Intent[] {pick});
+
+        startActivityForResult(choose,PICK_IMAGE);
     }
 
     @Override
