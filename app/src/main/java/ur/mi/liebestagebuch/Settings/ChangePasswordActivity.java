@@ -30,6 +30,19 @@ import ur.mi.liebestagebuch.database.data.Entry;
 
 public class ChangePasswordActivity extends AppCompatActivity implements DatabaseListener, CryptoListener {
 
+    /*
+     * Da die Verschlüsselung auf dem gespeicherten, vom Nutzer festgelegten Passwort basiert, müssen,
+     * wenn das Passwort geändert wird, alle Einträge in der Datenbank entschlüsselt und neu verschlüsselt
+     * werden, bevor das alte Passwort vergessen ist. Solange kann die Activity nicht verlassen werden,
+     * da sonst Einträge verbleiben, die mit dem alten Passwort verschlüsselt wurden.
+     * Da eine Entschlüsselung ca. 1 Sekunde und eine Verschlüsselung ca. 1,5 Sekunden dauert, kann
+     * es eine Weile dauern, bis der Vorgang abgeschlossen ist.
+     * Darüber hinaus überprüft die Activity, ob man das neue Passwort richtig eingegeben hat (da
+     * man es wiederholen muss) und, ob man das alte Passwort kennt.
+     *
+     * Entwickelt von Jannik Wiese.
+     */
+
     private EditText oldPasswordEt;
     private EditText newPasswordEt;
     private EditText newPasswordRepeatEt;
@@ -40,7 +53,6 @@ public class ChangePasswordActivity extends AppCompatActivity implements Databas
 
     private DBHelper dbHelper;
 
-    private String oldPassword;
     private String newPassword;
     private List<Entry> allEntries;
     private int currentEntryPosition;
@@ -57,6 +69,10 @@ public class ChangePasswordActivity extends AppCompatActivity implements Databas
         isReadyToFinish = true;
         dbHelper = new DBHelper(this, this);
 
+        setupViews();
+    }
+
+    private void setupViews() {
         oldPasswordEt = findViewById(R.id.change_password_old_password);
         newPasswordEt = findViewById(R.id.change_password_new_password);
         newPasswordRepeatEt = findViewById(R.id.change_password_repeat);
@@ -76,6 +92,12 @@ public class ChangePasswordActivity extends AppCompatActivity implements Databas
         });
     }
 
+    /*
+     * Wenn das Passwort geändert werden soll, werden die Nutzereingaben und das korrekte aktuelle
+     * Passwort geladen. Falls das korrekte Passwort mit dem eingegeben Passwort übereinstimmt und
+     * die beiden Wiederholungen übereinstimmen wird mit der Neuverschlüsselung begonnen. Ansonsten
+     * werden Fehler als Toasts gesendet.
+     */
     private void changePassword(){
         String oldPasswordText = oldPasswordEt.getText().toString();
         String newPasswordText = newPasswordEt.getText().toString();
@@ -84,7 +106,7 @@ public class ChangePasswordActivity extends AppCompatActivity implements Databas
         Log.d("Password", "Correct Password is: " + correctPassword + " oldPassword is: " + oldPasswordText + " newPassword is: " + newPasswordText);
         if(correctPassword.equals(oldPasswordText)){
             if(newPasswordText.equals(repeatPasswordText)){
-                startReencryption(correctPassword, newPasswordText);
+                startReencryption(newPasswordText);
             } else{
                 sendPasswordDoesNotEqualRepeatMessage();
             }
@@ -101,14 +123,19 @@ public class ChangePasswordActivity extends AppCompatActivity implements Databas
         Toast.makeText(this, "New password and repitition are not equal", Toast.LENGTH_SHORT).show();
     }
 
-    private void startReencryption(String oldPassword, String newPassword) {
+    /*
+     * Falls die Eingaben korrekt sind und die Verschlüsselung aktiviert ist, werden alle Einträge
+     * neu verschlüsselt. Dazu wird ein entsprechender Hinweis sichtbar gemacht und alle Einträge aus
+     * der Datenbank geladen.
+     * Falls die Einträge nicht verschlüsselt sind, wird das neue Passwort einfach
+     * gespeichert udn die Activity beendet.
+     */
+    private void startReencryption(String newPassword) {
         Log.d("Password", "Starting reencryption");
-        SharedPreferences sharedPreferences = getSharedPreferences(SettingsConfig.SHARED_PREFS, MODE_PRIVATE);
-        boolean isEncrypted = sharedPreferences.getBoolean(SettingsConfig.SWITCH_ENCRYPT, true);
+        boolean isEncrypted = CheckEncryptionSettingHelper.encryptionActivated(this);
         if(isEncrypted) {
             encryptionRunningView.setVisibility(View.VISIBLE);
             isReadyToFinish = false;
-            this.oldPassword = oldPassword;
             this.newPassword = newPassword;
             dbHelper.getAllEntries();
         } else{
@@ -120,7 +147,9 @@ public class ChangePasswordActivity extends AppCompatActivity implements Databas
     }
 
     private void finishEditing() {
-        LoginActivity.correctPassword = newPassword;
+        if(newPassword != null){
+            LoginActivity.correctPassword = newPassword;
+        }
         setResult(RESULT_OK);
         finish();
     }
@@ -129,6 +158,7 @@ public class ChangePasswordActivity extends AppCompatActivity implements Databas
         Toast.makeText(this, "Please wait while Entries are reencrypted with new Password.", Toast.LENGTH_SHORT).show();
     }
 
+    // Bei der Neuverschlüsselung müssen Inhalt, Iv und Salt gespeichert werden.
     @Override
     public void updateFinished(int updateCode) {
         switch (updateCode){
@@ -150,6 +180,9 @@ public class ChangePasswordActivity extends AppCompatActivity implements Databas
 
     }
 
+    /*
+     * Wenn alle Einträge gefunden wurden, werden Sie der Reihe nach entschlüsselt.
+     */
     @Override
     public void allEntriesFound(List<Entry> allEntries) {
         this.allEntries = allEntries;
@@ -160,6 +193,14 @@ public class ChangePasswordActivity extends AppCompatActivity implements Databas
         Log.d("Password", "Number of Entries is: " + allEntries.size());
     }
 
+    /*
+     * Im ersten Durchgang werden die Inhalte aller Einträge entschlüsselt und die entschlüsselten
+     * Inhalte in der gleichen Reihenfolge in einer Arraylist abgelegt.
+     * Im zweiten Durchgang werden alle Inhalte neu verschlüsselt und der verschlüsselte Inhalt, Iv
+     * und Salt in der Datenbank gespeichert.
+     * Wenn beide male alle Einträge durchgegangen wurden, wird das neue Passwort gespeichert und
+     * die Activity beeendet.
+     */
     private void currentEntryReencryption() {
         if(!decryptionFinished && currentEntryPosition < allEntries.size()){
             Log.d("Password", "Decrypting " + currentEntryPosition);
@@ -181,6 +222,7 @@ public class ChangePasswordActivity extends AppCompatActivity implements Databas
         }
     }
 
+    // Bei der Verschlüsselung müssen iv und salt kurzzeitig in Instanzvariablen zwischengespeichert werden.
     @Override
     public void onEncryptionFinished(String result, byte[] iv, byte[] salt) {
         dbHelper.updateEntryContent(allEntries.get(currentEntryPosition).getDate(), result);
@@ -188,6 +230,8 @@ public class ChangePasswordActivity extends AppCompatActivity implements Databas
         this.currentEntrySalt = salt;
     }
 
+    // Die entschlüsselten Inhalte werden in einer Arraylist gespeichert und dann die Entschlüsselung
+    // des nächsten Eintrags gestartet.
     @Override
     public void onDecryptionFinished(String result) {
         decryptedContents.add(result);
@@ -197,11 +241,21 @@ public class ChangePasswordActivity extends AppCompatActivity implements Databas
 
     @Override
     public void onEncryptionFailed() {
-        //TODO: Make usefull
+        Toast.makeText(this, "Encryption failed, try again later", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onDecryptionFailed() {
-        //TODO: Make usefull
+        Toast.makeText(this, "Decryption failed, try again later", Toast.LENGTH_SHORT).show();
+    }
+
+    // Die Activity kann nur verlassen werden wenn keine Ent- oder Verschlüsselung läuft.
+    @Override
+    public void onBackPressed() {
+        if(isReadyToFinish){
+            super.onBackPressed();
+        } else{
+            sendNotReadyToFinishMessage();
+        }
     }
 }

@@ -14,11 +14,10 @@ public class PictureBox implements Box{
 
     /*
      * Klasse dren Objekte eine Bildbox repräsentieren.
-     * getView() muss noch implementiert werden!
-     * Umwandlung des Strings in eine Uri und ein Bitmap muss implementiert werden!
+     * Bilder werden als Dateipfade gespeichert, aus denen dann Bitmaps ausgelesen werden.
      */
 
-    //String Repräsentation des gewählten Bilds.
+    //Pfad zum gewählten Bilds.
     private String path;
     //Das gewählte Bild als Bitmap.
     private Bitmap pictureBitmap;
@@ -39,7 +38,6 @@ public class PictureBox implements Box{
         return Type.PICTURE;
     }
 
-    //muss noch implementiert werden!
     @Override
     public View getView(Context context) {
         LayoutInflater inflater = LayoutInflater.from(context);

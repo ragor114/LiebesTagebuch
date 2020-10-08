@@ -11,6 +11,7 @@ import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 
+import ur.mi.liebestagebuch.Settings.CheckEncryptionSettingHelper;
 import ur.mi.liebestagebuch.Settings.SettingsConfig;
 
 public class Reminder extends BroadcastReceiver{
@@ -19,8 +20,8 @@ public class Reminder extends BroadcastReceiver{
     public void onReceive(Context context, Intent intent) {
         Log.d("notification", "onrecieve");
 
-        SharedPreferences sharedPreferences = context.getSharedPreferences(SettingsConfig.SHARED_PREFS, Context.MODE_PRIVATE);
-        boolean remind = sharedPreferences.getBoolean(SettingsConfig.SWITCH_REMIND, false);
+        // Es wird überprüft, ob die Benachrichtungen aktiviert sind, bevor eine Notification gesendet wird.
+        boolean remind = CheckEncryptionSettingHelper.encryptionActivated(context);
 
         if(remind){
             Log.d("notification", "Reminding ...");

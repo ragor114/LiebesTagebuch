@@ -560,6 +560,11 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
         });
     }
 
+    /*
+     * Boxen werden bei einem langen Klick aus der Arraylist und damit dem ListView entfernt. Handelt
+     * es sich bei der geklickten Box um eine Bildbox wird außerdem die Datei gelöscht, um Speicher
+     * frei zu machen.
+     */
     private void setBoxListLongClickListener() {
         boxListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override

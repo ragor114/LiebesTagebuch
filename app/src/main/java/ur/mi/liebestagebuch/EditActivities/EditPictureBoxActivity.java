@@ -42,8 +42,8 @@ public class EditPictureBoxActivity extends AppCompatActivity {
      * Über den Fertigstellenknopf gelangt man in die aufrufende Activity zurück, wobei das
      * Bild im ImageView als String kommuniziert wird.
      *
-     * Basis entwickelt von Jannik Wiese.
-     * Bildauswahl/-aufnahme entwickelt von ...
+     * Basis/Dateierstellung entwickelt von Jannik Wiese.
+     * Bildauswahl/-aufnahme entwickelt von Jonas Distler
      */
 
     private Button choosePictureButton;
@@ -90,28 +90,7 @@ public class EditPictureBoxActivity extends AppCompatActivity {
         finishChoosing.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("Detail", "Button clicked");
-                Bitmap previewedBitmap = ((BitmapDrawable) previewImage.getDrawable()).getBitmap();
-                Bitmap copyBitmap = previewedBitmap.copy(Bitmap.Config.RGB_565, false);
-                //TODO: Make Bitmap smaller (JPEG + weniger Pixel)
-                String filePath = saveFile();
-                /*
-                previewedBitmap = BitmapFactory.decodeFile("/data/user/0/ur.mi.liebestagebuch/app_picture/2020-10-06-14-56-00-143-photo");
-                previewImage.setImageBitmap(previewedBitmap);
-                Log.d("Picture", "decoded: " + filePath);
-                 */
-                Intent intent = new Intent();
-                intent.putExtra(DetailActivityConfig.PICTUREBOX_CONTENT_KEY, filePath);
-                setResult(RESULT_OK, intent);
-                finish();
-                /*
-                String bitmapString = StringTransformHelper.convertBitmapToBase64String(copyBitmap);
-                Log.d("Detail", "Got String" + bitmapString);
-                Intent intent = new Intent();
-                intent.putExtra(DetailActivityConfig.PICTUREBOX_CONTENT_KEY, bitmapString);
-                setResult(RESULT_OK, intent);
-                finish();
-                 */
+                finishEditing(0, false);
             }
         });
 
@@ -122,9 +101,10 @@ public class EditPictureBoxActivity extends AppCompatActivity {
 
     /*
      * Wenn extras übegeben wurden weiß die Activity, dass Sie zum Bearbeiten und nicht zum
-     * neu erstellen aufgerufen wurde. Daher wird das Bild im ImageView auf das als String übergebene
+     * neu erstellen aufgerufen wurde. Daher wird das Bild im ImageView auf das als Pfad übergebene
      * Bitmap gesetzt und der OnClickListener des Buttons so überschrieben, dass zusätzlich die
      * Position der Box überschrieben wird.
+     * Die alte Bilddatei wird gelöscht.
      */
     private void setUpForEdit(Bundle extras) {
         String transferedBitmapPath = extras.getString(DetailActivityConfig.EXISTING_CONTENT_KEY);
@@ -141,27 +121,21 @@ public class EditPictureBoxActivity extends AppCompatActivity {
         finishChoosing.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("Detail", "Button clicked");
-                Bitmap previewedBitmap = ((BitmapDrawable) previewImage.getDrawable()).getBitmap();
-                Bitmap copyBitmap = previewedBitmap.copy(Bitmap.Config.RGB_565, false);
-                //TODO: Make Bitmap smaller (JPEG + weniger Pixel)
-                String bitmapString = StringTransformHelper.convertBitmapToBase64String(copyBitmap);
-                String filePath = saveFile();
-                Intent intent = new Intent();
-                intent.putExtra(DetailActivityConfig.POSITION_IN_LIST_KEY, positionInList);
-                intent.putExtra(DetailActivityConfig.PICTUREBOX_CONTENT_KEY, filePath);
-                setResult(RESULT_OK, intent);
-                finish();
-                /*
-                Log.d("Detail", "Got String" + bitmapString);
-                Intent intent = new Intent();
-                intent.putExtra(DetailActivityConfig.PICTUREBOX_CONTENT_KEY, bitmapString);
-                intent.putExtra(DetailActivityConfig.POSITION_IN_LIST_KEY, positionInList);
-                setResult(RESULT_OK, intent);
-                finish();
-                 */
+                finishEditing(positionInList, true);
             }
         });
+    }
+
+    private void finishEditing(int positionInList, boolean isEditing) {
+        Log.d("Detail", "Button clicked");
+        String filePath = saveFile();
+        Intent intent = new Intent();
+        if(isEditing){
+            intent.putExtra(DetailActivityConfig.POSITION_IN_LIST_KEY, positionInList);
+        }
+        intent.putExtra(DetailActivityConfig.PICTUREBOX_CONTENT_KEY, filePath);
+        setResult(RESULT_OK, intent);
+        finish();
     }
 
     private void takePhoto(){
@@ -182,6 +156,11 @@ public class EditPictureBoxActivity extends AppCompatActivity {
         }
     }
 
+    /*
+     * Wird ein impliziter Intent gestartet, der eine App auffordert ein Foto zu machen, braucht
+     * dieser eine temporäre Datei, in die das augenommene Bild gespeichert werden kann, diese
+     * wird hier erstellt.
+     */
     private File createTempImageFile() throws IOException {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = timeStamp + "_image";
@@ -204,6 +183,7 @@ public class EditPictureBoxActivity extends AppCompatActivity {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             Bitmap fullSize = BitmapFactory.decodeFile(requestedImageFile.getPath());
             previewImage.setImageBitmap(fullSize);
+            // Die temporäre Datei wird wieder gelöscht.
             if(requestedImageFile.exists()){
                 requestedImageFile.delete();
             }
@@ -231,6 +211,11 @@ public class EditPictureBoxActivity extends AppCompatActivity {
         return BitmapFactory.decodeByteArray(BYTE, 0, BYTE.length);
     }
 
+    /*
+     * Der Name der Datei in der das Bild gespeichert wird setzt sich zusammen aus dem aktuellen
+     * Datum (mit Millisekunden, damit es keine zwei Dateien mit gleichem Namen gibt) und
+     * dem Zusatz "-photo".
+     */
     private String getFileName(){
         Calendar cal = Calendar.getInstance();
         Date currentDate = cal.getTime();
@@ -240,6 +225,13 @@ public class EditPictureBoxActivity extends AppCompatActivity {
         return fileName;
     }
 
+    /*
+     * Das fertige Photo wird in einem geschützten Ordner "picture" abgelegt und dort als Byte-Array
+     * gespeichert, aus dem eine BitmapFactory wieder eine Bitmap machen kann.
+     * Das Bild wird zum schonenden Umgang mit Speicherplatz als JPEG mit 80% Qualität gespeichert,
+     * das hat aber zur Folge, dass bei oftmaligen Bearbeiten des gleichen Bilds die Qualität
+     * merkbar schlechter wird, da das Bild immer geladen und erneut komprimiert wird.
+     */
     private String saveFile(){
         String filePath = getFileName();
         File file = new File(this.getDir("picture", this.MODE_PRIVATE), filePath);
