@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:padding="10dp" android:background="@color/backgroundColor">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:text="@string/note_enable_encryption"
+        android:textSize="16sp"
+        android:textColor="@color/colorPrimary"
+        android:layout_above="@id/enable_encryption_button"
+        android:layout_marginBottom="20dp"/>
+
+    <Button
+        android:id="@+id/enable_encryption_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:background="@drawable/button_round_corners"
+        android:text="@string/enable_encryption_botton"/>
+
+    <TextView
+        android:id="@+id/enable_encryption_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/encryption_running"
+        android:textColor="@color/colorPrimary"
+        android:layout_below="@id/enable_encryption_button"
+        android:textAlignment="center"
+        android:layout_marginTop="30dp"
+        android:textSize="20sp"/>
+
+    <ProgressBar
+        android:id="@+id/enable_spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/enable_encryption_text"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:indeterminate="true"
+        android:visibility="visible" />
+
+</RelativeLayout>
