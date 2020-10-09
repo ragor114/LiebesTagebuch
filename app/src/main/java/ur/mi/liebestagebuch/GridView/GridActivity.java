@@ -12,6 +12,14 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -27,6 +35,7 @@ import ur.mi.liebestagebuch.Settings.CheckEncryptionSettingHelper;
 import ur.mi.liebestagebuch.Settings.SettingsActivity;
 import ur.mi.liebestagebuch.database.DBHelper;
 import ur.mi.liebestagebuch.database.DatabaseListener;
+import ur.mi.liebestagebuch.database.data.Entry;
 
 public class GridActivity extends AppCompatActivity implements AdapterView.OnItemClickListener, EmotionRequestListener, CryptoListener, DatabaseListener {
 
@@ -40,14 +49,15 @@ public class GridActivity extends AppCompatActivity implements AdapterView.OnIte
      *
      * Entwickelt von Moritz Schnell und Jannik Wiese.
      *
-     * TODO: getInstallationDate(): Installationsdatum aus Datei abfragen, wenn Datei nicht vorhanden, Installationsdatum speichern.
+     * Check: getInstallationDate(): Installationsdatum aus Datei abfragen, wenn Datei nicht vorhanden, Installationsdatum speichern.
      * Check: getDaysPast(): Vergleich des heutigen Datums mit dem gespeicherten Datum und Berechnung der vergangen Tage.
-     * TODO: requestAllEmotions(): Anfrage für ArrayList aller Emotionen an die Datenbank stellen, dabei diese Activity als Listener übergeben.
-     * TODO: onEmotionRequestFinished(): Empfangene Emotionen den entsprechenden Entries zuweisen und dann grid refreshen.
-     * TODO: onEmotionRequestFinished(): Falls kein Datenbankeintrag für ein Datum vorhanden ist, leeren Eintrag anlegen.
+     * Check: requestAllEmotions(): Anfrage für ArrayList aller Emotionen an die Datenbank stellen, dabei diese Activity als Listener übergeben.
+     * Check: onEmotionRequestFinished(): Empfangene Emotionen den entsprechenden Entries zuweisen und dann grid refreshen.
+     * Check: onEmotionRequestFinished(): Falls kein Datenbankeintrag für ein Datum vorhanden ist, leeren Eintrag anlegen.
      * Check: Layout verbessern, Grafiken statt hässlicher Rechtecke.
+     * TODO: Bei zurücktaste app schließen
      *
-     * TODO: onItemClick(): Übergang in Detailactivity, Übergabe der nötigen Informationen (reicht nur Datum?).
+     * Check: onItemClick(): Übergang in Detailactivity, Übergabe der nötigen Informationen (reicht nur Datum?).
      */
 
     //Notwendige Attribute der Gridactivity
@@ -62,6 +72,8 @@ public class GridActivity extends AppCompatActivity implements AdapterView.OnIte
     private byte[] lastEditedSalt;
     private int lastEditedEntryEmotion;
 
+    private ArrayList<Emotion> emotions;
+
     private boolean savingLastEntryFinished;
 
     @Override
@@ -70,10 +82,22 @@ public class GridActivity extends AppCompatActivity implements AdapterView.OnIte
         setContentView(R.layout.grid_activity);
 
         savingLastEntryFinished = true;
-
-        initGrid();
         dbHelper = new DBHelper(this, this);
+        initGrid();
+
+        //leaveApp();
+
+       // if (getIntent().getBooleanExtra("EXIT",false)) {
+        //    finish();
+        //}
     }
+
+   /* private void leaveApp() {
+        Intent intent = new Intent(GridActivity.this, GridActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.putExtra("EXIT", true);
+        startActivity(intent);
+    }*/
 
     // Das Grid-View wird in einer Java-Variable gespeichert, die ArrayList aufgesetzt, der
     // Adapter mit der ArrayList verbunden und diese Activity als Listener registriert.
@@ -93,41 +117,70 @@ public class GridActivity extends AppCompatActivity implements AdapterView.OnIte
     private void setUpArrayList(){
         entries = new ArrayList<>();
         Date installationDate = getInstallationDate();
-        int daysPasssed = getDaysPassed(installationDate);
+        int daysPassed = getDaysPassed(installationDate);
+        Log.d("Installation Date", "Installation Date: " +installationDate.getTime()+ " days passed: " + daysPassed);
         // SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
         Calendar c = Calendar.getInstance();
         c.setTime(installationDate);
-        c.add(Calendar.DATE, daysPasssed);
+        c.add(Calendar.DAY_OF_MONTH, daysPassed);
         Date maxDate = c.getTime();
-        for(int i=0; i < daysPasssed; i++){
+        for(int i=0; i < daysPassed; i++){
             c.setTime(maxDate);
-            c.add(Calendar.DATE, -i);
+            c.add(Calendar.DAY_OF_MONTH, -(i+1));
             Date currentDate = c.getTime();
+            currentDate = DateUtil.setToMidnight(currentDate);
             GridEntry currentGridEntry = new GridEntry(currentDate);
             entries.add(currentGridEntry);
         }
+        requestAllEmotions();
     }
 
     //Check: Vergleich des gespeicherten Installationsdatums mit dem aktuellen und Rückgabe der Anzahl der vergangenen Tage.
     private int getDaysPassed(Date installationDate){
         Date currentDate = new Date();
-        int daysPassed = 0;
-        if (installationDate == currentDate){
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(currentDate);
+        //cal.add(Calendar.DAY_OF_MONTH,5);
+        currentDate = cal.getTime();
+        currentDate = DateUtil.setToMidnight(currentDate);
+        int daysPassed = 1;
+        if (installationDate.equals(currentDate)){
+            Log.d("Installation Date", "is equal");
             return daysPassed;
         } else {
             daysPassed = (int) (currentDate.getTime() - installationDate.getTime());
-            return (int) TimeUnit.DAYS.convert((daysPassed), TimeUnit.MILLISECONDS);
+            return ((int) TimeUnit.DAYS.convert((daysPassed), TimeUnit.MILLISECONDS))+1;
         }
     }
 
-    // TODO: Abruf des in einer Datei gespeicherten Installationsdatums und Rückgabe dieses Objekts.
+    // Check: Abruf des in einer Datei gespeicherten Installationsdatums und Rückgabe dieses Objekts.
     private Date getInstallationDate(){
-        Date currentDate = new Date();
-        Calendar c = Calendar.getInstance();
-        c.setTime(currentDate);
-        c.add(Calendar.DATE, -9);
-        Date testInstallationDate = c.getTime();
-        return testInstallationDate;
+        Date saveDate = new Date();
+        File installationFile = new File(this.getDir("date", MODE_PRIVATE), "installationDate");
+        if(installationFile.exists()){
+            StringBuilder builder = new StringBuilder();
+            BufferedReader br = null;
+            try {
+                br = new BufferedReader(new FileReader(installationFile));
+            String currentLine;
+            while (br.readLine() != null){
+                currentLine = br.readLine();
+                builder.append(currentLine);
+            }
+            String dateString = builder.toString();
+            saveDate = new SimpleDateFormat("dd/MM/yyyy").parse(dateString);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (ParseException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            Log.d("Installation Date", "File doesn't exist");
+        }
+
+        return saveDate;
     }
 
     /*
@@ -163,14 +216,7 @@ public class GridActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     public void requestAllEmotions(){
-        Emotion values[] =Emotion.values();
-        ArrayList allEmotions = new ArrayList<>();
-       // for (Emotion.values()) {
-       //     allEmotions.add(allEmotions.get(values));
-       // }
-
-      // Anfrage für alle Emotionen in einer ArrayList an die Datenbank übergeben
-      // Da Anfrage asyncron läuft wird diese Activity als Listener übergeben.
+        dbHelper.getAllEntries();
     }
 
 
@@ -219,6 +265,13 @@ public class GridActivity extends AppCompatActivity implements AdapterView.OnIte
                 // asynchron Datenbank- und Verschlüsselungsoperationen durchgeführt werden.
                 Log.d("Date", "Before formatting milliseconds: " + entryDate.getTime());
                 lastEditedEntryDate = DateUtil.setToMidnight(entryDate);
+                for (GridEntry current: entries){
+                    if (current.getDate().equals(lastEditedEntryDate)){
+                        current.setEmotion(entryEmotion);
+                        gridAdapter.notifyDataSetChanged();
+                        break;
+                    }
+                }
                 Log.d("Date", "After formattting milliseconds: " + entryDate.getTime());
                 lastEditedBoxListString = boxListString;
                 lastEditedEntryEmotion = emotionInt;
@@ -323,7 +376,39 @@ public class GridActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     @Override
-    public void allEntriesFound(List<ur.mi.liebestagebuch.database.data.Entry> allEntries) {
+    public void allEntriesFound(List<Entry> allEntries) {
+        Log.d("Hallo", "all entries found");
+        for (GridEntry current: entries){
+            Date currentDate = current.getDate();
+            for (Entry currentDBEntry: allEntries){
+                if (currentDBEntry.getDate().equals(currentDate)){
+                    current.setEmotion(getCorrespondingEmotion(currentDBEntry.getEmotions()));
+                    gridAdapter.notifyDataSetChanged();
+                    Log.d("Hallo", "hallo?");
+                }
+            }
+        }
+    }
 
+    private Emotion getCorrespondingEmotion(int emotions) {
+        Emotion correspondingEmotion = Emotion.NORMAL;
+        switch (emotions){
+            case 0:
+                correspondingEmotion = Emotion.VERY_GOOD;
+                break;
+            case 1:
+                correspondingEmotion = Emotion.GOOD;
+                break;
+            case 2:
+                correspondingEmotion = Emotion.NORMAL;
+                break;
+            case 3:
+                correspondingEmotion = Emotion.BAD;
+                break;
+            case 4:
+                correspondingEmotion = Emotion.VERY_BAD;
+                break;
+        }
+        return correspondingEmotion;
     }
 }
