@@ -1,6 +1,5 @@
 package ur.mi.liebestagebuch.Settings;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -13,11 +12,8 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.lang.annotation.AnnotationTypeMismatchException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.concurrent.ThreadPoolExecutor;
 
 import ur.mi.liebestagebuch.DetailAndEditActivity.DetailActivityConfig;
 import ur.mi.liebestagebuch.Encryption.CryptoListener;
@@ -27,7 +23,7 @@ import ur.mi.liebestagebuch.LoginActivity;
 import ur.mi.liebestagebuch.R;
 import ur.mi.liebestagebuch.database.DBHelper;
 import ur.mi.liebestagebuch.database.DatabaseListener;
-import ur.mi.liebestagebuch.database.data.Entry;
+import ur.mi.liebestagebuch.database.data.DBEntry;
 
 public class ChangePasswordActivity extends AppCompatActivity implements DatabaseListener, CryptoListener {
 
@@ -56,7 +52,7 @@ public class ChangePasswordActivity extends AppCompatActivity implements Databas
 
     private String oldPassword;
     private String newPassword;
-    private List<Entry> allEntries;
+    private List<DBEntry> allEntries;
     private int currentEntryPosition;
     private boolean decryptionFinished;
     private ArrayList<String> decryptedContents;
@@ -187,7 +183,7 @@ public class ChangePasswordActivity extends AppCompatActivity implements Databas
     }
 
     @Override
-    public void entryFound(Entry foundEntry) {
+    public void entryFound(DBEntry foundEntry) {
 
     }
 
@@ -195,7 +191,7 @@ public class ChangePasswordActivity extends AppCompatActivity implements Databas
      * Wenn alle Einträge gefunden wurden, werden Sie der Reihe nach entschlüsselt.
      */
     @Override
-    public void allEntriesFound(List<Entry> allEntries) {
+    public void allEntriesFound(List<DBEntry> allEntries) {
         this.allEntries = allEntries;
         this.currentEntryPosition = 0;
         this.decryptedContents = new ArrayList<>();
@@ -215,7 +211,7 @@ public class ChangePasswordActivity extends AppCompatActivity implements Databas
     private void currentEntryReencryption() {
         if(!decryptionFinished && currentEntryPosition < allEntries.size()){
             Log.d("Password", "Decrypting " + currentEntryPosition);
-            Entry currentEntry = allEntries.get(currentEntryPosition);
+            DBEntry currentEntry = allEntries.get(currentEntryPosition);
             StringTransformHelper.startDecryption(currentEntry.getContent(), this, currentEntry.getIv(), currentEntry.getSalt());
         } else if(!decryptionFinished){
             Log.d("Password", "All decryptions finished");

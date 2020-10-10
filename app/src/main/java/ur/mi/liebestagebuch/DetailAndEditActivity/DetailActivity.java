@@ -16,12 +16,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapView;
-import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.spotify.sdk.android.authentication.AuthenticationClient;
 import com.spotify.sdk.android.authentication.AuthenticationRequest;
@@ -52,7 +47,7 @@ import ur.mi.liebestagebuch.R;
 import ur.mi.liebestagebuch.Settings.CheckEncryptionSettingHelper;
 import ur.mi.liebestagebuch.database.DBHelper;
 import ur.mi.liebestagebuch.database.DatabaseListener;
-import ur.mi.liebestagebuch.database.data.Entry;
+import ur.mi.liebestagebuch.database.data.DBEntry;
 
 public class DetailActivity extends AppCompatActivity implements CryptoListener, DatabaseListener, BoxListEncryptionListener, SpotifyBoxReadyListener {
 
@@ -441,7 +436,7 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
      * Datenbank-Entrys erstellt und die Views initialisiert.
      */
     @Override
-    public void entryFound(Entry foundEntry) {
+    public void entryFound(DBEntry foundEntry) {
         if(foundEntry == null){
             Log.d("Detail", "No Entry found");
             isReadyToFinish = false;
@@ -467,7 +462,7 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
     }
 
     @Override
-    public void allEntriesFound(List<Entry> allEntries) {
+    public void allEntriesFound(List<DBEntry> allEntries) {
 
     }
 

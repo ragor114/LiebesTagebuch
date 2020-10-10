@@ -34,12 +34,12 @@
     <string name="spotify_title_name_default">Title of current track</string>
     <string name="spotify_artist_default">Artist of current track</string>
     <string name="music_box_title_default">Loading Song title...</string>
-    <string name="music_box_artist_default">If you have connection and this does not change you can still play the song and reopen the entry to get information.</string>
+    <string name="music_box_artist_default">If you have connection and this does not change you can still play the song and reopen the DBEntry to get information.</string>
     <string name="search_hint">Search for track</string>
     <string name="hint_new_header">Überschrift einfügen</string>
     <string name="type_chooser_header">Add Header</string>
     <string name="notification_title">Dear Diary...</string>
-    <string name="notification_text">Don\'t forget to write a diary entry today!</string>
+    <string name="notification_text">Don\'t forget to write a diary DBEntry today!</string>
     <string name="old_password_hint">Enter current password</string>
     <string name="new_password_hint">Enter new Password</string>
     <string name="new_password_repeat_hint">Repeat new password</string>

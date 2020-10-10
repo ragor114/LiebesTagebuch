@@ -11,7 +11,7 @@ import java.util.Date;
 
 
 @Entity(tableName = "diary")
-public class Entry{
+public class DBEntry {
 
     @PrimaryKey(autoGenerate = true)
     private int uid;
@@ -31,7 +31,7 @@ public class Entry{
     @ColumnInfo(name = "IV")
     private byte[] iv;
 
-    public Entry(Date date, int emotions, String content, byte[] salt, byte[] iv) {
+    public DBEntry(Date date, int emotions, String content, byte[] salt, byte[] iv) {
         this.date = date;
         this.emotions = emotions;
         this.content = content;

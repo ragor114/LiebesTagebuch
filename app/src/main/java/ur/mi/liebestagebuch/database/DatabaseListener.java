@@ -2,14 +2,14 @@ package ur.mi.liebestagebuch.database;
 
 import java.util.List;
 
-import ur.mi.liebestagebuch.database.data.Entry;
+import ur.mi.liebestagebuch.database.data.DBEntry;
 
 public interface DatabaseListener {
 
     void updateFinished(int updateCode);
 
-    void entryFound(Entry foundEntry);
+    void entryFound(DBEntry foundEntry);
 
-    void allEntriesFound(List<Entry> allEntries);
+    void allEntriesFound(List<DBEntry> allEntries);
 
 }

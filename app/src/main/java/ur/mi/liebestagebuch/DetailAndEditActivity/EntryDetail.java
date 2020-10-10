@@ -2,8 +2,6 @@ package ur.mi.liebestagebuch.DetailAndEditActivity;
 
 import android.content.Context;
 import android.util.Log;
-import android.view.View;
-import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -15,7 +13,7 @@ import ur.mi.liebestagebuch.Encryption.CryptoListener;
 import ur.mi.liebestagebuch.Encryption.StringTransformHelper;
 import ur.mi.liebestagebuch.GridView.Emotion;
 import ur.mi.liebestagebuch.Settings.CheckEncryptionSettingHelper;
-import ur.mi.liebestagebuch.database.data.Entry;
+import ur.mi.liebestagebuch.database.data.DBEntry;
 
 public class EntryDetail implements CryptoListener {
 
@@ -40,7 +38,7 @@ public class EntryDetail implements CryptoListener {
 
     //Initialisierungs-Methoden:
 
-    public EntryDetail(Entry dbEntry, BoxListEncryptionListener listener, SpotifyBoxReadyListener spotifyListener, Context context){
+    public EntryDetail(DBEntry dbEntry, BoxListEncryptionListener listener, SpotifyBoxReadyListener spotifyListener, Context context){
         this.listener = listener;
         this.spotifyListener = spotifyListener;
         this.context = context;
@@ -61,7 +59,7 @@ public class EntryDetail implements CryptoListener {
 
     // Die für die Entschlüsselung nötigen Informationen werden aus dem Datenbank-Entry geladen und
     // die asynchrone Entschlüsselung gestartet:
-    private void startContentDecryption(Entry dbEntry) {
+    private void startContentDecryption(DBEntry dbEntry) {
         String encryptedBoxString = dbEntry.getContent();
         byte[] salt = dbEntry.getSalt();
         byte[] iv = dbEntry.getIv();
@@ -70,7 +68,7 @@ public class EntryDetail implements CryptoListener {
 
     // Da die Emotion in der Datenbank als int gespeichert wird muss die korrespondierende Emotion
     // über einen switch gefunden werden:
-    private void setEmotion(Entry dbEntry) {
+    private void setEmotion(DBEntry dbEntry) {
         int emotionInt = dbEntry.getEmotions();
         switch (emotionInt){
             case 0:

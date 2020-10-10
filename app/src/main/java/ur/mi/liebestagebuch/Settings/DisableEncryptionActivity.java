@@ -11,7 +11,6 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -22,7 +21,7 @@ import ur.mi.liebestagebuch.Encryption.StringTransformHelper;
 import ur.mi.liebestagebuch.R;
 import ur.mi.liebestagebuch.database.DBHelper;
 import ur.mi.liebestagebuch.database.DatabaseListener;
-import ur.mi.liebestagebuch.database.data.Entry;
+import ur.mi.liebestagebuch.database.data.DBEntry;
 
 public class DisableEncryptionActivity extends AppCompatActivity implements DatabaseListener, CryptoListener {
 
@@ -40,7 +39,7 @@ public class DisableEncryptionActivity extends AppCompatActivity implements Data
     private Button disableButton;
     private TextView decryptionRunningView;
 
-    private List<Entry> allEntries;
+    private List<DBEntry> allEntries;
     private DBHelper dbHelper;
     private ArrayList<String> allContents;
     private int currentEntryPosition;
@@ -103,13 +102,13 @@ public class DisableEncryptionActivity extends AppCompatActivity implements Data
     }
 
     @Override
-    public void entryFound(Entry foundEntry) {
+    public void entryFound(DBEntry foundEntry) {
 
     }
 
     // Sind alle Einträge gefunden worden, werden sie nach und nach entschlüsselt.
     @Override
-    public void allEntriesFound(List<Entry> allEntries) {
+    public void allEntriesFound(List<DBEntry> allEntries) {
         this.allEntries = allEntries;
         decryptSingleEntry();
     }
@@ -132,7 +131,7 @@ public class DisableEncryptionActivity extends AppCompatActivity implements Data
             currentEntryPosition = 0;
             decryptSingleEntry();
         } else if(decrypted && currentEntryPosition < allEntries.size()){
-            Entry currentEntry = allEntries.get(currentEntryPosition);
+            DBEntry currentEntry = allEntries.get(currentEntryPosition);
             String decryptedContent = allContents.get(currentEntryPosition);
             saveEntryBack(currentEntry, decryptedContent);
         } else{
@@ -140,7 +139,7 @@ public class DisableEncryptionActivity extends AppCompatActivity implements Data
         }
     }
 
-    private void saveEntryBack(Entry currentEntry, String content) {
+    private void saveEntryBack(DBEntry currentEntry, String content) {
         Date entryDate = currentEntry.getDate();
         dbHelper.updateEntryContent(entryDate, content);
     }

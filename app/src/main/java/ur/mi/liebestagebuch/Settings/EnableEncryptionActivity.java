@@ -23,7 +23,7 @@ import ur.mi.liebestagebuch.LoginActivity;
 import ur.mi.liebestagebuch.R;
 import ur.mi.liebestagebuch.database.DBHelper;
 import ur.mi.liebestagebuch.database.DatabaseListener;
-import ur.mi.liebestagebuch.database.data.Entry;
+import ur.mi.liebestagebuch.database.data.DBEntry;
 
 public class EnableEncryptionActivity extends AppCompatActivity implements DatabaseListener, CryptoListener {
 
@@ -43,7 +43,7 @@ public class EnableEncryptionActivity extends AppCompatActivity implements Datab
     private TextView encryptionRunningTv;
 
     private DBHelper dbHelper;
-    private List<Entry> allEntries;
+    private List<DBEntry> allEntries;
     private ArrayList<String> allContents;
     private int currentEntryPosition;
     private byte[] currentIv;
@@ -114,7 +114,7 @@ public class EnableEncryptionActivity extends AppCompatActivity implements Datab
     }
 
     @Override
-    public void entryFound(Entry foundEntry) {
+    public void entryFound(DBEntry foundEntry) {
 
     }
 
@@ -122,9 +122,9 @@ public class EnableEncryptionActivity extends AppCompatActivity implements Datab
      * Sind alle Einträge gefunden worden, werden Sie der Reihe nach verschlüsselt.
      */
     @Override
-    public void allEntriesFound(List<Entry> allEntries) {
+    public void allEntriesFound(List<DBEntry> allEntries) {
         this.allEntries = allEntries;
-        for(Entry current : allEntries){
+        for(DBEntry current : allEntries){
             allContents.add(current.getContent());
         }
         encryptSingleEntry();

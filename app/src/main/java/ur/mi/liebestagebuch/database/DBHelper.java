@@ -1,7 +1,6 @@
 package ur.mi.liebestagebuch.database;
 
 import android.content.Context;
-import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -10,24 +9,22 @@ import androidx.room.Room;
 
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 import ur.mi.liebestagebuch.DetailAndEditActivity.DetailActivityConfig;
-import ur.mi.liebestagebuch.GridView.Emotion;
-import ur.mi.liebestagebuch.database.data.Entry;
+import ur.mi.liebestagebuch.database.data.DBEntry;
 
 
 public class DBHelper{
 
     private static DiaryDatabase diaryDB;
-    private Entry newEmptyEntry;
+    private DBEntry newEmptyEntry;
     private String updatedContent;
     private byte[] updatedSalt;
     private byte[] updatedIV;
     private int updatedEmotion;
     private Date changeDate;
-    private Entry get;
+    private DBEntry get;
 
     private static final String DATABASE_NAME = "database-diary";
 
@@ -40,7 +37,7 @@ public class DBHelper{
 
 
     public void newEntry(Date date, int emotion, String content, byte[] salt, byte[] iv){
-        newEmptyEntry = new Entry(date, emotion, content, salt, iv);
+        newEmptyEntry = new DBEntry(date, emotion, content, salt, iv);
         AsyncNewEmpty newEmpty = new AsyncNewEmpty(newEmptyEntry, listener);
         Executors.newSingleThreadExecutor().submit(newEmpty);
     }
@@ -110,7 +107,7 @@ public class DBHelper{
             diaryDB.getDiaryDao().updateSalt(changeDate,updatedSalt);
 
             //DEBUG
-            for(Entry entry: diaryDB.getDiaryDao().getAll()){
+            for(DBEntry entry: diaryDB.getDiaryDao().getAll()){
                 Log.println(Log.DEBUG,"DB",entry.toString());
             }
 
@@ -135,7 +132,7 @@ public class DBHelper{
             diaryDB.getDiaryDao().updateIV(changeDate,updatedIV);
 
             //DEBUG
-            for(Entry entry: diaryDB.getDiaryDao().getAll()){
+            for(DBEntry entry: diaryDB.getDiaryDao().getAll()){
                 Log.println(Log.DEBUG,"DB",entry.toString());
             }
 
@@ -161,7 +158,7 @@ public class DBHelper{
             diaryDB.getDiaryDao().updateContent(changeDate,updatedContent);
 
             //DEBUG
-            for(Entry entry: diaryDB.getDiaryDao().getAll()){
+            for(DBEntry entry: diaryDB.getDiaryDao().getAll()){
                 Log.println(Log.DEBUG,"DB",entry.toString());
             }
 
@@ -197,7 +194,7 @@ public class DBHelper{
 
         @Override
         public void run() {
-            Entry foundEntry = null;
+            DBEntry foundEntry = null;
             Log.d("Detail", "Searching for Entry");
             try {
                 foundEntry = diaryDB.getDiaryDao().getEntryByDate(dateSearch);
@@ -207,7 +204,7 @@ public class DBHelper{
                 Log.d("Detail", "Exception in AsyncGet: " + e.getMessage());
                 Log.d("DB", "NO ENTRY FOUND");
             }
-            final Entry finalFound = foundEntry;
+            final DBEntry finalFound = foundEntry;
             Handler mainThreadHandler = new Handler(Looper.getMainLooper());
             mainThreadHandler.post(new Runnable() {
                 @Override
@@ -221,10 +218,10 @@ public class DBHelper{
 
     private class AsyncNewEmpty implements Runnable {
 
-        private Entry updateEntry;
+        private DBEntry updateEntry;
         private DatabaseListener listener;
 
-        public AsyncNewEmpty (Entry updateEntry,DatabaseListener listener){
+        public AsyncNewEmpty (DBEntry updateEntry, DatabaseListener listener){
             this.updateEntry = updateEntry;
             this.listener = listener;
         }
@@ -234,7 +231,7 @@ public class DBHelper{
             diaryDB.getDiaryDao().insert(newEmptyEntry);
 
             //DEBUG
-            for(Entry entry: diaryDB.getDiaryDao().getAll()){
+            for(DBEntry entry: diaryDB.getDiaryDao().getAll()){
                 Log.println(Log.DEBUG,"DB",entry.toString());
             }
 
@@ -262,7 +259,7 @@ public class DBHelper{
             diaryDB.getDiaryDao().clear();
             Log.println(Log.DEBUG,"DB","DB cleared");
             try {
-                for(Entry entry: diaryDB.getDiaryDao().getAll()){
+                for(DBEntry entry: diaryDB.getDiaryDao().getAll()){
                     Log.println(Log.DEBUG,"DB",entry.toString());
                 }
             } catch (Exception e){
@@ -289,7 +286,7 @@ public class DBHelper{
 
         @Override
         public void run() {
-            Entry newest = null;
+            DBEntry newest = null;
             try {
                 newest = diaryDB.getDiaryDao().getNewest();
                 Log.println(Log.DEBUG, "DB", newest.toString());
@@ -307,7 +304,7 @@ public class DBHelper{
     private class GetAllEntries implements Runnable{
         @Override
         public void run() {
-            List<Entry> allEntries = diaryDB.getDiaryDao().getAll();
+            List<DBEntry> allEntries = diaryDB.getDiaryDao().getAll();
             listener.allEntriesFound(allEntries);
         }
     }

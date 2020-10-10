@@ -12,12 +12,9 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -36,7 +33,7 @@ import ur.mi.liebestagebuch.Settings.CheckEncryptionSettingHelper;
 import ur.mi.liebestagebuch.Settings.SettingsActivity;
 import ur.mi.liebestagebuch.database.DBHelper;
 import ur.mi.liebestagebuch.database.DatabaseListener;
-import ur.mi.liebestagebuch.database.data.Entry;
+import ur.mi.liebestagebuch.database.data.DBEntry;
 
 public class GridActivity extends AppCompatActivity implements AdapterView.OnItemClickListener, EmotionRequestListener, CryptoListener, DatabaseListener {
 
@@ -377,16 +374,16 @@ public class GridActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     @Override
-    public void entryFound(ur.mi.liebestagebuch.database.data.Entry foundEntry) {
+    public void entryFound(DBEntry foundEntry) {
         return;
     }
 
     @Override
-    public void allEntriesFound(List<Entry> allEntries) {
+    public void allEntriesFound(List<DBEntry> allEntries) {
         Log.d("Hallo", "all entries found");
         for (GridEntry current : entries) {
             Date currentDate = current.getDate();
-            for (Entry currentDBEntry : allEntries) {
+            for (DBEntry currentDBEntry : allEntries) {
                 if (currentDBEntry.getDate().equals(currentDate)) {
                     current.setEmotion(getCorrespondingEmotion(currentDBEntry.getEmotions()));
                     gridAdapter.notifyDataSetChanged();
