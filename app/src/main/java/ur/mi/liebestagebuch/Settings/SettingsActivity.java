@@ -158,7 +158,7 @@ public class SettingsActivity extends AppCompatActivity {
     public void load(){
         SharedPreferences sharedPreferences = getSharedPreferences(getString(R.string.shared_prefs_name), MODE_PRIVATE);
         switchEncrypt = sharedPreferences.getBoolean(getString(R.string.encrypt_setting),true);
-        switchRemind = sharedPreferences.getBoolean(getString(R.string.remind_hour),false);
+        switchRemind = sharedPreferences.getBoolean(getString(R.string.remind_setting),false);
         timeHour = sharedPreferences.getInt(getString(R.string.remind_hour),18);
         timeMinute = sharedPreferences.getInt(getString(R.string.remind_minute),0);
     }

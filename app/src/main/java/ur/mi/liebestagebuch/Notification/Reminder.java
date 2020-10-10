@@ -12,7 +12,6 @@ import android.util.Log;
 import androidx.core.app.NotificationCompat;
 import ur.mi.liebestagebuch.Settings.CheckEncryptionSettingHelper;
 import ur.mi.liebestagebuch.LoginActivity;
-import ur.mi.liebestagebuch.Settings.SettingsConfig;
 
 public class Reminder extends BroadcastReceiver{
 
