@@ -1,6 +1,7 @@
 package ur.mi.liebestagebuch;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.biometric.BiometricManager;
 import androidx.biometric.BiometricPrompt;
@@ -61,7 +62,7 @@ public class LoginActivity extends AppCompatActivity {
     private TextView loginFingerprintText;
     private Button loginButton;
     private Button okButton;
-    private EditText editTextPassword ;
+    private EditText editTextPassword;
     private boolean isFirstRun;
     public Date installationDate;
 
@@ -91,10 +92,10 @@ public class LoginActivity extends AppCompatActivity {
                 Log.d("login", "clicked not firsttime");
                 String storedPassword = SecurePasswordSaver.getStoredPassword(getApplicationContext());
                 Log.d("login", "Stored password: " + storedPassword);
-                if(storedPassword.equals(editTextPassword.getText().toString())){
+                if (storedPassword.equals(editTextPassword.getText().toString())) {
                     Log.d("login", "Password correct");
                     loginSuccess();
-                } else{
+                } else {
                     loginFingerprintText.setText(R.string.wrong_password);
                 }
             }
@@ -103,7 +104,7 @@ public class LoginActivity extends AppCompatActivity {
 
         //Wenn die App zum ersten Mal gestartet wird, muss zum einloggen ein Passwort festgelegt werden
         //welches nacher zum einloggen ohne Fingerabdruck genutzt wird.
-        if (prefs.getBoolean("firstrun", true)){
+        if (prefs.getBoolean("firstrun", true)) {
             isFirstRun = true;
             Log.d("login", "Is firstrun");
             okButton.setOnClickListener(new View.OnClickListener() {
@@ -119,14 +120,12 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
-
-
-    protected void onResume(){
+    protected void onResume() {
         super.onResume();
 
         //Nutzen eines BiometricManagers um zu schauen ob der nutzer zugriff auf Fingerabdrücke hat
         final BiometricManager biometricManager = BiometricManager.from(this);
-        switch(biometricManager.canAuthenticate()){
+        switch (biometricManager.canAuthenticate()) {
             case BiometricManager.BIOMETRIC_SUCCESS:
 
                 loginFingerprintText.setText(R.string.login_fingerprint_text);
@@ -186,11 +185,11 @@ public class LoginActivity extends AppCompatActivity {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!isFirstRun) {
+                if (!isFirstRun) {
                     biometricPrompt.authenticate(promptInfo);
                     //Intent switchActivityIntent = new Intent(LoginActivity.this, GridActivity.class);
                     //startActivity(switchActivityIntent);
-                } else{
+                } else {
                     loginFingerprintText.setText(R.string.set_password_first);
                 }
             }
@@ -204,7 +203,15 @@ public class LoginActivity extends AppCompatActivity {
         Toast.makeText(getApplicationContext(), "Login Success!", Toast.LENGTH_SHORT).show();
         correctPassword = SecurePasswordSaver.getStoredPassword(this);
         Intent switchActivityIntent = new Intent(LoginActivity.this, GridActivity.class);
-        startActivity(switchActivityIntent);
+        startActivityForResult(switchActivityIntent, 100);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 100){
+            finish();
+        }
     }
 
     //Mit dieser Methode wird beim ersten anmelden das eingegebene Passwort in die Datenbank gespeichert.

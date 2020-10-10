@@ -132,9 +132,9 @@ public class EditMusicBoxActivity extends AppCompatActivity {
         linkOkButton = findViewById(R.id.spotify_link_ok);
         finishButton = findViewById(R.id.finish_spotify_edit);
 
-        if(DetailActivityConfig.ACCESS_TOKEN == null || DetailActivityConfig.ACCESS_TOKEN.equals("")){
+        if (DetailActivityConfig.ACCESS_TOKEN == null || DetailActivityConfig.ACCESS_TOKEN.equals("")) {
             getAccessToken();
-        } else{
+        } else {
             setUpSpotifyWebApi();
         }
 
@@ -165,7 +165,7 @@ public class EditMusicBoxActivity extends AppCompatActivity {
         Intent intent = new Intent();
         intent.putExtra(getString(R.string.musicbox_content_key), songUri);
 
-        if(editMode){
+        if (editMode) {
             Bundle callingExtras = getCallingExtras();
             intent.putExtra(getString(R.string.position_in_list_key), callingExtras.getInt(getString(R.string.position_in_list_key)));
         }
@@ -177,9 +177,9 @@ public class EditMusicBoxActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == getResources().getInteger(R.integer.spotify_auth_request_code)){
+        if (requestCode == getResources().getInteger(R.integer.spotify_auth_request_code)) {
             AuthenticationResponse response = AuthenticationClient.getResponse(resultCode, data);
-            switch (response.getType()){
+            switch (response.getType()) {
                 case TOKEN:
                     DetailActivityConfig.ACCESS_TOKEN = response.getAccessToken();
                     setUpSpotifyWebApi();
@@ -201,8 +201,8 @@ public class EditMusicBoxActivity extends AppCompatActivity {
         spotify = api.getService();
 
         Bundle extras = getCallingExtras();
-        if(extras != null){
-            if(extras.getString(getString(R.string.existing_content_key)) != null){
+        if (extras != null) {
+            if (extras.getString(getString(R.string.existing_content_key)) != null) {
                 songUri = extras.getString(getString(R.string.existing_content_key));
                 String[] splits = songUri.split(":");
                 String trackId = splits[2];
@@ -219,11 +219,11 @@ public class EditMusicBoxActivity extends AppCompatActivity {
 
     // Wurde der Ok-Button gedrückt wird überprüft ob eine Suche oder eine Link-Umwandlung ausgeführt werden soll.
     private void okPressed() {
-        if(linkEditText.getText().toString() != null && !linkEditText.getText().toString().equals("")){
+        if (linkEditText.getText().toString() != null && !linkEditText.getText().toString().equals("")) {
             linkOkPressed();
-        } else if(searchEditText.getText().toString() != null && !searchEditText.getText().toString().equals("")){
+        } else if (searchEditText.getText().toString() != null && !searchEditText.getText().toString().equals("")) {
             searchOkPressed();
-        } else{
+        } else {
             invalidLinkMessage();
         }
     }
@@ -234,24 +234,25 @@ public class EditMusicBoxActivity extends AppCompatActivity {
      * Auf Basis dieser ID werden dann die SongUri und die Views aktualisiert.
      */
     private void searchOkPressed() {
-        if(spotify != null){
+        if (spotify != null) {
             spotify.searchTracks(searchEditText.getText().toString(), new Callback<TracksPager>() {
                 @Override
                 public void success(TracksPager tracksPager, Response response) {
                     searchEditText.setText("");
-                    if(tracksPager.tracks.items.size() > 0){
+                    if (tracksPager.tracks.items.size() > 0) {
                         String songId = tracksPager.tracks.items.get(0).id;
                         setSongUri(songId);
-                    } else{
+                    } else {
                         sendNoItemsFoundMessage();
                     }
                 }
+
                 @Override
                 public void failure(RetrofitError error) {
                     sendCantReachSpotifyError();
                 }
             });
-        } else{
+        } else {
             sendCantReachSpotifyError();
         }
     }
@@ -264,7 +265,7 @@ public class EditMusicBoxActivity extends AppCompatActivity {
     private void linkOkPressed() {
         String pastedLink = linkEditText.getText().toString();
         String[] splits = pastedLink.split("/");
-        if(splits.length > 3) {
+        if (splits.length > 3) {
             if (splits[3].equals("track")) {
                 logSplit(splits);
                 String[] secondSplit = splits[4].split("\\Q?\\E");
@@ -274,7 +275,7 @@ public class EditMusicBoxActivity extends AppCompatActivity {
             } else {
                 invalidLinkMessage();
             }
-        } else{
+        } else {
             invalidLinkMessage();
         }
     }

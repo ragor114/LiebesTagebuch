@@ -334,7 +334,7 @@ public class GridActivity extends AppCompatActivity implements AdapterView.OnIte
      */
     @Override
     public void updateFinished(int updateCode) {
-        if(updateCode == getResources().getInteger(R.integer.new_entry_update_code)){
+        if (updateCode == getResources().getInteger(R.integer.new_entry_update_code)) {
             if (CheckEncryptionSettingHelper.encryptionActivated(this)) {
                 StringTransformHelper.startEncryption(lastEditedBoxListString, this, this);
                 lastEditedBoxListString = "";
@@ -342,14 +342,14 @@ public class GridActivity extends AppCompatActivity implements AdapterView.OnIte
                 dbHelper.updateEntryContent(lastEditedEntryDate, lastEditedBoxListString);
                 lastEditedBoxListString = "";
             }
-        } else if(updateCode == getResources().getInteger(R.integer.content_update_code)){
+        } else if (updateCode == getResources().getInteger(R.integer.content_update_code)) {
             if (CheckEncryptionSettingHelper.encryptionActivated(this)) {
                 dbHelper.updateEntryIV(lastEditedEntryDate, lastEditedIV);
             } else {
                 byte[] emptyIv = new byte[]{00, 00};
                 dbHelper.updateEntryIV(lastEditedEntryDate, emptyIv);
             }
-        } else if (updateCode == getResources().getInteger(R.integer.iv_update_code)){
+        } else if (updateCode == getResources().getInteger(R.integer.iv_update_code)) {
             lastEditedIV = null;
             if (CheckEncryptionSettingHelper.encryptionActivated(this)) {
                 dbHelper.updateEntrySalt(lastEditedEntryDate, lastEditedSalt);
@@ -357,10 +357,10 @@ public class GridActivity extends AppCompatActivity implements AdapterView.OnIte
                 byte[] emptySalt = new byte[]{00, 00};
                 dbHelper.updateEntrySalt(lastEditedEntryDate, emptySalt);
             }
-        } else if(updateCode == getResources().getInteger(R.integer.salt_update_code)){
+        } else if (updateCode == getResources().getInteger(R.integer.salt_update_code)) {
             lastEditedSalt = null;
             dbHelper.updateEntryEmotion(lastEditedEntryDate, lastEditedEntryEmotion);
-        } else if (updateCode == getResources().getInteger(R.integer.emotion_update_code)){
+        } else if (updateCode == getResources().getInteger(R.integer.emotion_update_code)) {
             Log.d("Detail", "Entry update complete");
             lastEditedEntryEmotion = 0;
             savingLastEntryFinished = true;
@@ -407,5 +407,11 @@ public class GridActivity extends AppCompatActivity implements AdapterView.OnIte
                 break;
         }
         return correspondingEmotion;
+    }
+
+    @Override
+    public void onBackPressed() {
+        setResult(RESULT_OK);
+        finish();
     }
 }
