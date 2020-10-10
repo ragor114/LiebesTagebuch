@@ -98,10 +98,10 @@ public class SettingsActivity extends AppCompatActivity {
     private void startEntriesDeOrEncryption() {
         if(!sw_encrypt.isChecked()){
             Intent intent = new Intent(SettingsActivity.this, DisableEncryptionActivity.class);
-            startActivityForResult(intent, SettingsConfig.DECRYPTION_REQUEST_CODE);
+            startActivityForResult(intent, getResources().getInteger(R.integer.decryption_request_code));
         } else{
             Intent intent = new Intent(SettingsActivity.this, EnableEncryptionActivity.class);
-            startActivityForResult(intent, SettingsConfig.ENCRYPTION_REQUEST_CODE);
+            startActivityForResult(intent, getResources().getInteger(R.integer.encryption_request_code));
         }
     }
 
@@ -109,17 +109,17 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(resultCode == RESULT_OK){
-            if(requestCode == SettingsConfig.DECRYPTION_REQUEST_CODE){
+            if(requestCode == getResources().getInteger(R.integer.decryption_request_code)){
                 Bundle extras = data.getExtras();
                 if(extras != null){
-                    boolean decrypted = extras.getBoolean(SettingsConfig.HAS_DECRYPTED_KEY);
+                    boolean decrypted = extras.getBoolean(getString(R.string.has_decrypted_key));
                     sw_encrypt.setChecked(false);
                     save();
                 } else {
                     sw_encrypt.setChecked(true);
                     save();
                 }
-            } else if(requestCode == SettingsConfig.ENCRYPTION_REQUEST_CODE){
+            } else if(requestCode == getResources().getInteger(R.integer.encryption_request_code)){
                 Bundle extras = data.getExtras();
                 if(extras != null){
                     sw_encrypt.setChecked(true);
@@ -140,13 +140,13 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void save(){
-        SharedPreferences sharedPreferences = getSharedPreferences(SettingsConfig.SHARED_PREFS, MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences(getString(R.string.shared_prefs_name), MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
-        editor.putBoolean(SettingsConfig.SWITCH_ENCRYPT,sw_encrypt.isChecked());
-        editor.putBoolean(SettingsConfig.SWITCH_REMIND,sw_remind.isChecked());
-        editor.putInt(SettingsConfig.TIMEPICKER_HOUR,reminder_picker.getHour());
-        editor.putInt(SettingsConfig.TIMEPICKER_MINUTE,reminder_picker.getMinute());
+        editor.putBoolean(getString(R.string.encrypt_setting),sw_encrypt.isChecked());
+        editor.putBoolean(getString(R.string.remind_setting),sw_remind.isChecked());
+        editor.putInt(getString(R.string.remind_hour),reminder_picker.getHour());
+        editor.putInt(getString(R.string.remind_minute),reminder_picker.getMinute());
 
         Log.println(Log.DEBUG,"DB","Preferences saved");
 
@@ -156,11 +156,11 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     public void load(){
-        SharedPreferences sharedPreferences = getSharedPreferences(SettingsConfig.SHARED_PREFS, MODE_PRIVATE);
-        switchEncrypt = sharedPreferences.getBoolean(SettingsConfig.SWITCH_ENCRYPT,true);
-        switchRemind = sharedPreferences.getBoolean(SettingsConfig.SWITCH_REMIND,false);
-        timeHour = sharedPreferences.getInt(SettingsConfig.TIMEPICKER_HOUR,18);
-        timeMinute = sharedPreferences.getInt(SettingsConfig.TIMEPICKER_MINUTE,0);
+        SharedPreferences sharedPreferences = getSharedPreferences(getString(R.string.shared_prefs_name), MODE_PRIVATE);
+        switchEncrypt = sharedPreferences.getBoolean(getString(R.string.encrypt_setting),true);
+        switchRemind = sharedPreferences.getBoolean(getString(R.string.remind_hour),false);
+        timeHour = sharedPreferences.getInt(getString(R.string.remind_hour),18);
+        timeMinute = sharedPreferences.getInt(getString(R.string.remind_minute),0);
     }
 
     public void update(){

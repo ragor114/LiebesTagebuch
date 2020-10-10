@@ -72,4 +72,13 @@
     <string name="key_factory_algorithm">PBKDF2WithHmacSHA256</string>
     <string name="charset_name">UTF-8</string>
 
+    <!-- Konstanten, die für die Einstellungen gebraucht werden -->
+    <string name="shared_prefs_name">sharedPrefs</string>
+    <string name="encrypt_setting">sw_encrypt</string>
+    <string name="remind_setting">sw_remind</string>
+    <string name="remind_hour">time_hour</string>
+    <string name="remind_minute">time_minute</string>
+    <string name="has_decrypted_key">Has decrypted</string>
+    <string name="has_encrypted_key">Has encrypted</string>
+
 </resources>

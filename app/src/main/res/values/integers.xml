@@ -23,4 +23,8 @@
     <integer name="iteration_count">65536</integer>
     <integer name="key_length">256</integer>
 
+    <!-- Konstanten, die für die Einstellungen benötigt werden -->
+    <integer name="decryption_request_code">2468</integer>
+    <integer name="encryption_request_code">3579</integer>
+
 </resources>

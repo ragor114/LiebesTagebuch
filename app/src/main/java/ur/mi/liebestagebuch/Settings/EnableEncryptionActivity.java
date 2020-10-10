@@ -141,7 +141,7 @@ public class EnableEncryptionActivity extends AppCompatActivity implements Datab
 
     private void finishEditing() {
         Intent intent = new Intent();
-        intent.putExtra(SettingsConfig.HAS_ENCRYPTED_KEY, true);
+        intent.putExtra(getString(R.string.has_encrypted_key), true);
         setResult(RESULT_OK, intent);
         finish();
     }

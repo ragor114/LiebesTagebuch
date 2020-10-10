@@ -144,7 +144,7 @@ public class DisableEncryptionActivity extends AppCompatActivity implements Data
 
     private void finishEditing() {
         Intent intent = new Intent();
-        intent.putExtra(SettingsConfig.HAS_DECRYPTED_KEY, true);
+        intent.putExtra(getString(R.string.has_decrypted_key), true);
         setResult(RESULT_OK, intent);
         finish();
     }
