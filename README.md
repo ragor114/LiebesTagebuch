@@ -110,7 +110,7 @@ Außerdem: Appicon-Design.
 
 #### Jonas Distler
 
-![Jonas Bild](app/src/main/res/drawable/Jonas%20Bild.png =200x)
+<img src="app/src/main/res/drawable/Jonas%20Bild.png" width="200">
 
 Jonas Distler, E-Mail: Jonas.Distler@stud.uni-regensburg.de, Github: jnsds (https://github.com/jnsds).
 
