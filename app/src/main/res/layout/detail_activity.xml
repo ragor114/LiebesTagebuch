@@ -72,6 +72,7 @@
             android:indeterminate="true"
             android:layout_gravity="center"
             android:visibility="visible"
+            android:layout_marginTop="35dp"
             />
 
         <ListView
