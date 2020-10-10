@@ -93,7 +93,7 @@ Dieses finden Sie unter: https://github.com/ragor114/LiebesTagebuch
 
 #### Jannik Wiese
 
-<img src="app/src/main/res/drawable/Jannik%20Bild.png" width="200">
+<img src="app/src/main/res/drawable/jannik_bild.png" width="200">
 
 Jannik Wiese, E-Mail: Jannik.Wiese@stud.uni-regensburg.de, Github: Ragor114 (https://github.com/ragor114).
 
@@ -124,7 +124,7 @@ Außerdem: Allgemeine Projektplanung, Github-Verwaltung.
 
 #### Moritz Schnell
 
-<img src="app/src/main/res/drawable/Mo%20Bild.png" width="200">
+<img src="app/src/main/res/drawable/mo_bild.png" width="200">
 
 Moritz Schnell, E-Mail: Moritz.Schnell@stud.uni-regensburg.de, Github: BrokeMo (https://github.com/BrokeMo).
 
@@ -141,7 +141,7 @@ Außerdem: Appicon-Design.
 
 #### Jonas Distler
 
-<img src="app/src/main/res/drawable/Jonas%20Bild.png" width="200">
+<img src="app/src/main/res/drawable/jonas_bild.png" width="200">
 
 Jonas Distler, E-Mail: Jonas.Distler@stud.uni-regensburg.de, Github: jnsds (https://github.com/jnsds).
 
