@@ -55,6 +55,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     }
 
+    //Initialisiere die OnClickListener für die verschiedenen Einstellungsmöglichkeiten
     private void initListeners(){
         sw_encrypt.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -139,6 +140,7 @@ public class SettingsActivity extends AppCompatActivity {
         startActivityForResult(intent, 12345);
     }
 
+    //Speichert die vom User gewählten Einstellungen in Shared Preferences
     private void save(){
         SharedPreferences sharedPreferences = getSharedPreferences(SettingsConfig.SHARED_PREFS, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -155,6 +157,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     }
 
+    //Lädt die vom User gewählten Einstellungen aus den Shared Preferences
     public void load(){
         SharedPreferences sharedPreferences = getSharedPreferences(SettingsConfig.SHARED_PREFS, MODE_PRIVATE);
         switchEncrypt = sharedPreferences.getBoolean(SettingsConfig.SWITCH_ENCRYPT,true);
@@ -163,6 +166,7 @@ public class SettingsActivity extends AppCompatActivity {
         timeMinute = sharedPreferences.getInt(SettingsConfig.TIMEPICKER_MINUTE,0);
     }
 
+    //Überschreibt die Shared Preferences falls der User in den Einstellungen etwas geändert hat
     public void update(){
         sw_encrypt.setChecked(switchEncrypt);
         sw_remind.setChecked(switchRemind);
@@ -170,6 +174,7 @@ public class SettingsActivity extends AppCompatActivity {
         reminder_picker.setMinute(timeMinute);
     }
 
+    //Zeigt bzw versteckt den Time Picker je nachdem ob der User Benachrichtigungen erhalten möchte
     private void toggleTimePicker(){
         if(sw_remind.isChecked()){
             reminder_picker.setVisibility(View.VISIBLE);

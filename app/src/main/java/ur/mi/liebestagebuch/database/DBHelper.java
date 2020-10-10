@@ -38,13 +38,14 @@ public class DBHelper{
         diaryDB = Room.databaseBuilder(context, DiaryDatabase.class, DATABASE_NAME).build();
     }
 
-
+    //Methode zum erstellen eines neuen Eintrages in der Datenbank
     public void newEntry(Date date, int emotion, String content, byte[] salt, byte[] iv){
         newEmptyEntry = new Entry(date, emotion, content, salt, iv);
         AsyncNewEmpty newEmpty = new AsyncNewEmpty(newEmptyEntry, listener);
         Executors.newSingleThreadExecutor().submit(newEmpty);
     }
 
+    //Methode zum verändern des Inhaltes eines Eintrages in der Datenbank
     public void updateEntryContent(Date date, String content){
         updatedContent =content;
         changeDate = date;
@@ -52,6 +53,7 @@ public class DBHelper{
         Executors.newSingleThreadExecutor().submit(updateContent);
     }
 
+    //Methode um das SALT Byte-Array für die Verschlüsselung zu überschreiben
     public void updateEntrySalt(Date date, byte[] salt){
         updatedSalt = salt;
         changeDate = date;
@@ -59,6 +61,7 @@ public class DBHelper{
         Executors.newSingleThreadExecutor().submit(updateSalt);
     }
 
+    //Methode um das IV Byte-Array für die Verschlüsselung zu überschreiben
     public void updateEntryIV(Date date, byte[] IV){
         updatedIV = IV;
         changeDate = date;
@@ -66,12 +69,19 @@ public class DBHelper{
         Executors.newSingleThreadExecutor().submit(updateIV);
     }
 
+    //Methode um die Emotion eines Eintrages zu verändern
     public void updateEntryEmotion(Date date, int emotion){
         changeDate = date;
         updatedEmotion = emotion;
         AsyncUpdateEmotion updateEmotion = new AsyncUpdateEmotion(updatedEmotion, changeDate, listener);
         Executors.newSingleThreadExecutor().submit(updateEmotion);
     }
+
+    //-----------------------------------------------------------------------------------//
+    //                                                                                   //
+    //Runnables für Datenbankoperationen damit diese nicht im UI-Thread ausgeführt werden//
+    //     v       v       v       v       v       v       v       v       v       v     //
+    //-----------------------------------------------------------------------------------//
 
     private class AsyncUpdateEmotion implements Runnable{
 

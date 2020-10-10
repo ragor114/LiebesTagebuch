@@ -203,6 +203,7 @@ public class EditPictureBoxActivity extends AppCompatActivity {
         }
     }
 
+    //Komprimiert Bitmaps für die Datenbank
     private Bitmap compressBitmap(Bitmap bmp) {
         ByteArrayOutputStream by = new ByteArrayOutputStream();
         byte[] BYTE;
