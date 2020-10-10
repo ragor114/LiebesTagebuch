@@ -93,11 +93,9 @@ public class DisableEncryptionActivity extends AppCompatActivity implements Data
 
     @Override
     public void updateFinished(int updateCode) {
-        switch (updateCode){
-            case DetailActivityConfig.CONTENT_UPDATE_CODE:
-                currentEntryPosition++;
-                decryptSingleEntry();
-                break;
+        if(updateCode == getResources().getInteger(R.integer.content_update_code)){
+            currentEntryPosition++;
+            decryptSingleEntry();
         }
     }
 

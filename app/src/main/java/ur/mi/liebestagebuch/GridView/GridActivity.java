@@ -210,8 +210,8 @@ public class GridActivity extends AppCompatActivity implements AdapterView.OnIte
             Emotion clickedEntryEmotion = clickedGridEntry.getEmotion();
 
             Intent intent = new Intent(GridActivity.this, DetailActivity.class);
-            intent.putExtra(DetailActivityConfig.ENTRY_DATE_KEY, DateUtil.setToMidnight(clickedEntryDate));
-            startActivityForResult(intent, DetailActivityConfig.START_DETAIL_ACTIVITY_REQUEST_CODE);
+            intent.putExtra(getString(R.string.entry_date_key), DateUtil.setToMidnight(clickedEntryDate));
+            startActivityForResult(intent, getResources().getInteger(R.integer.detailactivity_request_code));
         } else {
             Toast.makeText(this, "Please wait while last Entry is saved, this can take a minute.", Toast.LENGTH_SHORT).show();
         }
@@ -256,12 +256,12 @@ public class GridActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == DetailActivityConfig.START_DETAIL_ACTIVITY_REQUEST_CODE) {
+        if (requestCode == getResources().getInteger(R.integer.detailactivity_request_code)) {
             if (resultCode == RESULT_OK) {
                 Bundle extras = data.getExtras();
-                Date entryDate = (Date) extras.get(DetailActivityConfig.ENTRY_DATE_KEY);
-                String boxListString = extras.getString(DetailActivityConfig.BOX_LIST_KEY);
-                Emotion entryEmotion = (Emotion) extras.get(DetailActivityConfig.EMOTION_KEY);
+                Date entryDate = (Date) extras.get(getString(R.string.entry_date_key));
+                String boxListString = extras.getString(getString(R.string.box_list_key));
+                Emotion entryEmotion = (Emotion) extras.get(getString(R.string.emotion_key));
                 int emotionInt = getEmotionInt(entryEmotion);
 
                 // Die Informationen des EntryDetails müssen zwischengespeichert werden, während
@@ -334,42 +334,36 @@ public class GridActivity extends AppCompatActivity implements AdapterView.OnIte
      */
     @Override
     public void updateFinished(int updateCode) {
-        switch (updateCode) {
-            case DetailActivityConfig.NEW_ENTRY_UPDATE_CODE:
-                if (CheckEncryptionSettingHelper.encryptionActivated(this)) {
-                    StringTransformHelper.startEncryption(lastEditedBoxListString, this);
-                    lastEditedBoxListString = "";
-                } else {
-                    dbHelper.updateEntryContent(lastEditedEntryDate, lastEditedBoxListString);
-                    lastEditedBoxListString = "";
-                }
-                break;
-            case DetailActivityConfig.CONTENT_UPDATE_CODE:
-                if (CheckEncryptionSettingHelper.encryptionActivated(this)) {
-                    dbHelper.updateEntryIV(lastEditedEntryDate, lastEditedIV);
-                } else {
-                    byte[] emptyIv = new byte[]{00, 00};
-                    dbHelper.updateEntryIV(lastEditedEntryDate, emptyIv);
-                }
-                break;
-            case DetailActivityConfig.IV_UPDATE_CODE:
-                lastEditedIV = null;
-                if (CheckEncryptionSettingHelper.encryptionActivated(this)) {
-                    dbHelper.updateEntrySalt(lastEditedEntryDate, lastEditedSalt);
-                } else {
-                    byte[] emptySalt = new byte[]{00, 00};
-                    dbHelper.updateEntrySalt(lastEditedEntryDate, emptySalt);
-                }
-                break;
-            case DetailActivityConfig.SALT_UPDATE_CODE:
-                lastEditedSalt = null;
-                dbHelper.updateEntryEmotion(lastEditedEntryDate, lastEditedEntryEmotion);
-                break;
-            case DetailActivityConfig.EMOTION_UPDATE_CODE:
-                Log.d("Detail", "Entry update complete");
-                lastEditedEntryEmotion = 0;
-                savingLastEntryFinished = true;
-                break;
+        if(updateCode == getResources().getInteger(R.integer.new_entry_update_code)){
+            if (CheckEncryptionSettingHelper.encryptionActivated(this)) {
+                StringTransformHelper.startEncryption(lastEditedBoxListString, this);
+                lastEditedBoxListString = "";
+            } else {
+                dbHelper.updateEntryContent(lastEditedEntryDate, lastEditedBoxListString);
+                lastEditedBoxListString = "";
+            }
+        } else if(updateCode == getResources().getInteger(R.integer.content_update_code)){
+            if (CheckEncryptionSettingHelper.encryptionActivated(this)) {
+                dbHelper.updateEntryIV(lastEditedEntryDate, lastEditedIV);
+            } else {
+                byte[] emptyIv = new byte[]{00, 00};
+                dbHelper.updateEntryIV(lastEditedEntryDate, emptyIv);
+            }
+        } else if (updateCode == getResources().getInteger(R.integer.iv_update_code)){
+            lastEditedIV = null;
+            if (CheckEncryptionSettingHelper.encryptionActivated(this)) {
+                dbHelper.updateEntrySalt(lastEditedEntryDate, lastEditedSalt);
+            } else {
+                byte[] emptySalt = new byte[]{00, 00};
+                dbHelper.updateEntrySalt(lastEditedEntryDate, emptySalt);
+            }
+        } else if(updateCode == getResources().getInteger(R.integer.salt_update_code)){
+            lastEditedSalt = null;
+            dbHelper.updateEntryEmotion(lastEditedEntryDate, lastEditedEntryEmotion);
+        } else if (updateCode == getResources().getInteger(R.integer.emotion_update_code)){
+            Log.d("Detail", "Entry update complete");
+            lastEditedEntryEmotion = 0;
+            savingLastEntryFinished = true;
         }
     }
 

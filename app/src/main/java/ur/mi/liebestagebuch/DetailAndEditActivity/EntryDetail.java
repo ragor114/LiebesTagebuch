@@ -12,6 +12,7 @@ import ur.mi.liebestagebuch.Boxes.SpotifyBoxReadyListener;
 import ur.mi.liebestagebuch.Encryption.CryptoListener;
 import ur.mi.liebestagebuch.Encryption.StringTransformHelper;
 import ur.mi.liebestagebuch.GridView.Emotion;
+import ur.mi.liebestagebuch.R;
 import ur.mi.liebestagebuch.Settings.CheckEncryptionSettingHelper;
 import ur.mi.liebestagebuch.database.data.DBEntry;
 
@@ -167,6 +168,6 @@ public class EntryDetail implements CryptoListener {
 
     @Override
     public void onDecryptionFailed(){
-        listener.onEncryptionFailed(DetailActivityConfig.DECRYPTION_FAILED_CODE);
+        listener.onEncryptionFailed(context.getResources().getInteger(R.integer.decryption_failed_code));
     }
 }

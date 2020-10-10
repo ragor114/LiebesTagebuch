@@ -99,17 +99,13 @@ public class EnableEncryptionActivity extends AppCompatActivity implements Datab
      */
     @Override
     public void updateFinished(int updateCode) {
-        switch (updateCode){
-            case DetailActivityConfig.CONTENT_UPDATE_CODE:
-                dbHelper.updateEntryIV(currentDate, currentIv);
-                break;
-            case DetailActivityConfig.IV_UPDATE_CODE:
-                dbHelper.updateEntrySalt(currentDate, currentSalt);
-                break;
-            case DetailActivityConfig.SALT_UPDATE_CODE:
-                currentEntryPosition++;
-                encryptSingleEntry();
-                break;
+        if(updateCode == getResources().getInteger(R.integer.content_update_code)){
+            dbHelper.updateEntryIV(currentDate, currentIv);
+        } else if(updateCode == getResources().getInteger(R.integer.iv_update_code)){
+            dbHelper.updateEntrySalt(currentDate, currentSalt);
+        } else if (updateCode == getResources().getInteger(R.integer.salt_update_code)){
+            currentEntryPosition++;
+            encryptSingleEntry();
         }
     }
 

@@ -48,7 +48,7 @@ public class EditTextBoxActivity extends AppCompatActivity {
                 String content = editText.getText().toString();
                 if(!content.contains("|") && !content.contains("<")) {
                     Intent intent = new Intent();
-                    intent.putExtra(DetailActivityConfig.TEXTBOX_CONTENT_KEY, content);
+                    intent.putExtra(getString(R.string.textbox_content_key), content);
                     setResult(RESULT_OK, intent);
                     finish();
                 } else{
@@ -73,16 +73,16 @@ public class EditTextBoxActivity extends AppCompatActivity {
      * der Box zurück gegeben wird.
      */
     private void setUpForEdit(Bundle extras) {
-        editText.setText(extras.getString(DetailActivityConfig.EXISTING_CONTENT_KEY));
-        final int positionInList = extras.getInt(DetailActivityConfig.POSITION_IN_LIST_KEY);
+        editText.setText(extras.getString(getString(R.string.existing_content_key)));
+        final int positionInList = extras.getInt(getString(R.string.position_in_list_key));
         doneButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String content = editText.getText().toString();
                 if(!content.contains("|") && !content.contains("<")) {
                     Intent intent = new Intent();
-                    intent.putExtra(DetailActivityConfig.TEXTBOX_CONTENT_KEY, content);
-                    intent.putExtra(DetailActivityConfig.POSITION_IN_LIST_KEY, positionInList);
+                    intent.putExtra(getString(R.string.textbox_content_key), content);
+                    intent.putExtra(getString(R.string.position_in_list_key), positionInList);
                     setResult(RESULT_OK, intent);
                     finish();
                 } else{

@@ -107,7 +107,7 @@ public class EditPictureBoxActivity extends AppCompatActivity {
      * Die alte Bilddatei wird gelöscht.
      */
     private void setUpForEdit(Bundle extras) {
-        String transferedBitmapPath = extras.getString(DetailActivityConfig.EXISTING_CONTENT_KEY);
+        String transferedBitmapPath = extras.getString(getString(R.string.existing_content_key));
         Bitmap transferedBitmap = BitmapFactory.decodeFile(transferedBitmapPath);
         previewImage.setImageBitmap(transferedBitmap);
         File oldFile = new File(transferedBitmapPath);
@@ -117,7 +117,7 @@ public class EditPictureBoxActivity extends AppCompatActivity {
                 Log.d("Picture", "Old File deleted");
             }
         }
-        final int positionInList = extras.getInt(DetailActivityConfig.POSITION_IN_LIST_KEY);
+        final int positionInList = extras.getInt(getString(R.string.position_in_list_key));
         finishChoosing.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -131,9 +131,9 @@ public class EditPictureBoxActivity extends AppCompatActivity {
         String filePath = saveFile();
         Intent intent = new Intent();
         if(isEditing){
-            intent.putExtra(DetailActivityConfig.POSITION_IN_LIST_KEY, positionInList);
+            intent.putExtra(getString(R.string.position_in_list_key), positionInList);
         }
-        intent.putExtra(DetailActivityConfig.PICTUREBOX_CONTENT_KEY, filePath);
+        intent.putExtra(getString(R.string.picturebox_content_key), filePath);
         setResult(RESULT_OK, intent);
         finish();
     }

@@ -96,8 +96,8 @@ public class EditMusicBoxActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        ConnectionParams connectionParams = new ConnectionParams.Builder(DetailActivityConfig.CLIENT_ID)
-                .setRedirectUri(DetailActivityConfig.REDIRECT_URI)
+        ConnectionParams connectionParams = new ConnectionParams.Builder(getString(R.string.spotify_client_id))
+                .setRedirectUri(getString(R.string.spotify_redirect_uri))
                 .showAuthView(true)
                 .build();
         Log.d("Spotify", "ConnectionParams built");
@@ -154,19 +154,20 @@ public class EditMusicBoxActivity extends AppCompatActivity {
     }
 
     private void getAccessToken() {
-        AuthenticationRequest.Builder builder = new AuthenticationRequest.Builder(DetailActivityConfig.CLIENT_ID, AuthenticationResponse.Type.TOKEN, DetailActivityConfig.REDIRECT_URI);
+        AuthenticationRequest.Builder builder = new AuthenticationRequest.Builder(getString(R.string.spotify_client_id), AuthenticationResponse.Type.TOKEN, getString(R.string.spotify_redirect_uri));
         builder.setScopes(new String[]{"streaming"});
         AuthenticationRequest request = builder.build();
-        AuthenticationClient.openLoginActivity(this, DetailActivityConfig.SPOTIFY_AUTH_REQUEST_CODE, request);
+        Log.d("Spotify", "trying to open window");
+        AuthenticationClient.openLoginActivity(this, getResources().getInteger(R.integer.spotify_auth_request_code), request);
     }
 
     private void finishEditing() {
         Intent intent = new Intent();
-        intent.putExtra(DetailActivityConfig.MUSIC_BOX_CONTENT_KEY, songUri);
+        intent.putExtra(getString(R.string.musicbox_content_key), songUri);
 
         if(editMode){
             Bundle callingExtras = getCallingExtras();
-            intent.putExtra(DetailActivityConfig.POSITION_IN_LIST_KEY, callingExtras.getInt(DetailActivityConfig.POSITION_IN_LIST_KEY));
+            intent.putExtra(getString(R.string.position_in_list_key), callingExtras.getInt(getString(R.string.position_in_list_key)));
         }
 
         setResult(RESULT_OK, intent);
@@ -176,7 +177,7 @@ public class EditMusicBoxActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == DetailActivityConfig.SPOTIFY_AUTH_REQUEST_CODE){
+        if(requestCode == getResources().getInteger(R.integer.spotify_auth_request_code)){
             AuthenticationResponse response = AuthenticationClient.getResponse(resultCode, data);
             switch (response.getType()){
                 case TOKEN:
@@ -201,8 +202,8 @@ public class EditMusicBoxActivity extends AppCompatActivity {
 
         Bundle extras = getCallingExtras();
         if(extras != null){
-            if(extras.getString(DetailActivityConfig.EXISTING_CONTENT_KEY) != null){
-                songUri = extras.getString(DetailActivityConfig.EXISTING_CONTENT_KEY);
+            if(extras.getString(getString(R.string.existing_content_key)) != null){
+                songUri = extras.getString(getString(R.string.existing_content_key));
                 String[] splits = songUri.split(":");
                 String trackId = splits[2];
                 setSongUri(trackId);

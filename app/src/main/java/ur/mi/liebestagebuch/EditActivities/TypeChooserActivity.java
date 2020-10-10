@@ -76,27 +76,27 @@ public class TypeChooserActivity extends AppCompatActivity {
 
     private void startNewHeaderBoxRequest() {
         Intent intent = new Intent(TypeChooserActivity.this, EditHeaderBoxActivity.class);
-        startActivityForResult(intent, DetailActivityConfig.NEW_HEADER_BOX_REQUEST_CODE);
+        startActivityForResult(intent, getResources().getInteger(R.integer.new_header_box_request_code));
     }
 
     private void startNewMusicBoxRequest() {
         Intent intent = new Intent(TypeChooserActivity.this, EditMusicBoxActivity.class);
-        startActivityForResult(intent, DetailActivityConfig.NEW_MUSIC_BOX_REQUEST_CODE);
+        startActivityForResult(intent, getResources().getInteger(R.integer.new_music_box_request_code));
     }
 
     private void startNewMapBoxRequest() {
         Intent intent = new Intent(TypeChooserActivity.this, EditMapBoxActivity.class);
-        startActivityForResult(intent, DetailActivityConfig.NEW_MAP_BOX_REQUEST_CODE);
+        startActivityForResult(intent, getResources().getInteger(R.integer.new_map_box_request_code));
     }
 
     private void startNewPictureBoxRequest() {
         Intent intent = new Intent(TypeChooserActivity.this, EditPictureBoxActivity.class);
-        startActivityForResult(intent, DetailActivityConfig.NEW_PICTURE_BOX_REQUEST_CODE);
+        startActivityForResult(intent, getResources().getInteger(R.integer.new_picture_box_request_code));
     }
 
     private void startNewTextBoxRequest() {
         Intent intent = new Intent(TypeChooserActivity.this, EditTextBoxActivity.class);
-        startActivityForResult(intent, DetailActivityConfig.NEW_TEXT_BOX_REQUEST_CODE);
+        startActivityForResult(intent, getResources().getInteger(R.integer.new_text_box_request_code));
     }
 
     // Wenn die aufgerufene Activity ihr Ergebnis zurückmeldet wird dieses direkt und unverändert

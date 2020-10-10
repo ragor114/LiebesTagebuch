@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.concurrent.Executors;
 
 import ur.mi.liebestagebuch.DetailAndEditActivity.DetailActivityConfig;
+import ur.mi.liebestagebuch.R;
 import ur.mi.liebestagebuch.database.data.DBEntry;
 
 
@@ -24,6 +25,7 @@ public class DBHelper{
     private byte[] updatedIV;
     private int updatedEmotion;
     private Date changeDate;
+    private Context context;
     private DBEntry get;
 
     private static final String DATABASE_NAME = "database-diary";
@@ -32,41 +34,47 @@ public class DBHelper{
 
     public DBHelper(Context context, DatabaseListener listener){
         this.listener = listener;
+        this.context = context;
         diaryDB = Room.databaseBuilder(context, DiaryDatabase.class, DATABASE_NAME).build();
     }
 
 
     public void newEntry(Date date, int emotion, String content, byte[] salt, byte[] iv){
         newEmptyEntry = new DBEntry(date, emotion, content, salt, iv);
-        AsyncNewEmpty newEmpty = new AsyncNewEmpty(newEmptyEntry, listener);
+        int updateCode = context.getResources().getInteger(R.integer.new_entry_update_code);
+        AsyncNewEmpty newEmpty = new AsyncNewEmpty(newEmptyEntry, listener, updateCode);
         Executors.newSingleThreadExecutor().submit(newEmpty);
     }
 
     public void updateEntryContent(Date date, String content){
         updatedContent =content;
         changeDate = date;
-        AsyncUpdateContent updateContent = new AsyncUpdateContent(changeDate, updatedContent, listener);
+        int updateCode = context.getResources().getInteger(R.integer.content_update_code);
+        AsyncUpdateContent updateContent = new AsyncUpdateContent(changeDate, updatedContent, listener, updateCode);
         Executors.newSingleThreadExecutor().submit(updateContent);
     }
 
     public void updateEntrySalt(Date date, byte[] salt){
         updatedSalt = salt;
         changeDate = date;
-        AsyncUpdateSalt updateSalt = new AsyncUpdateSalt(changeDate, updatedSalt, listener);
+        int updateCode = context.getResources().getInteger(R.integer.salt_update_code);
+        AsyncUpdateSalt updateSalt = new AsyncUpdateSalt(changeDate, updatedSalt, listener, updateCode);
         Executors.newSingleThreadExecutor().submit(updateSalt);
     }
 
     public void updateEntryIV(Date date, byte[] IV){
         updatedIV = IV;
         changeDate = date;
-        AsyncUpdateIV updateIV = new AsyncUpdateIV(changeDate, updatedIV, listener);
+        int updateCode = context.getResources().getInteger(R.integer.iv_update_code);
+        AsyncUpdateIV updateIV = new AsyncUpdateIV(changeDate, updatedIV, listener, updateCode);
         Executors.newSingleThreadExecutor().submit(updateIV);
     }
 
     public void updateEntryEmotion(Date date, int emotion){
         changeDate = date;
         updatedEmotion = emotion;
-        AsyncUpdateEmotion updateEmotion = new AsyncUpdateEmotion(updatedEmotion, changeDate, listener);
+        int updateCode = context.getResources().getInteger(R.integer.emotion_update_code);
+        AsyncUpdateEmotion updateEmotion = new AsyncUpdateEmotion(updatedEmotion, changeDate, listener, updateCode);
         Executors.newSingleThreadExecutor().submit(updateEmotion);
     }
 
@@ -75,8 +83,10 @@ public class DBHelper{
         private int updateEmotion;
         private Date updateDate;
         private DatabaseListener listener;
+        private int updateCode;
 
-        public AsyncUpdateEmotion(int updateEmotion, Date updateDate, DatabaseListener listener){
+        public AsyncUpdateEmotion(int updateEmotion, Date updateDate, DatabaseListener listener, int updateCode){
+            this.updateCode = updateCode;
             this.updateEmotion = updateEmotion;
             this.updateDate = updateDate;
             this.listener = listener;
@@ -85,7 +95,7 @@ public class DBHelper{
         @Override
         public void run() {
             diaryDB.getDiaryDao().updateEmotion(updateDate, updateEmotion);
-            listener.updateFinished(DetailActivityConfig.EMOTION_UPDATE_CODE);
+            listener.updateFinished(updateCode);
         }
     }
 
@@ -94,8 +104,10 @@ public class DBHelper{
         private Date updateDate;
         private byte[] updateSalt;
         private DatabaseListener listener;
+        private int updateCode;
 
-        public AsyncUpdateSalt(Date updateDate,byte[] updateSalt,DatabaseListener listener){
+        public AsyncUpdateSalt(Date updateDate,byte[] updateSalt,DatabaseListener listener, int updateCode){
+            this.updateCode = updateCode;
             this.updateDate = updateDate;
             this.updateSalt = updateSalt;
             this.listener = listener;
@@ -111,7 +123,7 @@ public class DBHelper{
                 Log.println(Log.DEBUG,"DB",entry.toString());
             }
 
-            listener.updateFinished(DetailActivityConfig.SALT_UPDATE_CODE);
+            listener.updateFinished(updateCode);
         }
     }
 
@@ -120,8 +132,10 @@ public class DBHelper{
         private Date updateDate;
         private byte[] updateIV;
         private DatabaseListener listener;
+        private int updateCode;
 
-        public AsyncUpdateIV(Date updateDate, byte[] updateIV, DatabaseListener listener){
+        public AsyncUpdateIV(Date updateDate, byte[] updateIV, DatabaseListener listener, int updateCode){
+            this.updateCode = updateCode;
             this.updateDate = updateDate;
             this.updateIV = updateIV;
             this.listener = listener;
@@ -136,7 +150,7 @@ public class DBHelper{
                 Log.println(Log.DEBUG,"DB",entry.toString());
             }
 
-            listener.updateFinished(DetailActivityConfig.IV_UPDATE_CODE);
+            listener.updateFinished(updateCode);
 
         }
     }
@@ -146,8 +160,10 @@ public class DBHelper{
         private Date updateDate;
         private String updateContent;
         private DatabaseListener listener;
+        private int updateCode;
 
-        public AsyncUpdateContent(Date updateDate, String updateContent, DatabaseListener listener){
+        public AsyncUpdateContent(Date updateDate, String updateContent, DatabaseListener listener, int updateCode){
+            this.updateCode = updateCode;
             this.updateDate = updateDate;
             this.updateContent = updateContent;
             this.listener = listener;
@@ -162,7 +178,7 @@ public class DBHelper{
                 Log.println(Log.DEBUG,"DB",entry.toString());
             }
 
-            listener.updateFinished(DetailActivityConfig.CONTENT_UPDATE_CODE);
+            listener.updateFinished(updateCode);
         }
     }
 
@@ -220,8 +236,10 @@ public class DBHelper{
 
         private DBEntry updateEntry;
         private DatabaseListener listener;
+        private int updateCode;
 
-        public AsyncNewEmpty (DBEntry updateEntry, DatabaseListener listener){
+        public AsyncNewEmpty (DBEntry updateEntry, DatabaseListener listener, int updateCode){
+            this.updateCode = updateCode;
             this.updateEntry = updateEntry;
             this.listener = listener;
         }
@@ -235,7 +253,7 @@ public class DBHelper{
                 Log.println(Log.DEBUG,"DB",entry.toString());
             }
 
-            listener.updateFinished(DetailActivityConfig.NEW_ENTRY_UPDATE_CODE);
+            listener.updateFinished(updateCode);
         }
     }
 

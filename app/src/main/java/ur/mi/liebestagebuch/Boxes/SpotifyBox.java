@@ -69,8 +69,8 @@ public class SpotifyBox implements Box {
     // Die Spotify App Remote wird mit der App verbunden und wenn das geglückt ist, kann der
     // OnClickListener des PlayButtons initialisiert werden.
     private void setUpAppRemoteConnection(Context context) {
-        ConnectionParams connectionParams = new ConnectionParams.Builder(DetailActivityConfig.CLIENT_ID)
-                .setRedirectUri(DetailActivityConfig.REDIRECT_URI)
+        ConnectionParams connectionParams = new ConnectionParams.Builder(context.getString(R.string.spotify_client_id))
+                .setRedirectUri(context.getResources().getString(R.string.spotify_redirect_uri))
                 .showAuthView(true)
                 .build();
         Log.d("Spotify", "ConnectionParams built");

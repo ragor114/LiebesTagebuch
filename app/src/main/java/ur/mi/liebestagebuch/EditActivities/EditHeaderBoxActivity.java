@@ -65,7 +65,7 @@ public class EditHeaderBoxActivity extends AppCompatActivity {
         Bundle extras = callingIntent.getExtras();
 
         if(extras != null){
-            String existingHeader = extras.getString(DetailActivityConfig.EXISTING_CONTENT_KEY);
+            String existingHeader = extras.getString(getString(R.string.existing_content_key));
             headerInputET.setText(existingHeader);
         }
     }
@@ -76,13 +76,13 @@ public class EditHeaderBoxActivity extends AppCompatActivity {
 
     private void finishHeader(String input) {
         Intent intent = new Intent();
-        intent.putExtra(DetailActivityConfig.HEADER_BOX_CONTENT_KEY, input);
+        intent.putExtra(getString(R.string.headerbox_content_key), input);
 
         Intent callingIntent = getIntent();
         Bundle extras = callingIntent.getExtras();
         if(extras != null){
-            int positionInList = extras.getInt(DetailActivityConfig.POSITION_IN_LIST_KEY);
-            intent.putExtra(DetailActivityConfig.POSITION_IN_LIST_KEY, positionInList);
+            int positionInList = extras.getInt(getString(R.string.position_in_list_key));
+            intent.putExtra(getString(R.string.position_in_list_key), positionInList);
         }
 
         setResult(RESULT_OK, intent);

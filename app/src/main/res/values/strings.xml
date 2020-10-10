@@ -52,4 +52,19 @@
     <string name="enable_encryption_botton">Enable</string>
     <string name="note_enable_encryption">Enabling encryption will have to reencrypt all entries. Depending on the number and size of you entries this might take a while.</string>
     <string name="encryption_running">Encryption running, please wait</string>
+
+    <!-- Konstanten, die in den/für die Detail- und EditActivities gebraucht werden -->
+    <string name="entry_date_key">Entry Date</string>
+    <string name="emotion_key">EmotionKey</string>
+    <string name="box_list_key">BoxListString</string>
+    <string name="position_in_list_key">Position in list</string>
+    <string name="existing_content_key">Existing content</string>
+    <string name="textbox_content_key">Textbox content</string>
+    <string name="picturebox_content_key">Picturebox content</string>
+    <string name="mapbox_content_key">Mapbox content</string>
+    <string name="musicbox_content_key">Musicbox content</string>
+    <string name="headerbox_content_key">Headerbox content</string>
+    <string name="spotify_client_id">ce7c78a74aa7477989eae35bc8725657</string>
+    <string name="spotify_redirect_uri">ur.mi.liebestagebuch://callback</string>
+
 </resources>

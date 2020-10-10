@@ -44,8 +44,8 @@ public class MapBoxDetailActivity extends AppCompatActivity implements OnMapRead
         // Aus dem Intent werden die Koordinaten und (falls bearbeitet werden soll die Position der Box geladen)
         Intent callingIntent = getIntent();
         Bundle extras = callingIntent.getExtras();
-        this.coordinates = (LatLng) extras.get(DetailActivityConfig.EXISTING_CONTENT_KEY);
-        this.positionInList = extras.getInt(DetailActivityConfig.POSITION_IN_LIST_KEY);
+        this.coordinates = (LatLng) extras.get(getString(R.string.existing_content_key));
+        this.positionInList = extras.getInt(getString(R.string.position_in_list_key));
 
         mapView = findViewById(R.id.map_box_detail_map);
         mapView.onCreate(savedInstanceState);
@@ -108,9 +108,9 @@ public class MapBoxDetailActivity extends AppCompatActivity implements OnMapRead
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if(item.getItemId() == R.id.start_editing_map_box){
             Intent intent = new Intent(MapBoxDetailActivity.this, EditMapBoxActivity.class);
-            intent.putExtra(DetailActivityConfig.EXISTING_CONTENT_KEY, coordinates);
-            intent.putExtra(DetailActivityConfig.POSITION_IN_LIST_KEY, positionInList);
-            startActivityForResult(intent, DetailActivityConfig.EDIT_BOX_REQUEST_CODE);
+            intent.putExtra(getString(R.string.existing_content_key), coordinates);
+            intent.putExtra(getString(R.string.position_in_list_key), positionInList);
+            startActivityForResult(intent, getResources().getInteger(R.integer.edit_box_request_code));
         }
         return super.onOptionsItemSelected(item);
     }

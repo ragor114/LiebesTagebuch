@@ -95,7 +95,7 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
 
         Intent callingIntent = getIntent();
         Bundle extras = callingIntent.getExtras();
-        this.entryDate = DateUtil.setToMidnight((Date) extras.get(DetailActivityConfig.ENTRY_DATE_KEY));
+        this.entryDate = DateUtil.setToMidnight((Date) extras.get(getString(R.string.entry_date_key)));
         Log.d("Detail", "Date loaded: " + entryDate.toString());
         dbHelper = new DBHelper(this, this);
         dbHelper.getEntryByDate(this.entryDate);
@@ -263,9 +263,9 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
             Emotion entryEmotion = entryDetail.getEmotion();
             String boxListString = entryDetail.getBoxListString();
 
-            returnIntent.putExtra(DetailActivityConfig.ENTRY_DATE_KEY, entryDate);
-            returnIntent.putExtra(DetailActivityConfig.EMOTION_KEY, entryEmotion);
-            returnIntent.putExtra(DetailActivityConfig.BOX_LIST_KEY, boxListString);
+            returnIntent.putExtra(getString(R.string.entry_date_key), entryDate);
+            returnIntent.putExtra(getString(R.string.emotion_key), entryEmotion);
+            returnIntent.putExtra(getString(R.string.box_list_key), boxListString);
 
             setResult(RESULT_OK, returnIntent);
             finish();
@@ -284,7 +284,7 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
     // Falls eine neue Box ergänzt werden soll, wird die TypeChooserActivity forResult gestartet.
     private void startAddingNewBox(){
         Intent intent = new Intent(DetailActivity.this, TypeChooserActivity.class);
-        startActivityForResult(intent, DetailActivityConfig.TYPE_CHOOSER_REQUEST_CODE);
+        startActivityForResult(intent, getResources().getInteger(R.integer.type_chooser_request_code));
     }
 
     /*
@@ -299,11 +299,11 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
         if(resultCode == RESULT_OK){
             Log.d("Detail", "Result in Detail OK");
             Bundle extras = data.getExtras();
-            if(requestCode == DetailActivityConfig.SPOTIFY_AUTH_REQUEST_CODE){
+            if(requestCode == getResources().getInteger(R.integer.spotify_auth_request_code)){
                 gotAccessToken(resultCode, data);
-            } else if(requestCode != DetailActivityConfig.EDIT_BOX_REQUEST_CODE) {
+            } else if(requestCode != getResources().getInteger(R.integer.edit_box_request_code)) {
                 newBoxResult(extras);
-            } else if (requestCode == DetailActivityConfig.EDIT_BOX_REQUEST_CODE){
+            } else if (requestCode == getResources().getInteger(R.integer.edit_box_request_code)){
                 editBoxResult(extras);
             }
             boxListAdapter.notifyDataSetChanged();
@@ -338,23 +338,23 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
      * der entsprechenden Box damit überschrieben.
      */
     private void editBoxResult(Bundle extras) {
-        int positionInList = extras.getInt(DetailActivityConfig.POSITION_IN_LIST_KEY);
+        int positionInList = extras.getInt(getString(R.string.position_in_list_key));
         String newContent = "";
-        if(extras.getString(DetailActivityConfig.TEXTBOX_CONTENT_KEY) != null){
-            newContent = extras.getString(DetailActivityConfig.TEXTBOX_CONTENT_KEY);
+        if(extras.getString(getString(R.string.textbox_content_key)) != null){
+            newContent = extras.getString(getString(R.string.textbox_content_key));
         }
-        if(extras.getString(DetailActivityConfig.PICTUREBOX_CONTENT_KEY) != null){
-            newContent = extras.getString(DetailActivityConfig.PICTUREBOX_CONTENT_KEY);
+        if(extras.getString(getString(R.string.picturebox_content_key)) != null){
+            newContent = extras.getString(getString(R.string.picturebox_content_key));
         }
-        if(extras.getString(DetailActivityConfig.MAP_BOX_CONTENT_KEY) != null){
-            newContent = extras.getString(DetailActivityConfig.MAP_BOX_CONTENT_KEY);
+        if(extras.getString(getString(R.string.mapbox_content_key)) != null){
+            newContent = extras.getString(getString(R.string.mapbox_content_key));
         }
-        if(extras.getString(DetailActivityConfig.MUSIC_BOX_CONTENT_KEY) != null){
-            newContent = extras.getString(DetailActivityConfig.MUSIC_BOX_CONTENT_KEY);
+        if(extras.getString(getString(R.string.musicbox_content_key)) != null){
+            newContent = extras.getString(getString(R.string.musicbox_content_key));
             Log.d("Spotify", "Position " +positionInList + " changed to: " + newContent);
         }
-        if(extras.getString(DetailActivityConfig.HEADER_BOX_CONTENT_KEY) != null){
-            newContent = extras.getString(DetailActivityConfig.HEADER_BOX_CONTENT_KEY);
+        if(extras.getString(getString(R.string.headerbox_content_key)) != null){
+            newContent = extras.getString(getString(R.string.headerbox_content_key));
         }
         entryDetail.getBoxList().get(positionInList).setContent(newContent);
     }
@@ -366,28 +366,28 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
      * eingefügt wird.
      */
     private void newBoxResult(Bundle extras) {
-        if (extras.getString(DetailActivityConfig.TEXTBOX_CONTENT_KEY) != null) {
-            TextBox createdTextBox = new TextBox(extras.getString(DetailActivityConfig.TEXTBOX_CONTENT_KEY));
+        if (extras.getString(getString(R.string.textbox_content_key)) != null) {
+            TextBox createdTextBox = new TextBox(extras.getString(getString(R.string.textbox_content_key)));
             entryDetail.addBoxToBoxList(createdTextBox);
-        } else if (extras.getString(DetailActivityConfig.PICTUREBOX_CONTENT_KEY) != null) {
+        } else if (extras.getString(getString(R.string.picturebox_content_key)) != null) {
             Log.d("Detail", "Creating new PictureBox");
-            PictureBox createdPictureBox = new PictureBox(extras.getString(DetailActivityConfig.PICTUREBOX_CONTENT_KEY));
+            PictureBox createdPictureBox = new PictureBox(extras.getString(getString(R.string.picturebox_content_key)));
             entryDetail.addBoxToBoxList(createdPictureBox);
-        } else if(extras.get(DetailActivityConfig.MAP_BOX_CONTENT_KEY) != null){
+        } else if(extras.get(getString(R.string.mapbox_content_key)) != null){
             Log.d("Detail", "Creating new MapBox");
-            LatLng coordinates = (LatLng) extras.get(DetailActivityConfig.MAP_BOX_CONTENT_KEY);
+            LatLng coordinates = (LatLng) extras.get(getString(R.string.mapbox_content_key));
             Log.d("MapView", "Got LatLng with: " + coordinates.toString());
             MapBox createdMapBox = new MapBox(coordinates);
             entryDetail.addBoxToBoxList(createdMapBox);
-        } else if(extras.getString(DetailActivityConfig.MUSIC_BOX_CONTENT_KEY) != null){
+        } else if(extras.getString(getString(R.string.musicbox_content_key)) != null){
             Log.d("Spotify", "Creating new MusicBox");
-            String songUri = extras.getString(DetailActivityConfig.MUSIC_BOX_CONTENT_KEY);
+            String songUri = extras.getString(getString(R.string.musicbox_content_key));
             SpotifyBox createdSpotifyBox = new SpotifyBox(songUri, this, this);
             entryDetail.addBoxToBoxList(createdSpotifyBox);
             Log.d("Spotify", "Added to BoxList: " + entryDetail.getBoxList().toString());
-        } else if(extras.getString(DetailActivityConfig.HEADER_BOX_CONTENT_KEY) != null){
+        } else if(extras.getString(getString(R.string.headerbox_content_key)) != null){
             Log.d("Detail", "Creating new Headerbox");
-            String header = extras.getString(DetailActivityConfig.HEADER_BOX_CONTENT_KEY);
+            String header = extras.getString(getString(R.string.headerbox_content_key));
             HeaderBox createdHeaderBox = new HeaderBox(header);
             entryDetail.addBoxToBoxList(createdHeaderBox);
         }
@@ -421,11 +421,9 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
     // erneute Abfrage nach diesem Eintrag gestartet.
     @Override
     public void updateFinished(int updateCode) {
-        switch (updateCode){
-            case DetailActivityConfig.NEW_ENTRY_UPDATE_CODE:
-                Log.d("Detail", "New Entry created");
-                dbHelper.getEntryByDate(entryDate);
-                break;
+        if(updateCode == getResources().getInteger(R.integer.new_entry_update_code)){
+            Log.d("Detail", "New Entry created");
+            dbHelper.getEntryByDate(entryDate);
         }
     }
 
@@ -481,7 +479,7 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
 
     @Override
     public void onEncryptionFailed(int code) {
-        if(code == DetailActivityConfig.DECRYPTION_FAILED_CODE){
+        if(code == getResources().getInteger(R.integer.decryption_failed_code)){
             Toast.makeText(this, "Decryption failed, if this keeps happening, change password", Toast.LENGTH_SHORT);
         }
     }
@@ -527,35 +525,35 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
                 switch (boxType){
                     case TEXT:
                         Intent startTextboxEditingIntent = new Intent(DetailActivity.this, EditTextBoxActivity.class);
-                        startTextboxEditingIntent.putExtra(DetailActivityConfig.POSITION_IN_LIST_KEY, position);
-                        startTextboxEditingIntent.putExtra(DetailActivityConfig.EXISTING_CONTENT_KEY, clickedBox.getString());
-                        startActivityForResult(startTextboxEditingIntent, DetailActivityConfig.EDIT_BOX_REQUEST_CODE);
+                        startTextboxEditingIntent.putExtra(getString(R.string.position_in_list_key), position);
+                        startTextboxEditingIntent.putExtra(getString(R.string.existing_content_key), clickedBox.getString());
+                        startActivityForResult(startTextboxEditingIntent, getResources().getInteger(R.integer.edit_box_request_code));
                         break;
                     case PICTURE:
                         Intent startPictureboxEditingIntent = new Intent(DetailActivity.this, EditPictureBoxActivity.class);
-                        startPictureboxEditingIntent.putExtra(DetailActivityConfig.POSITION_IN_LIST_KEY, position);
-                        startPictureboxEditingIntent.putExtra(DetailActivityConfig.EXISTING_CONTENT_KEY, clickedBox.getString());
-                        startActivityForResult(startPictureboxEditingIntent, DetailActivityConfig.EDIT_BOX_REQUEST_CODE);
+                        startPictureboxEditingIntent.putExtra(getString(R.string.position_in_list_key), position);
+                        startPictureboxEditingIntent.putExtra(getString(R.string.existing_content_key), clickedBox.getString());
+                        startActivityForResult(startPictureboxEditingIntent, getResources().getInteger(R.integer.edit_box_request_code));
                         break;
                     case MAP:
                         MapBox mapBox = (MapBox) clickedBox;
                         Intent startMapBoxDetailIntent = new Intent(DetailActivity.this, MapBoxDetailActivity.class);
-                        startMapBoxDetailIntent.putExtra(DetailActivityConfig.POSITION_IN_LIST_KEY, position);
-                        startMapBoxDetailIntent.putExtra(DetailActivityConfig.EXISTING_CONTENT_KEY, mapBox.coordinates);
-                        startActivityForResult(startMapBoxDetailIntent, DetailActivityConfig.EDIT_BOX_REQUEST_CODE);
+                        startMapBoxDetailIntent.putExtra(getString(R.string.position_in_list_key), position);
+                        startMapBoxDetailIntent.putExtra(getString(R.string.existing_content_key), mapBox.coordinates);
+                        startActivityForResult(startMapBoxDetailIntent, getResources().getInteger(R.integer.edit_box_request_code));
                         break;
                     case MUSIC:
                         Log.d("Spotify", "Spotifybox at position " + position + " clicked.");
                         Intent startMusicboxEditingIntent = new Intent(DetailActivity.this, EditMusicBoxActivity.class);
-                        startMusicboxEditingIntent.putExtra(DetailActivityConfig.POSITION_IN_LIST_KEY, position);
-                        startMusicboxEditingIntent.putExtra(DetailActivityConfig.EXISTING_CONTENT_KEY, clickedBox.getString());
-                        startActivityForResult(startMusicboxEditingIntent, DetailActivityConfig.EDIT_BOX_REQUEST_CODE);
+                        startMusicboxEditingIntent.putExtra(getString(R.string.position_in_list_key), position);
+                        startMusicboxEditingIntent.putExtra(getString(R.string.existing_content_key), clickedBox.getString());
+                        startActivityForResult(startMusicboxEditingIntent, getResources().getInteger(R.integer.edit_box_request_code));
                         break;
                     case HEADER:
                         Intent startHeaderboxEditingIntent = new Intent(DetailActivity.this, EditHeaderBoxActivity.class);
-                        startHeaderboxEditingIntent.putExtra(DetailActivityConfig.POSITION_IN_LIST_KEY, position);
-                        startHeaderboxEditingIntent.putExtra(DetailActivityConfig.EXISTING_CONTENT_KEY, clickedBox.getString());
-                        startActivityForResult(startHeaderboxEditingIntent, DetailActivityConfig.EDIT_BOX_REQUEST_CODE);
+                        startHeaderboxEditingIntent.putExtra(getString(R.string.position_in_list_key), position);
+                        startHeaderboxEditingIntent.putExtra(getString(R.string.existing_content_key), clickedBox.getString());
+                        startActivityForResult(startHeaderboxEditingIntent, getResources().getInteger(R.integer.edit_box_request_code));
                         break;
                 }
             }
@@ -596,10 +594,10 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
      */
     @Override
     public void needsAccessToken() {
-        AuthenticationRequest.Builder builder = new AuthenticationRequest.Builder(DetailActivityConfig.CLIENT_ID, AuthenticationResponse.Type.TOKEN, DetailActivityConfig.REDIRECT_URI);
+        AuthenticationRequest.Builder builder = new AuthenticationRequest.Builder(getString(R.string.spotify_client_id), AuthenticationResponse.Type.TOKEN, getString(R.string.spotify_redirect_uri));
         builder.setScopes(new String[]{"streaming"});
         AuthenticationRequest request = builder.build();
-        AuthenticationClient.openLoginActivity(this, DetailActivityConfig.SPOTIFY_AUTH_REQUEST_CODE, request);
+        AuthenticationClient.openLoginActivity(this, getResources().getInteger(R.integer.spotify_auth_request_code), request);
     }
 
     /*

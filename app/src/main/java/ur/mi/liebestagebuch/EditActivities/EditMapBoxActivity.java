@@ -62,7 +62,7 @@ public class EditMapBoxActivity extends AppCompatActivity implements OnMapReadyC
         setContentView(R.layout.create_mapbox_activity);
 
         String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
-        requestPermissions(permissions, DetailActivityConfig.PERMISSION_REQUEST_CODE);
+        requestPermissions(permissions, getResources().getInteger(R.integer.permission_request_code));
 
         Intent callingIntent = getIntent();
         extras = callingIntent.getExtras();
@@ -90,10 +90,10 @@ public class EditMapBoxActivity extends AppCompatActivity implements OnMapReadyC
                 Intent intent = new Intent();
                 if(extras != null){
                     String coordinatesString = "Lat: - " + coordinates.latitude + " - Long: - " + coordinates.longitude;
-                    intent.putExtra(DetailActivityConfig.MAP_BOX_CONTENT_KEY, coordinatesString);
-                    intent.putExtra(DetailActivityConfig.POSITION_IN_LIST_KEY, extras.getInt(DetailActivityConfig.POSITION_IN_LIST_KEY));
+                    intent.putExtra(getString(R.string.mapbox_content_key), coordinatesString);
+                    intent.putExtra(getString(R.string.position_in_list_key), extras.getInt(getString(R.string.position_in_list_key)));
                 } else{
-                    intent.putExtra(DetailActivityConfig.MAP_BOX_CONTENT_KEY, coordinates);
+                    intent.putExtra(getString(R.string.mapbox_content_key), coordinates);
                 }
                 setResult(RESULT_OK, intent);
                 finish();
@@ -196,7 +196,7 @@ public class EditMapBoxActivity extends AppCompatActivity implements OnMapReadyC
         Log.d("MapView", "Map is showing");
 
         if(extras != null){
-            coordinates = (LatLng) extras.get(DetailActivityConfig.EXISTING_CONTENT_KEY);
+            coordinates = (LatLng) extras.get(getString(R.string.existing_content_key));
         } else{
             setCoordinatesToDevicePosition();
         }
@@ -259,7 +259,7 @@ public class EditMapBoxActivity extends AppCompatActivity implements OnMapReadyC
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if(requestCode == DetailActivityConfig.PERMISSION_REQUEST_CODE){
+        if(requestCode == getResources().getInteger(R.integer.permission_request_code)){
             if(extras == null) {
                 setCoordinatesToDevicePosition();
             }

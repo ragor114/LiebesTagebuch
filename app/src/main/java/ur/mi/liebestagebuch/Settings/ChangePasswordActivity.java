@@ -168,17 +168,13 @@ public class ChangePasswordActivity extends AppCompatActivity implements Databas
     // Bei der Neuverschlüsselung müssen Inhalt, Iv und Salt gespeichert werden.
     @Override
     public void updateFinished(int updateCode) {
-        switch (updateCode){
-            case DetailActivityConfig.CONTENT_UPDATE_CODE:
-                dbHelper.updateEntryIV(allEntries.get(currentEntryPosition).getDate(), currentEntryIv);
-                break;
-            case DetailActivityConfig.IV_UPDATE_CODE:
-                dbHelper.updateEntrySalt(allEntries.get(currentEntryPosition).getDate(), currentEntrySalt);
-                break;
-            case DetailActivityConfig.SALT_UPDATE_CODE:
-                currentEntryPosition ++;
-                currentEntryReencryption();
-                break;
+        if(updateCode == getResources().getInteger(R.integer.content_update_code)){
+            dbHelper.updateEntryIV(allEntries.get(currentEntryPosition).getDate(), currentEntryIv);
+        } else if(updateCode == getResources().getInteger(R.integer.iv_update_code)){
+            dbHelper.updateEntrySalt(allEntries.get(currentEntryPosition).getDate(), currentEntrySalt);
+        } else if(updateCode == getResources().getInteger(R.integer.salt_update_code)){
+            currentEntryPosition ++;
+            currentEntryReencryption();
         }
     }
 

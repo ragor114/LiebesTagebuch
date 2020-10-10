@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="detailactivity_request_code">210</integer>
+    <integer name="content_update_code">0</integer>
+    <integer name="salt_update_code">1</integer>
+    <integer name="iv_update_code">2</integer>
+    <integer name="emotion_update_code">3</integer>
+    <integer name="new_entry_update_code">4</integer>
+    <integer name="type_chooser_request_code">998</integer>
+    <integer name="new_text_box_request_code">999</integer>
+    <integer name="new_picture_box_request_code">1000</integer>
+    <integer name="new_map_box_request_code">1002</integer>
+    <integer name="edit_box_request_code">1001</integer>
+    <integer name="new_music_box_request_code">1003</integer>
+    <integer name="new_header_box_request_code">1004</integer>
+    <integer name="permission_request_code">2000</integer>
+    <integer name="decryption_failed_code">1</integer>
+    <integer name="encryption_failed_code">2</integer>
+    <integer name="spotify_auth_request_code">1337</integer>
+</resources>
