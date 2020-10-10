@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
 import ur.mi.liebestagebuch.DetailAndEditActivity.DetailActivity;
@@ -87,7 +88,7 @@ public class GridActivity extends AppCompatActivity implements AdapterView.OnIte
 
         //leaveApp();
 
-       // if (getIntent().getBooleanExtra("EXIT",false)) {
+        // if (getIntent().getBooleanExtra("EXIT",false)) {
         //    finish();
         //}
     }
@@ -114,19 +115,19 @@ public class GridActivity extends AppCompatActivity implements AdapterView.OnIte
      * (in rückläufiger Reihenfolge, so dass der neueste Eintrag oben steht) in die ArrayList
      * eingefügt.
      */
-    private void setUpArrayList(){
+    private void setUpArrayList() {
         entries = new ArrayList<>();
         Date installationDate = getInstallationDate();
         int daysPassed = getDaysPassed(installationDate);
-        Log.d("Installation Date", "Installation Date: " +installationDate.getTime()+ " days passed: " + daysPassed);
+        Log.d("Date", "Days passed: " + daysPassed);
         // SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
         Calendar c = Calendar.getInstance();
         c.setTime(installationDate);
         c.add(Calendar.DAY_OF_MONTH, daysPassed);
         Date maxDate = c.getTime();
-        for(int i=0; i < daysPassed; i++){
+        for (int i = 0; i < daysPassed; i++) {
             c.setTime(maxDate);
-            c.add(Calendar.DAY_OF_MONTH, -(i+1));
+            c.add(Calendar.DAY_OF_MONTH, -(i + 1));
             Date currentDate = c.getTime();
             currentDate = DateUtil.setToMidnight(currentDate);
             GridEntry currentGridEntry = new GridEntry(currentDate);
@@ -136,48 +137,54 @@ public class GridActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     //Check: Vergleich des gespeicherten Installationsdatums mit dem aktuellen und Rückgabe der Anzahl der vergangenen Tage.
-    private int getDaysPassed(Date installationDate){
+    private int getDaysPassed(Date installationDate) {
         Date currentDate = new Date();
         Calendar cal = Calendar.getInstance();
         cal.setTime(currentDate);
         //cal.add(Calendar.DAY_OF_MONTH,5);
         currentDate = cal.getTime();
         currentDate = DateUtil.setToMidnight(currentDate);
+
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
+        Log.d("Date", "Installationdate is: " + sdf.format(installationDate));
+        Log.d("Date", "Currentdate is: " + sdf.format(currentDate));
+
         int daysPassed = 1;
-        if (installationDate.equals(currentDate)){
-            Log.d("Installation Date", "is equal");
+        if (installationDate.equals(currentDate)) {
+            Log.d("Date", "is equal");
             return daysPassed;
         } else {
             daysPassed = (int) (currentDate.getTime() - installationDate.getTime());
-            return ((int) TimeUnit.DAYS.convert((daysPassed), TimeUnit.MILLISECONDS))+1;
+            return ((int) TimeUnit.DAYS.convert((daysPassed), TimeUnit.MILLISECONDS)) + 1;
         }
     }
 
     // Check: Abruf des in einer Datei gespeicherten Installationsdatums und Rückgabe dieses Objekts.
-    private Date getInstallationDate(){
+    private Date getInstallationDate() {
         Date saveDate = new Date();
-        File installationFile = new File(this.getDir("date", MODE_PRIVATE), "installationDate");
-        if(installationFile.exists()){
+        File installationFile = new File(this.getDir("date", MODE_PRIVATE), "installationDate.txt");
+        if (installationFile.exists()) {
             StringBuilder builder = new StringBuilder();
             BufferedReader br = null;
             try {
-                br = new BufferedReader(new FileReader(installationFile));
-            String currentLine;
-            while (br.readLine() != null){
-                currentLine = br.readLine();
-                builder.append(currentLine);
-            }
-            String dateString = builder.toString();
-            saveDate = new SimpleDateFormat("dd/MM/yyyy").parse(dateString);
+                Scanner scan = new Scanner(installationFile);
+                // Im File steht immer nur eine Zeile Text.
+                String dateString = scan.next();
+                Log.d("Date", "Datestring is: " + dateString);
+                saveDate = new SimpleDateFormat("dd/MM/yyyy").parse(dateString);
+                saveDate = DateUtil.setToMidnight(saveDate);
             } catch (FileNotFoundException e) {
+                Log.d("Date", "File not found. in getInstallationDate()");
                 e.printStackTrace();
             } catch (ParseException e) {
+                Log.d("Date", "ParseException in getInstallationDate()");
                 e.printStackTrace();
             } catch (IOException e) {
+                Log.d("Date", "IOException in getInstallationDate()");
                 e.printStackTrace();
             }
         } else {
-            Log.d("Installation Date", "File doesn't exist");
+            Log.d("Date", "File doesn't exist in getInstallationDate()");
         }
 
         return saveDate;
@@ -187,14 +194,14 @@ public class GridActivity extends AppCompatActivity implements AdapterView.OnIte
      * Der GridAdapter wird mit der ArrayList und dem GridView verbunden und die Ansicht initial
      * aktualisiert.
      */
-    private void connectAdapterToArrayList(){
+    private void connectAdapterToArrayList() {
         gridAdapter = new EntryGridAdapter(entries, this);
         grid.setAdapter(gridAdapter);
         refreshGrid();
     }
 
     // Diese Methode kann aufgerufen werden, wenn sich etwas an der ArrayList verändert hat.
-    private void refreshGrid(){
+    private void refreshGrid() {
         gridAdapter.notifyDataSetChanged();
     }
 
@@ -202,7 +209,7 @@ public class GridActivity extends AppCompatActivity implements AdapterView.OnIte
     // dieses der DetailActivity als Extra übergeben, die forResult gestartet wird.
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        if(savingLastEntryFinished) {
+        if (savingLastEntryFinished) {
             GridEntry clickedGridEntry = entries.get(position);
             Date clickedEntryDate = clickedGridEntry.getDate();
             Emotion clickedEntryEmotion = clickedGridEntry.getEmotion();
@@ -210,12 +217,12 @@ public class GridActivity extends AppCompatActivity implements AdapterView.OnIte
             Intent intent = new Intent(GridActivity.this, DetailActivity.class);
             intent.putExtra(DetailActivityConfig.ENTRY_DATE_KEY, DateUtil.setToMidnight(clickedEntryDate));
             startActivityForResult(intent, DetailActivityConfig.START_DETAIL_ACTIVITY_REQUEST_CODE);
-        } else{
+        } else {
             Toast.makeText(this, "Please wait while last Entry is saved, this can take a minute.", Toast.LENGTH_SHORT).show();
         }
     }
 
-    public void requestAllEmotions(){
+    public void requestAllEmotions() {
         dbHelper.getAllEntries();
     }
 
@@ -232,7 +239,7 @@ public class GridActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     //Inflate Menü-Zahnrad oben rechts
-    public boolean onCreateOptionsMenu(Menu menu){
+    public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.settings_button, menu);
         return true;
     }
@@ -245,6 +252,7 @@ public class GridActivity extends AppCompatActivity implements AdapterView.OnIte
         }
         return true;
     }
+
     /*
      * Meldet sich die DetailActivty mit einem Ergebnis zurück und ist der resultCode OK, dann
      * werden die übergebenen Informationen in lokalen Variablen zwischen gespeichert und nach und
@@ -253,8 +261,8 @@ public class GridActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == DetailActivityConfig.START_DETAIL_ACTIVITY_REQUEST_CODE){
-            if(resultCode == RESULT_OK){
+        if (requestCode == DetailActivityConfig.START_DETAIL_ACTIVITY_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
                 Bundle extras = data.getExtras();
                 Date entryDate = (Date) extras.get(DetailActivityConfig.ENTRY_DATE_KEY);
                 String boxListString = extras.getString(DetailActivityConfig.BOX_LIST_KEY);
@@ -265,8 +273,8 @@ public class GridActivity extends AppCompatActivity implements AdapterView.OnIte
                 // asynchron Datenbank- und Verschlüsselungsoperationen durchgeführt werden.
                 Log.d("Date", "Before formatting milliseconds: " + entryDate.getTime());
                 lastEditedEntryDate = DateUtil.setToMidnight(entryDate);
-                for (GridEntry current: entries){
-                    if (current.getDate().equals(lastEditedEntryDate)){
+                for (GridEntry current : entries) {
+                    if (current.getDate().equals(lastEditedEntryDate)) {
                         current.setEmotion(entryEmotion);
                         gridAdapter.notifyDataSetChanged();
                         break;
@@ -283,7 +291,7 @@ public class GridActivity extends AppCompatActivity implements AdapterView.OnIte
 
     private int getEmotionInt(Emotion entryEmotion) {
         int emotionInt = 0;
-        switch (entryEmotion){
+        switch (entryEmotion) {
             case VERY_GOOD:
                 emotionInt = 0;
                 break;
@@ -331,30 +339,30 @@ public class GridActivity extends AppCompatActivity implements AdapterView.OnIte
      */
     @Override
     public void updateFinished(int updateCode) {
-        switch (updateCode){
+        switch (updateCode) {
             case DetailActivityConfig.NEW_ENTRY_UPDATE_CODE:
-                if(CheckEncryptionSettingHelper.encryptionActivated(this)){
+                if (CheckEncryptionSettingHelper.encryptionActivated(this)) {
                     StringTransformHelper.startEncryption(lastEditedBoxListString, this);
                     lastEditedBoxListString = "";
-                } else{
+                } else {
                     dbHelper.updateEntryContent(lastEditedEntryDate, lastEditedBoxListString);
                     lastEditedBoxListString = "";
                 }
                 break;
             case DetailActivityConfig.CONTENT_UPDATE_CODE:
-                if(CheckEncryptionSettingHelper.encryptionActivated(this)){
+                if (CheckEncryptionSettingHelper.encryptionActivated(this)) {
                     dbHelper.updateEntryIV(lastEditedEntryDate, lastEditedIV);
-                } else{
-                    byte[] emptyIv = new byte[]{00,00};
+                } else {
+                    byte[] emptyIv = new byte[]{00, 00};
                     dbHelper.updateEntryIV(lastEditedEntryDate, emptyIv);
                 }
                 break;
             case DetailActivityConfig.IV_UPDATE_CODE:
                 lastEditedIV = null;
-                if(CheckEncryptionSettingHelper.encryptionActivated(this)){
+                if (CheckEncryptionSettingHelper.encryptionActivated(this)) {
                     dbHelper.updateEntrySalt(lastEditedEntryDate, lastEditedSalt);
-                } else{
-                    byte[] emptySalt = new byte[]{00,00};
+                } else {
+                    byte[] emptySalt = new byte[]{00, 00};
                     dbHelper.updateEntrySalt(lastEditedEntryDate, emptySalt);
                 }
                 break;
@@ -378,10 +386,10 @@ public class GridActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     public void allEntriesFound(List<Entry> allEntries) {
         Log.d("Hallo", "all entries found");
-        for (GridEntry current: entries){
+        for (GridEntry current : entries) {
             Date currentDate = current.getDate();
-            for (Entry currentDBEntry: allEntries){
-                if (currentDBEntry.getDate().equals(currentDate)){
+            for (Entry currentDBEntry : allEntries) {
+                if (currentDBEntry.getDate().equals(currentDate)) {
                     current.setEmotion(getCorrespondingEmotion(currentDBEntry.getEmotions()));
                     gridAdapter.notifyDataSetChanged();
                     Log.d("Hallo", "hallo?");
@@ -392,7 +400,7 @@ public class GridActivity extends AppCompatActivity implements AdapterView.OnIte
 
     private Emotion getCorrespondingEmotion(int emotions) {
         Emotion correspondingEmotion = Emotion.NORMAL;
-        switch (emotions){
+        switch (emotions) {
             case 0:
                 correspondingEmotion = Emotion.VERY_GOOD;
                 break;

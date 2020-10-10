@@ -26,12 +26,18 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 import ur.mi.liebestagebuch.Encryption.SecurePasswordSaver;
+import ur.mi.liebestagebuch.GridView.DateUtil;
 import ur.mi.liebestagebuch.GridView.GridActivity;
 import ur.mi.liebestagebuch.Notification.Reminder;
 import ur.mi.liebestagebuch.Settings.SettingsActivity;
@@ -43,7 +49,8 @@ public class LoginActivity extends AppCompatActivity {
      *
      * Entwickelt von Moritz Schnell
      *
-     * TODO: Login-Funktionalität (also alles)
+     * Check: Login-Funktionalität (also alles)
+     *
      *
      * Quellen:
      * https://www.youtube.com/watch?v=e49DvaJ1IX4&t=931s
@@ -56,6 +63,7 @@ public class LoginActivity extends AppCompatActivity {
     private Button okButton;
     private EditText editTextPassword ;
     private boolean isFirstRun;
+    public Date installationDate;
 
 
     public static String correctPassword;
@@ -74,6 +82,9 @@ public class LoginActivity extends AppCompatActivity {
         okButton = findViewById(R.id.ok_button);
         editTextPassword = findViewById(R.id.edit_password);
 
+
+        //OnClickListener auf dem "okButton" überprüft ob das vom Nutzer eingegebene Passwort mit
+        //dem, bei der Installation festgelegten, Passwort übereinstimmt.
         okButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -90,6 +101,8 @@ public class LoginActivity extends AppCompatActivity {
         });
 
 
+        //Wenn die App zum ersten Mal gestartet wird, muss zum einloggen ein Passwort festgelegt werden
+        //welches nacher zum einloggen ohne Fingerabdruck genutzt wird.
         if (prefs.getBoolean("firstrun", true)){
             isFirstRun = true;
             Log.d("login", "Is firstrun");
@@ -97,6 +110,7 @@ public class LoginActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     storePassword();
+                    saveInstallationDate();
                 }
             });
             prefs.edit().putBoolean("firstrun", false).commit();
@@ -110,7 +124,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onResume(){
         super.onResume();
 
-        //Nutzen eines BiometricManagers um zu schauen ob der nutzer zugriff auf fingerabdrücke hat
+        //Nutzen eines BiometricManagers um zu schauen ob der nutzer zugriff auf Fingerabdrücke hat
         final BiometricManager biometricManager = BiometricManager.from(this);
         switch(biometricManager.canAuthenticate()){
             case BiometricManager.BIOMETRIC_SUCCESS:
@@ -165,6 +179,9 @@ public class LoginActivity extends AppCompatActivity {
                 .setNegativeButtonText("Cancel")
                 .build();
 
+
+        //Der "loginButton" startet die biometrische Authehtifizierung um sich via Fingerabdruck anzumelden.
+        //Dies geschieht allerdings nur, wenn die App bereits gestartet wurde und ein Passwort vorliegt.
         loginButton = (Button) findViewById(R.id.login_button);
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -181,6 +198,8 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
+
+    //Wenn der Fingerabdruckscan erfolgreich war, wird der Nutzer eingelogt und in die GridActivity weitergeleitet.
     private void loginSuccess() {
         Toast.makeText(getApplicationContext(), "Login Success!", Toast.LENGTH_SHORT).show();
         correctPassword = SecurePasswordSaver.getStoredPassword(this);
@@ -188,6 +207,7 @@ public class LoginActivity extends AppCompatActivity {
         startActivity(switchActivityIntent);
     }
 
+    //Mit dieser Methode wird beim ersten anmelden das eingegebene Passwort in die Datenbank gespeichert.
     private void storePassword() {
         if (!editTextPassword.getText().toString().equals("")) {
             SecurePasswordSaver.storePasswordSecure(editTextPassword.getText().toString(), this);
@@ -197,6 +217,35 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    
-}
+    //Diese Methode legt beim ersten einloggen in die App eine Datei mit dem Datum des ersten Starts an
+    public void saveInstallationDate() {
 
+        installationDate = new Date();
+        Calendar c = Calendar.getInstance();
+        //c.add(Calendar.DAY_OF_MONTH, -5);
+        installationDate = c.getTime();
+        installationDate = DateUtil.setToMidnight(installationDate);
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        String dateString = sdf.format(installationDate);
+
+        Log.d("Date", "InstallationDate in saveInstallation is: " + dateString);
+
+        File installationFile = new File(this.getDir("date", MODE_PRIVATE), "installationDate.txt");
+        if (installationFile.exists()) {
+            installationFile.delete();
+        }
+        try {
+            installationFile.createNewFile();
+            BufferedWriter writer = new BufferedWriter(new FileWriter(installationFile));
+            writer.write(dateString);
+            writer.flush();
+            writer.close();
+            Log.d("Date", "Created new File " + installationFile.getPath());
+        } catch (IOException e) {
+            Log.d("Date", "IOExeption creating File in saveInstallationDate()");
+            e.printStackTrace();
+        }
+    }
+
+
+}

@@ -17,7 +17,7 @@ public class DateUtil {
         cal.set(Calendar.MILLISECOND, 0);
         Date midNightDate = cal.getTime();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy, hh:mm:ss");
-        Log.d("Date", "Set to: " +simpleDateFormat.format(midNightDate));
+        //Log.d("Date", "Set to: " +simpleDateFormat.format(midNightDate));
         return midNightDate;
     }
 
