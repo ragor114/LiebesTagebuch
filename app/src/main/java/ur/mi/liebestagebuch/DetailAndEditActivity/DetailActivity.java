@@ -440,7 +440,7 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
             isReadyToFinish = false;
             String emptyContent = "|<Text | Schreib deine Erlebnisse auf.";
             if(CheckEncryptionSettingHelper.encryptionActivated(this)){
-                StringTransformHelper.startEncryption(emptyContent, this);
+                StringTransformHelper.startEncryption(emptyContent, this, this);
             } else{
                 byte[] emptyIv = new byte[]{00,00};
                 byte[] emptySalt = new byte[]{00,00};

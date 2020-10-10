@@ -64,7 +64,7 @@ public class EntryDetail implements CryptoListener {
         String encryptedBoxString = dbEntry.getContent();
         byte[] salt = dbEntry.getSalt();
         byte[] iv = dbEntry.getIv();
-        StringTransformHelper.startDecryption(encryptedBoxString, this, iv, salt);
+        StringTransformHelper.startDecryption(encryptedBoxString, this, iv, salt, context);
     }
 
     // Da die Emotion in der Datenbank als int gespeichert wird muss die korrespondierende Emotion

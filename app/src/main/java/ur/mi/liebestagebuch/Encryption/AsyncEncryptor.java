@@ -1,5 +1,6 @@
 package ur.mi.liebestagebuch.Encryption;
 
+import android.content.Context;
 import android.os.Handler;
 import android.util.Base64;
 import android.util.Log;
@@ -17,6 +18,8 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 
+import ur.mi.liebestagebuch.R;
+
 public class AsyncEncryptor implements Runnable {
 
     /*
@@ -33,9 +36,11 @@ public class AsyncEncryptor implements Runnable {
     private CryptoListener listener;
     private String toEncrypt;
     private String encryptedPassword;
+    private Context context;
 
     // Die notwendigen Attribute werden über den Konstruktor gesetzt
-    public AsyncEncryptor(Handler mainThreadHandler, CryptoListener listener, String toEncrypt, String encryptedPassword){
+    public AsyncEncryptor(Handler mainThreadHandler, CryptoListener listener, String toEncrypt, String encryptedPassword, Context context){
+        this.context = context;
         this.mainThreadHandler = mainThreadHandler;
         this.listener = listener;
         this.toEncrypt = toEncrypt;
@@ -56,14 +61,14 @@ public class AsyncEncryptor implements Runnable {
         //encrypt toEncrypt
         String encryptedString = "";
         byte[] iv = null;
-        byte[] salt = AESKeyGeneratorHelper.getSalt();
-        SecretKey myAESKey = AESKeyGeneratorHelper.getAESKeyFromPasswordAndGivenSalt(encryptedPassword, salt);
+        byte[] salt = AESKeyGeneratorHelper.getSalt(context);
+        SecretKey myAESKey = AESKeyGeneratorHelper.getAESKeyFromPasswordAndGivenSalt(encryptedPassword, salt, context);
         try {
-            Cipher cipher = Cipher.getInstance(EncryptionConfig.ENCRYPTION_ALGORITHM);
+            Cipher cipher = Cipher.getInstance(context.getString(R.string.encryption_algorithm));
             cipher.init(Cipher.ENCRYPT_MODE, myAESKey);
             AlgorithmParameters params = cipher.getParameters();
             iv = params.getParameterSpec(IvParameterSpec.class).getIV();
-            byte [] encrypted = cipher.doFinal(toEncrypt.getBytes(EncryptionConfig.CHARSET_NAME));
+            byte [] encrypted = cipher.doFinal(toEncrypt.getBytes(context.getString(R.string.charset_name)));
             encryptedString = Base64.encodeToString(encrypted, Base64.DEFAULT);
         } catch (NoSuchAlgorithmException e) {
             encryptionFailed();

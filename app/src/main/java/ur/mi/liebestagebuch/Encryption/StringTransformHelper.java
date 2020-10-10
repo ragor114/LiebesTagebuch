@@ -146,13 +146,13 @@ public class StringTransformHelper {
      * Verschlüsselung in einem neuen Thread durchführt und den übergebenen Listener
      * über die Fertigstellung informiert.
      */
-    public static void startEncryption (String toEncrypt, CryptoListener listener){
-        startEncryptionWithNewPw(toEncrypt, listener, LoginActivity.correctPassword);
+    public static void startEncryption (String toEncrypt, CryptoListener listener, Context context){
+        startEncryptionWithNewPw(toEncrypt, listener, LoginActivity.correctPassword, context);
     }
 
-    public static void startEncryptionWithNewPw(String toEncrypt, CryptoListener listener, String newPw){
+    public static void startEncryptionWithNewPw(String toEncrypt, CryptoListener listener, String newPw, Context context){
         Handler mainThreadHandler = new Handler(Looper.getMainLooper());
-        AsyncEncryptor encryptor = new AsyncEncryptor(mainThreadHandler, listener, toEncrypt, newPw);
+        AsyncEncryptor encryptor = new AsyncEncryptor(mainThreadHandler, listener, toEncrypt, newPw, context);
         Executors.newSingleThreadExecutor().submit(encryptor);
     }
 
@@ -161,9 +161,9 @@ public class StringTransformHelper {
      * Entschlüsselung in einem neuen Thread durchführt und den übergebenen Listener
      * über die Fertigstellung informiert.
      */
-    public static void startDecryption (String toDecrypt, CryptoListener listener, byte[] iv, byte[] salt){
+    public static void startDecryption (String toDecrypt, CryptoListener listener, byte[] iv, byte[] salt, Context context){
         Handler mainThreadHandler = new Handler(Looper.getMainLooper());
-        AsyncDecryptor decryptor = new AsyncDecryptor(mainThreadHandler, listener, toDecrypt, LoginActivity.correctPassword, iv, salt);
+        AsyncDecryptor decryptor = new AsyncDecryptor(mainThreadHandler, listener, toDecrypt, LoginActivity.correctPassword, iv, salt, context);
         Executors.newSingleThreadExecutor().submit(decryptor);
     }
 

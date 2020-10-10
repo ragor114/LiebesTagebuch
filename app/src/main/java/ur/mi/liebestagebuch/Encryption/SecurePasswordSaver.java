@@ -28,6 +28,8 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 
+import ur.mi.liebestagebuch.R;
+
 public class SecurePasswordSaver {
 
 
@@ -77,7 +79,7 @@ public class SecurePasswordSaver {
             byte[] encryptionIv = cipher.getIV();
             saveStringInSharedPreference(context, SP_IV_KEY, Base64.encodeToString(encryptionIv, Base64.DEFAULT));
             Log.d("login", "passwordClearText is: " + passwordClearText);
-            byte[] passwordBytes = passwordClearText.getBytes(EncryptionConfig.CHARSET_NAME);
+            byte[] passwordBytes = passwordClearText.getBytes(context.getString(R.string.charset_name));
             byte[] encryptedPasswordBytes = cipher.doFinal(passwordBytes);
             encryptedPassword = Base64.encodeToString(encryptedPasswordBytes, Base64.DEFAULT);
         } catch (NoSuchAlgorithmException e) {
@@ -107,11 +109,11 @@ public class SecurePasswordSaver {
         byte[] encryptedPasswordBytes = Base64.decode(encryptedPassword, Base64.DEFAULT);
         byte[] encryptionIv = Base64.decode(base64IvString, Base64.DEFAULT);
 
-        passwordClearText = decryptPassword(encryptedPasswordBytes, encryptionIv);
+        passwordClearText = decryptPassword(encryptedPasswordBytes, encryptionIv, context);
         return passwordClearText;
     }
 
-    private static String decryptPassword(byte[] encryptedPasswordBytes, byte[] encryptionIv) {
+    private static String decryptPassword(byte[] encryptedPasswordBytes, byte[] encryptionIv, Context context) {
         String password = "";
         try {
             KeyStore keyStore = KeyStore.getInstance("AndroidKeyStore");
@@ -121,7 +123,7 @@ public class SecurePasswordSaver {
             Cipher cipher = Cipher.getInstance(KeyProperties.KEY_ALGORITHM_AES + "/" + KeyProperties.BLOCK_MODE_CBC + "/" + KeyProperties.ENCRYPTION_PADDING_PKCS7);
             cipher.init(Cipher.DECRYPT_MODE, secretKey, new IvParameterSpec(encryptionIv));
             byte[] passwordBytes = cipher.doFinal(encryptedPasswordBytes);
-            password = new String(passwordBytes, EncryptionConfig.CHARSET_NAME);
+            password = new String(passwordBytes, context.getString(R.string.charset_name));
         } catch (KeyStoreException e) {
             e.printStackTrace();
         } catch (CertificateException e) {

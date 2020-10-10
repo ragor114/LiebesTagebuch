@@ -123,7 +123,7 @@ public class DisableEncryptionActivity extends AppCompatActivity implements Data
             byte[] currentIv = allEntries.get(currentEntryPosition).getIv();
             byte[] currentSalt = allEntries.get(currentEntryPosition).getSalt();
             String content = allEntries.get(currentEntryPosition).getContent();
-            StringTransformHelper.startDecryption(content, this, currentIv, currentSalt);
+            StringTransformHelper.startDecryption(content, this, currentIv, currentSalt, this);
         } else if(!decrypted){
             decrypted = true;
             currentEntryPosition = 0;

@@ -17,4 +17,10 @@
     <integer name="decryption_failed_code">1</integer>
     <integer name="encryption_failed_code">2</integer>
     <integer name="spotify_auth_request_code">1337</integer>
+
+    <!-- Konstanten, die für die Verschlüsselung gebraucht werden -->
+    <integer name="salt_size">8</integer>
+    <integer name="iteration_count">65536</integer>
+    <integer name="key_length">256</integer>
+
 </resources>

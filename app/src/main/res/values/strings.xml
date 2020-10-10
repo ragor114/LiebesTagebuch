@@ -67,4 +67,9 @@
     <string name="spotify_client_id">ce7c78a74aa7477989eae35bc8725657</string>
     <string name="spotify_redirect_uri">ur.mi.liebestagebuch://callback</string>
 
+    <!-- Konstanten, die für die Verschlüsselung gebraucht werden -->
+    <string name="encryption_algorithm">AES/CBC/PKCS5Padding</string>
+    <string name="key_factory_algorithm">PBKDF2WithHmacSHA256</string>
+    <string name="charset_name">UTF-8</string>
+
 </resources>

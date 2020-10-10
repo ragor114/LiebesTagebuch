@@ -133,7 +133,7 @@ public class EnableEncryptionActivity extends AppCompatActivity implements Datab
     private void encryptSingleEntry() {
         if(currentEntryPosition < allContents.size()){
             Log.d("Passwort", "Entry " + currentEntryPosition + " from " + allContents.size());
-            StringTransformHelper.startEncryptionWithNewPw(allContents.get(currentEntryPosition), this, LoginActivity.correctPassword);
+            StringTransformHelper.startEncryptionWithNewPw(allContents.get(currentEntryPosition), this, LoginActivity.correctPassword, this);
         } else{
             finishEditing();
         }

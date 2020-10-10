@@ -67,7 +67,7 @@ public class PictureEncryptionHelper implements CryptoListener {
         byte[] randomPasswordBytes = new byte[16];
         random.nextBytes(randomPasswordBytes);
         String generatedString = new String(randomPasswordBytes, Charset.forName("UTF-8"));
-        StringTransformHelper.startEncryption(generatedString, this);
+        //StringTransformHelper.startEncryption(generatedString, this);
     }
 
     private void overrideExistingFile(File file, String newContent){

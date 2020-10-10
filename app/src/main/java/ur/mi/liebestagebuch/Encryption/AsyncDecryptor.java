@@ -1,5 +1,6 @@
 package ur.mi.liebestagebuch.Encryption;
 
+import android.content.Context;
 import android.os.Handler;
 import android.util.Base64;
 import android.util.Log;
@@ -15,6 +16,8 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
+
+import ur.mi.liebestagebuch.R;
 
 public class AsyncDecryptor implements Runnable {
 
@@ -34,10 +37,12 @@ public class AsyncDecryptor implements Runnable {
     private String encryptedPassword;
     private byte[] iv;
     private byte[] salt;
+    private Context context;
 
     // Die notwendigen Attribute werden über den Konstruktor gesetzt
-    public AsyncDecryptor (Handler mainThreadHandler, CryptoListener listener, String toDecrypt, String encryptedPassword, byte[] iv, byte[] salt){
+    public AsyncDecryptor (Handler mainThreadHandler, CryptoListener listener, String toDecrypt, String encryptedPassword, byte[] iv, byte[] salt, Context context){
         this.mainThreadHandler = mainThreadHandler;
+        this.context = context;
         this.listener = listener;
         this.toDecrypt = toDecrypt;
         this.encryptedPassword = encryptedPassword;
@@ -66,10 +71,10 @@ public class AsyncDecryptor implements Runnable {
         Log.d(EncryptionConfig.LOG_TAG, "IV length is " + iv.length);
         Log.d(EncryptionConfig.LOG_TAG, "Salt: " + salt);
         String decryptedString = "None";
-        SecretKey myAESKey = AESKeyGeneratorHelper.getAESKeyFromPasswordAndGivenSalt(encryptedPassword, salt);
+        SecretKey myAESKey = AESKeyGeneratorHelper.getAESKeyFromPasswordAndGivenSalt(encryptedPassword, salt, context);
         Log.d(EncryptionConfig.LOG_TAG, "AES Key generated");
         try {
-            Cipher cipher = Cipher.getInstance(EncryptionConfig.ENCRYPTION_ALGORITHM);
+            Cipher cipher = Cipher.getInstance(context.getString(R.string.encryption_algorithm));
             Log.d(EncryptionConfig.LOG_TAG, "Cipher generated");
 
             Log.d(EncryptionConfig.LOG_TAG, "Initialising Cipher...");

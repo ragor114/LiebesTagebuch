@@ -336,7 +336,7 @@ public class GridActivity extends AppCompatActivity implements AdapterView.OnIte
     public void updateFinished(int updateCode) {
         if(updateCode == getResources().getInteger(R.integer.new_entry_update_code)){
             if (CheckEncryptionSettingHelper.encryptionActivated(this)) {
-                StringTransformHelper.startEncryption(lastEditedBoxListString, this);
+                StringTransformHelper.startEncryption(lastEditedBoxListString, this, this);
                 lastEditedBoxListString = "";
             } else {
                 dbHelper.updateEntryContent(lastEditedEntryDate, lastEditedBoxListString);

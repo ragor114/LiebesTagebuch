@@ -208,7 +208,7 @@ public class ChangePasswordActivity extends AppCompatActivity implements Databas
         if(!decryptionFinished && currentEntryPosition < allEntries.size()){
             Log.d("Password", "Decrypting " + currentEntryPosition);
             DBEntry currentEntry = allEntries.get(currentEntryPosition);
-            StringTransformHelper.startDecryption(currentEntry.getContent(), this, currentEntry.getIv(), currentEntry.getSalt());
+            StringTransformHelper.startDecryption(currentEntry.getContent(), this, currentEntry.getIv(), currentEntry.getSalt(), this);
         } else if(!decryptionFinished){
             Log.d("Password", "All decryptions finished");
             decryptionFinished = true;
@@ -216,7 +216,7 @@ public class ChangePasswordActivity extends AppCompatActivity implements Databas
             currentEntryReencryption();
         } else if(decryptionFinished && currentEntryPosition < allEntries.size()){
             Log.d("Password", "Encrypting " + currentEntryPosition);
-            StringTransformHelper.startEncryptionWithNewPw(decryptedContents.get(currentEntryPosition), this, newPassword);
+            StringTransformHelper.startEncryptionWithNewPw(decryptedContents.get(currentEntryPosition), this, newPassword, this);
         } else{
             Log.d("Password", "Saving new Password");
             SecurePasswordSaver.storePasswordSecure(newPassword, this);
