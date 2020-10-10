@@ -2,7 +2,7 @@ package ur.mi.liebestagebuch.Boxes;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.net.Uri;
+import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -14,25 +14,23 @@ public class PictureBox implements Box{
 
     /*
      * Klasse dren Objekte eine Bildbox repräsentieren.
-     * getView() muss noch implementiert werden!
-     * Umwandlung des Strings in eine Uri und ein Bitmap muss implementiert werden!
+     * Bilder werden als Dateipfade gespeichert, aus denen dann Bitmaps ausgelesen werden.
      */
 
-    //String Repräsentation des gewählten Bilds.
-    private String content;
+    //Pfad zum gewählten Bilds.
+    private String path;
     //Das gewählte Bild als Bitmap.
     private Bitmap pictureBitmap;
 
     public PictureBox(String content){
-        this.content = content;
+        this.path = content;
         //Umwandlung des Strings in eine Bitmap.
-        this.content = content;
-        pictureBitmap = StringTransformHelper.convertBase64StringToBitmap(content);
+        pictureBitmap = BitmapFactory.decodeFile(path);
     }
 
     @Override
     public String getString() {
-        return StringTransformHelper.convertBitmapToBase64String(pictureBitmap);
+        return path;
     }
 
     @Override
@@ -40,7 +38,6 @@ public class PictureBox implements Box{
         return Type.PICTURE;
     }
 
-    //muss noch implementiert werden!
     @Override
     public View getView(Context context) {
         LayoutInflater inflater = LayoutInflater.from(context);
@@ -52,8 +49,8 @@ public class PictureBox implements Box{
 
     @Override
     public void setContent(String content) {
-        this.content = content;
-        pictureBitmap = StringTransformHelper.convertBase64StringToBitmap(content);
+        this.path = content;
+        pictureBitmap = BitmapFactory.decodeFile(path);
     }
 
 }

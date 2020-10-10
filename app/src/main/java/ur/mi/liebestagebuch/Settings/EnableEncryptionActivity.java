@@ -26,6 +26,18 @@ import ur.mi.liebestagebuch.database.data.Entry;
 
 public class EnableEncryptionActivity extends AppCompatActivity implements DatabaseListener, CryptoListener {
 
+    /*
+     * Ist die Verschlüsselung aktuell deaktiviert und der Nutzer möchte sie aktivieren wird diese
+     * Activity gestartet.
+     * Denn alle Einträge der Datenbank müssen dafür neu verschlüsselt und in die Datenbank
+     * rückgespeichert werden, da es sonst keinen Anhaltspunkt gibt welche Einträge verschlüsselt sind
+     * und welche nicht. Die Activity kann nicht beendet werden, solange die Verschlüsselung läuft.
+     * Da jede Verschlüsselung und Rückspeicherung ca. 1,5 Sekunden braucht, kann das eine Weile
+     * dauern.
+     *
+     * Entwickelt von Jannik Wiese.
+     */
+
     private Button enableButton;
     private TextView encryptionRunningTv;
 
@@ -42,8 +54,13 @@ public class EnableEncryptionActivity extends AppCompatActivity implements Datab
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         isRunning = false;
 
+        setupViews();
+    }
+
+    private void setupViews() {
         setContentView(R.layout.enable_encryption_activity);
         enableButton = findViewById(R.id.enable_encryption_button);
         encryptionRunningTv = findViewById(R.id.enable_encryption_text);
@@ -56,6 +73,10 @@ public class EnableEncryptionActivity extends AppCompatActivity implements Datab
         });
     }
 
+    /*
+     * Wird die Verschlüsselung gestartet, werden zuerst alle Einträge aus der Datenbank geladen
+     * und ein Hinweis, dass die Verschlüsselung läuft wird sichtbar.
+     */
     private void startReencryption() {
         dbHelper = new DBHelper(this, this);
         isRunning = true;
@@ -65,6 +86,10 @@ public class EnableEncryptionActivity extends AppCompatActivity implements Datab
         dbHelper.getAllEntries();
     }
 
+    /*
+     * Salt Iv und Inhalt jedes Datenbankeintrags müssen aktualisiert werden.
+     * Dazu müssen Salt und Iv in Instanzvariablen zwischengespeichert werden.
+     */
     @Override
     public void updateFinished(int updateCode) {
         switch (updateCode){
@@ -86,6 +111,9 @@ public class EnableEncryptionActivity extends AppCompatActivity implements Datab
 
     }
 
+    /*
+     * Sind alle Einträge gefunden worden, werden Sie der Reihe nach verschlüsselt.
+     */
     @Override
     public void allEntriesFound(List<Entry> allEntries) {
         this.allEntries = allEntries;
@@ -95,6 +123,10 @@ public class EnableEncryptionActivity extends AppCompatActivity implements Datab
         encryptSingleEntry();
     }
 
+    /*
+     * Solange nicht alle Einträge verschlüsselt worden sind wird der nächste Eintrag verschlüsselt.
+     * Wenn alle Einträge verschlüsselt worden sind, wird die Activity beendet.
+     */
     private void encryptSingleEntry() {
         if(currentEntryPosition < allContents.size()){
             Log.d("Passwort", "Entry " + currentEntryPosition + " from " + allContents.size());
@@ -111,6 +143,7 @@ public class EnableEncryptionActivity extends AppCompatActivity implements Datab
         finish();
     }
 
+    // Wurde ein Eintrag verschlüsselt, werden dann Inhalt, Iv und Salt in der Datenbank gespeichert.
     @Override
     public void onEncryptionFinished(String result, byte[] iv, byte[] salt) {
         Log.d("Passwort", "Encryption " + currentEntryPosition + " finished.");
@@ -135,6 +168,7 @@ public class EnableEncryptionActivity extends AppCompatActivity implements Datab
 
     }
 
+    // Die Activty kann erst verlassen werden, wenn alle Einträge verschlüsselt worden sind.
     @Override
     public void onBackPressed() {
         if(!isRunning) {

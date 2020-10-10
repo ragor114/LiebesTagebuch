@@ -25,6 +25,18 @@ import ur.mi.liebestagebuch.database.data.Entry;
 
 public class DisableEncryptionActivity extends AppCompatActivity implements DatabaseListener, CryptoListener {
 
+    /*
+     * Ist die Verschlüsselung derzeit aktiviert wird diese Activity gestartet, um sie zu deaktivieren.
+     * Grund dafür ist, dass alle Einträge entschlüsselt und rückgespeichert werden müssen, da es
+     * in der Datenbank keinen Hinweis darauf gibt, ob der aktuelle Eintrag verschlüsselt ist oder nicht.
+     * Da die Entschlüsselung und Rückspeicherung jedes Eintrags ca. 1 Sekunde dauert, vergeht eine Weile
+     * bis alle Einträge entschlüsselt sind. In dieser Zeit kann nicht der Zurückknopf betätigt
+     * werden, da ansonsten einige Einträge entschlüsselt wären und andere nicht, was beim Abruf eines
+     * entschlüsselten Eintrags einen Absturz zur Folge hätte.
+     *
+     * Entwickelt von Jannik Wiese.
+     */
+
     private Button disableButton;
     private TextView decryptionRunningView;
 
@@ -43,6 +55,10 @@ public class DisableEncryptionActivity extends AppCompatActivity implements Data
 
         isRunning = false;
 
+        setupViews();
+    }
+
+    private void setupViews() {
         disableButton = findViewById(R.id.disable_decryption_button);
         decryptionRunningView = findViewById(R.id.disable_running_tv);
         decryptionRunningView.setVisibility(View.INVISIBLE);
@@ -57,6 +73,10 @@ public class DisableEncryptionActivity extends AppCompatActivity implements Data
         });
     }
 
+    /*
+     * Wird die Entschlüsselung gestartet wird ein bestimmter Hinweis dazu in der Activity sichtbar
+     * und dann alle Einträge in Form einer List<> aus der Datenbank abgefragt.
+     */
     private void startDecryption() {
         currentEntryPosition = 0;
         decrypted = false;
@@ -81,12 +101,20 @@ public class DisableEncryptionActivity extends AppCompatActivity implements Data
 
     }
 
+    // Sind alle Einträge gefunden worden, werden sie nach und nach entschlüsselt.
     @Override
     public void allEntriesFound(List<Entry> allEntries) {
         this.allEntries = allEntries;
         decryptSingleEntry();
     }
 
+    /*
+     * Solange nicht alle Einträge entschlüsselt worden sind, werden die nötigen Information aus dem
+     * entsprechendem Entry-Objekt abgerufen und die Entschlüsselung gestartet.
+     * Wurden alle Einträge entschlüsselt werden die Ergebnisse der Reihe nach in die Datenbank
+     * zurückgespeichert.
+     * Wurden alle Einträge zurückgespeichert wird die Activity geschlossen.
+     */
     private void decryptSingleEntry() {
         if(!decrypted && currentEntryPosition < allEntries.size()){
             byte[] currentIv = allEntries.get(currentEntryPosition).getIv();
@@ -140,6 +168,7 @@ public class DisableEncryptionActivity extends AppCompatActivity implements Data
 
     }
 
+    // Der Zurückknopf kann nur genutzt werden, wenn gerade keine Entschlüsselung läuft.
     @Override
     public void onBackPressed() {
         if(!isRunning){
