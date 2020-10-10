@@ -164,8 +164,6 @@ public class GridActivity extends AppCompatActivity implements AdapterView.OnIte
         Date saveDate = new Date();
         File installationFile = new File(this.getDir("date", MODE_PRIVATE), "installationDate");
         if (installationFile.exists()) {
-            StringBuilder builder = new StringBuilder();
-            BufferedReader br = null;
             try {
                 Scanner scan = new Scanner(installationFile);
                 // Im File steht immer nur eine Zeile Text.
