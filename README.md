@@ -10,15 +10,29 @@ bieten.
 In die App kann man sich per Fingerabdruck anmelden oder auch klassisch
 mit einem Passwort.
 
+<img src="app/src/main/res/drawable/screenshot_lockscreen.png" width="200">
+
 In der darauffolgenden Grid-Ansicht hat man für jeden Tag seit der
 Installation einen Eintrag (somit entsteht kein großes Chaos durch zu
 viele unbekannte Dateien) jeder Eintrag zeigt, wenn vorhanden, die in
 ihm gewählte Emotion an, somit kann man seine Emotionen tracken.
 
+<img src="app/src/main/res/drawable/screenshot_grid.png" width="200">
+
 Von der GridActivity kann man zu den Einstellungen gelangen, wo man eine
 tägliche Notification aktivieren kann (falls man sein gesamtes Leben
 aufzeichnen möchte), die Verschlüsselung an- und ausschalten oder sein
 Passwort ändern.
+
+<img src="app/src/main/res/drawable/screenshot_setting_without_remind.png" width="200">
+
+<img src="app/src/main/res/drawable/screenshot_settings_with_remind.png" width="200">
+
+<img src="app/src/main/res/drawable/screenshot_change_pw.png" width="200">
+
+<img src="app/src/main/res/drawable/screenshot_enable_encryption.png" width="200">
+
+<img src="app/src/main/res/drawable/screenshot_disable_encryption.png" width="200">
 
 Apropos verschlüsselt "Liebes Tabebuch..." alle Einträge (wenn
 gewünscht) nach 256-Bit-AES-Standard und legt die Passwörter in einem
@@ -32,19 +46,31 @@ mehrere Orte aufzeichnen kann. Das Box-Prinzip ist auch erweiterbar, so
 dass mit vergleichsweise geringem Aufwand auch neue Boxen für andere
 Zwecke hin zu gefügt werden könnten.
 
+<img src="app/src/main/res/drawable/screenshot_detail.png" width="200">
+
 Es gibt viele verschiedene Typen von Boxen für unterschiedliche Zwecke.
 Text- und Headerboxen sind simple TextViews, wobei zweitere der
 Strukturierung dienen.
 
+<img src="app/src/main/res/drawable/screenshot_edit_text.png" width="200">
+
 PictureBoxen enthalten Bilder, die man mit der Kamera aufnehmen oder aus
 der Galerie wählen kann.
+
+<img src="app/src/main/res/drawable/screenshot_editpicture.png" width="200">
 
 SpotifyBoxen erlauben es (wenn man ein Spotify-Konto hat) Songs zu
 suchen oder per Link hinzu zu fügen, Informationen über diese ab zu
 rufen und die Songs in der Spotify-App zu spielen.
 
+<img src="app/src/main/res/drawable/screenshot_edit_spotify.png" width="200">
+
 MapBoxen erlauben es einen Standort oder eine Sehenswürdigkeit dem
 Tagebucheintrag hinzu zu fügen und auf einer Karte anzeigen zu lassen.
+
+<img src="app/src/main/res/drawable/screenshot_mapdetail.png" width="200">
+
+<img src="app/src/main/res/drawable/screenshot_editmap.png" width="200">
 
 Video:
 
