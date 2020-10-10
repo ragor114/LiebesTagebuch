@@ -38,8 +38,6 @@ public class DBHelper{
         diaryDB = Room.databaseBuilder(context, DiaryDatabase.class, DATABASE_NAME).build();
     }
 
-    //TODO: ASYNC DURCH RUNNABLE AUSTAUSCHEN
-
 
     public void newEntry(Date date, int emotion, String content, byte[] salt, byte[] iv){
         newEmptyEntry = new Entry(date, emotion, content, salt, iv);
@@ -219,47 +217,6 @@ public class DBHelper{
             });
         }
     }
-
-    private class AsyncGet extends AsyncTask<Void,Void,Entry>{
-        private Date dateSearch;
-
-        private DatabaseListener listener;
-
-        private Entry foundEntry;
-
-        public AsyncGet(Date date, DatabaseListener listener) {
-            dateSearch = date;
-            this.listener = listener;
-        }
-
-        @Override
-        protected Entry doInBackground(Void... voids) {
-            if(!isCancelled()) {
-                Log.d("Detail", "Searching for Entry");
-                try {
-                    foundEntry = diaryDB.getDiaryDao().getEntryByDate(dateSearch);
-                    Log.d("DB", "Found Entry");
-                    Log.d("Detail", "Giving found Entry to listener, Async");
-                    onPostExecute(foundEntry);
-                    cancel(true);
-                    return foundEntry;
-                } catch (Exception e) {
-                    Log.d("Detail", "Exception in AsyncGet: " + e.getMessage());
-                    Log.d("DB", "NO ENTRY FOUND");
-                    cancel(true);
-                    return null;
-                }
-            }
-            Log.d("Detail", "isCancelled");
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Entry entry){
-            listener.entryFound(foundEntry);
-        }
-    }
-
 
 
     private class AsyncNewEmpty implements Runnable {
