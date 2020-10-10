@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -53,6 +54,7 @@ public class ChangePasswordActivity extends AppCompatActivity implements Databas
 
     private DBHelper dbHelper;
 
+    private String oldPassword;
     private String newPassword;
     private List<Entry> allEntries;
     private int currentEntryPosition;
@@ -60,6 +62,8 @@ public class ChangePasswordActivity extends AppCompatActivity implements Databas
     private ArrayList<String> decryptedContents;
     private byte[] currentEntryIv;
     private byte[] currentEntrySalt;
+
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -73,6 +77,12 @@ public class ChangePasswordActivity extends AppCompatActivity implements Databas
     }
 
     private void setupViews() {
+        progressBar = findViewById(R.id.change_password_spinner);
+        progressBar.setVisibility(View.GONE);
+
+        isReadyToFinish = true;
+        dbHelper = new DBHelper(this, this);
+
         oldPasswordEt = findViewById(R.id.change_password_old_password);
         newPasswordEt = findViewById(R.id.change_password_new_password);
         newPasswordRepeatEt = findViewById(R.id.change_password_repeat);
@@ -107,6 +117,7 @@ public class ChangePasswordActivity extends AppCompatActivity implements Databas
         if(correctPassword.equals(oldPasswordText)){
             if(newPasswordText.equals(repeatPasswordText)){
                 startReencryption(newPasswordText);
+                progressBar.setVisibility(View.VISIBLE);
             } else{
                 sendPasswordDoesNotEqualRepeatMessage();
             }

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,6 +50,8 @@ public class EnableEncryptionActivity extends AppCompatActivity implements Datab
     private byte[] currentSalt;
     private Date currentDate;
 
+    private ProgressBar progressBar;
+
     private boolean isRunning;
 
     @Override
@@ -62,6 +65,9 @@ public class EnableEncryptionActivity extends AppCompatActivity implements Datab
 
     private void setupViews() {
         setContentView(R.layout.enable_encryption_activity);
+        progressBar = findViewById(R.id.enable_spinner);
+        progressBar.setVisibility(View.GONE);
+
         enableButton = findViewById(R.id.enable_encryption_button);
         encryptionRunningTv = findViewById(R.id.enable_encryption_text);
         encryptionRunningTv.setVisibility(View.INVISIBLE);
@@ -78,6 +84,7 @@ public class EnableEncryptionActivity extends AppCompatActivity implements Datab
      * und ein Hinweis, dass die Verschlüsselung läuft wird sichtbar.
      */
     private void startReencryption() {
+        progressBar.setVisibility(View.VISIBLE);
         dbHelper = new DBHelper(this, this);
         isRunning = true;
         encryptionRunningTv.setVisibility(View.VISIBLE);

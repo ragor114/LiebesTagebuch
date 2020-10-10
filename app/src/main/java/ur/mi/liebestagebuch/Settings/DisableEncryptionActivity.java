@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,7 +37,6 @@ public class DisableEncryptionActivity extends AppCompatActivity implements Data
      *
      * Entwickelt von Jannik Wiese.
      */
-
     private Button disableButton;
     private TextView decryptionRunningView;
 
@@ -48,17 +48,22 @@ public class DisableEncryptionActivity extends AppCompatActivity implements Data
 
     private boolean isRunning;
 
+    private ProgressBar progressBar;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.disable_encryption_activity);
 
-        isRunning = false;
-
         setupViews();
     }
 
     private void setupViews() {
+        progressBar = findViewById(R.id.disable_spinner);
+        progressBar.setVisibility(View.GONE);
+
+        isRunning = false;
+
         disableButton = findViewById(R.id.disable_decryption_button);
         decryptionRunningView = findViewById(R.id.disable_running_tv);
         decryptionRunningView.setVisibility(View.INVISIBLE);
@@ -78,6 +83,7 @@ public class DisableEncryptionActivity extends AppCompatActivity implements Data
      * und dann alle Einträge in Form einer List<> aus der Datenbank abgefragt.
      */
     private void startDecryption() {
+        progressBar.setVisibility(View.VISIBLE);
         currentEntryPosition = 0;
         decrypted = false;
         decryptionRunningView.setVisibility(View.VISIBLE);
