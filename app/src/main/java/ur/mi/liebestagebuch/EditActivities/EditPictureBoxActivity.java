@@ -20,6 +20,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 
 import ur.mi.liebestagebuch.DetailAndEditActivity.DetailActivityConfig;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -94,7 +95,7 @@ public class EditPictureBoxActivity extends AppCompatActivity {
             }
         });
 
-        if(extras != null){
+        if (extras != null) {
             setUpForEdit(extras);
         }
     }
@@ -111,10 +112,10 @@ public class EditPictureBoxActivity extends AppCompatActivity {
         Bitmap transferedBitmap = BitmapFactory.decodeFile(transferedBitmapPath);
         previewImage.setImageBitmap(transferedBitmap);
         File oldFile = new File(transferedBitmapPath);
-        if(oldFile.exists()){
+        if (oldFile.exists()) {
             boolean deleted = oldFile.delete();
-            if(deleted){
-                Log.d("Picture", "Old File deleted");
+            if (deleted) {
+                //Log.d("Picture", "Old File deleted");
             }
         }
         final int positionInList = extras.getInt(getString(R.string.position_in_list_key));
@@ -127,10 +128,10 @@ public class EditPictureBoxActivity extends AppCompatActivity {
     }
 
     private void finishEditing(int positionInList, boolean isEditing) {
-        Log.d("Detail", "Button clicked");
+        //Log.d("Detail", "Button clicked");
         String filePath = saveFile();
         Intent intent = new Intent();
-        if(isEditing){
+        if (isEditing) {
             intent.putExtra(getString(R.string.position_in_list_key), positionInList);
         }
         intent.putExtra(getString(R.string.picturebox_content_key), filePath);
@@ -138,7 +139,7 @@ public class EditPictureBoxActivity extends AppCompatActivity {
         finish();
     }
 
-    private void takePhoto(){
+    private void takePhoto() {
         Intent takeImage = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         File imageFile = null;
         try {
@@ -146,11 +147,11 @@ public class EditPictureBoxActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        if(imageFile != null){
+        if (imageFile != null) {
             this.requestedImageFile = imageFile;
             Uri photoUri = FileProvider.getUriForFile(this, "ur.mi.liebestagebuch.fileprovider", imageFile);
             takeImage.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
-            if (takeImage.resolveActivity(getPackageManager()) != null){
+            if (takeImage.resolveActivity(getPackageManager()) != null) {
                 startActivityForResult(takeImage, REQUEST_IMAGE_CAPTURE);
             }
         }
@@ -169,14 +170,14 @@ public class EditPictureBoxActivity extends AppCompatActivity {
         return image;
     }
 
-    private void choosePhoto(){
+    private void choosePhoto() {
         Intent pick = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         pick.setType("image/*");
 
         Intent choose = Intent.createChooser(getIntent(), "Select Image");
-        choose.putExtra(Intent.EXTRA_INITIAL_INTENTS,new Intent[] {pick});
+        choose.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{pick});
 
-        startActivityForResult(choose,PICK_IMAGE);
+        startActivityForResult(choose, PICK_IMAGE);
     }
 
     @Override
@@ -187,15 +188,15 @@ public class EditPictureBoxActivity extends AppCompatActivity {
             Bitmap fullSize = BitmapFactory.decodeFile(requestedImageFile.getPath());
             previewImage.setImageBitmap(fullSize);
             // Die temporäre Datei wird wieder gelöscht.
-            if(requestedImageFile.exists()){
+            if (requestedImageFile.exists()) {
                 requestedImageFile.delete();
             }
         }
         //Foto aus Galerie wählen
-        if (requestCode == PICK_IMAGE && resultCode == RESULT_OK){
+        if (requestCode == PICK_IMAGE && resultCode == RESULT_OK) {
             Uri imageUri = data.getData();
             try {
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(),imageUri);
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
                 previewImage.setImageBitmap(compressBitmap(bitmap));
             } catch (IOException e) {
                 e.printStackTrace();
@@ -220,7 +221,7 @@ public class EditPictureBoxActivity extends AppCompatActivity {
      * Datum (mit Millisekunden, damit es keine zwei Dateien mit gleichem Namen gibt) und
      * dem Zusatz "-photo".
      */
-    private String getFileName(){
+    private String getFileName() {
         Calendar cal = Calendar.getInstance();
         Date currentDate = cal.getTime();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss-SSS");
@@ -236,15 +237,15 @@ public class EditPictureBoxActivity extends AppCompatActivity {
      * das hat aber zur Folge, dass bei oftmaligen Bearbeiten des gleichen Bilds die Qualität
      * merkbar schlechter wird, da das Bild immer geladen und erneut komprimiert wird.
      */
-    private String saveFile(){
+    private String saveFile() {
         String filePath = getFileName();
         File file = new File(this.getDir("picture", this.MODE_PRIVATE), filePath);
         filePath = file.getPath();
         try {
             file.createNewFile();
         } catch (IOException e) {
-            Log.d("Picture", "File could not be created because of IOException");
-            e.printStackTrace();
+            //Log.d("Picture", "File could not be created because of IOException");
+            //e.printStackTrace();
         }
         Bitmap bitmap = ((BitmapDrawable) previewImage.getDrawable()).getBitmap();
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -255,13 +256,13 @@ public class EditPictureBoxActivity extends AppCompatActivity {
             fos.write(bitmapData);
             fos.flush();
             fos.close();
-            Log.d("Picture", "File saved to: " + file.getPath());
+            //Log.d("Picture", "File saved to: " + file.getPath());
             return filePath;
         } catch (FileNotFoundException e) {
-            Log.d("Picture", "File not found");
+            //Log.d("Picture", "File not found");
             e.printStackTrace();
         } catch (IOException e) {
-            Log.d("Picture", "IOException");
+            //Log.d("Picture", "IOException");
             e.printStackTrace();
         }
         return null;

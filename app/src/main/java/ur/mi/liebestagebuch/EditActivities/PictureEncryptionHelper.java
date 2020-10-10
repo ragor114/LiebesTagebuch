@@ -35,12 +35,12 @@ public class PictureEncryptionHelper implements CryptoListener {
     private Context context;
     private boolean passwordSet;
 
-    public PictureEncryptionHelper(Context context){
+    public PictureEncryptionHelper(Context context) {
         this.context = context;
         passwordSet = false;
     }
 
-    public void saveEncryptedBitmap(Bitmap bitmap){
+    public void saveEncryptedBitmap(Bitmap bitmap) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 80, baos);
         byte[] bitmapBytes = baos.toByteArray();
@@ -49,11 +49,11 @@ public class PictureEncryptionHelper implements CryptoListener {
 
     }
 
-    public void getPicturePassword(){
+    public void getPicturePassword() {
         File passwordFile = new File(context.getDir("picture", Context.MODE_PRIVATE), PASSWORD_PATH);
-        if(passwordFile.exists()){
+        if (passwordFile.exists()) {
             getPasswordString();
-        } else{
+        } else {
             createNewPasswordFile(passwordFile);
         }
     }
@@ -70,8 +70,8 @@ public class PictureEncryptionHelper implements CryptoListener {
         //StringTransformHelper.startEncryption(generatedString, this);
     }
 
-    private void overrideExistingFile(File file, String newContent){
-        if(file.exists()){
+    private void overrideExistingFile(File file, String newContent) {
+        if (file.exists()) {
             file.delete();
         }
         try {
@@ -85,18 +85,18 @@ public class PictureEncryptionHelper implements CryptoListener {
         }
     }
 
-    private void overrideExistingPasswordFile(String newPassword){
+    private void overrideExistingPasswordFile(String newPassword) {
         File passwordFile = new File(context.getDir("picture", Context.MODE_PRIVATE), PASSWORD_PATH);
         overrideExistingFile(passwordFile, newPassword);
     }
 
-    private void overrideIvFile(byte[] iv){
+    private void overrideIvFile(byte[] iv) {
         File ivFile = new File(context.getDir("picture", Context.MODE_PRIVATE), IV_PATH);
         String ivString = Base64.encodeToString(iv, Base64.DEFAULT);
         overrideExistingFile(ivFile, ivString);
     }
 
-    private void overrideSaltFile(byte[] salt){
+    private void overrideSaltFile(byte[] salt) {
         File saltFile = new File(context.getDir("picture", Context.MODE_PRIVATE), SALT_PATH);
         String saltString = Base64.encodeToString(salt, Base64.DEFAULT);
         overrideExistingFile(saltFile, saltString);
@@ -104,7 +104,7 @@ public class PictureEncryptionHelper implements CryptoListener {
 
     @Override
     public void onEncryptionFinished(String result, byte[] iv, byte[] salt) {
-        if(passwordSet == false){
+        if (passwordSet == false) {
             overrideExistingPasswordFile(result);
             overrideIvFile(iv);
             overrideSaltFile(salt);

@@ -64,7 +64,7 @@ public class EditMusicBoxActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.create_music_box_activity);
-        Log.d("Spotify", "EditMusicBox created");
+        //Log.d("Spotify", "EditMusicBox created");
         setUpInvisibleViews();
     }
 
@@ -100,22 +100,22 @@ public class EditMusicBoxActivity extends AppCompatActivity {
                 .setRedirectUri(getString(R.string.spotify_redirect_uri))
                 .showAuthView(true)
                 .build();
-        Log.d("Spotify", "ConnectionParams built");
+        //Log.d("Spotify", "ConnectionParams built");
         SpotifyAppRemote.connect(this, connectionParams, new Connector.ConnectionListener() {
             @Override
             public void onConnected(SpotifyAppRemote spotifyAppRemote) {
                 appRemote = spotifyAppRemote;
                 //DEBUG: appRemote.getPlayerApi().play("spotify:playlist:6uJdeXLzNtFPEhuZ0XFid0");
                 setUpViews();
-                Log.d("Spotify", "App Remote connected!");
+                //Log.d("Spotify", "App Remote connected!");
             }
 
             @Override
             public void onFailure(Throwable throwable) {
-                Log.d("Spotify", "App Remote could not connect: " + throwable.getMessage());
+                //Log.d("Spotify", "App Remote could not connect: " + throwable.getMessage());
             }
         });
-        Log.d("Spotify", "Tried to connect");
+        //Log.d("Spotify", "Tried to connect");
     }
 
     /*
@@ -157,7 +157,7 @@ public class EditMusicBoxActivity extends AppCompatActivity {
         AuthenticationRequest.Builder builder = new AuthenticationRequest.Builder(getString(R.string.spotify_client_id), AuthenticationResponse.Type.TOKEN, getString(R.string.spotify_redirect_uri));
         builder.setScopes(new String[]{"streaming"});
         AuthenticationRequest request = builder.build();
-        Log.d("Spotify", "trying to open window");
+        //Log.d("Spotify", "trying to open window");
         AuthenticationClient.openLoginActivity(this, getResources().getInteger(R.integer.spotify_auth_request_code), request);
     }
 
@@ -267,9 +267,9 @@ public class EditMusicBoxActivity extends AppCompatActivity {
         String[] splits = pastedLink.split("/");
         if (splits.length > 3) {
             if (splits[3].equals("track")) {
-                logSplit(splits);
+                //logSplit(splits);
                 String[] secondSplit = splits[4].split("\\Q?\\E");
-                logSecondSplit(secondSplit);
+                //logSecondSplit(secondSplit);
                 setSongUri(secondSplit[0]);
                 linkEditText.setText("");
             } else {
@@ -299,19 +299,19 @@ public class EditMusicBoxActivity extends AppCompatActivity {
      */
     private void setSongUri(String trackId) {
         songUri = "spotify:track:" + trackId;
-        Log.d("Spotify", "songUri is set to: " + songUri);
+        //Log.d("Spotify", "songUri is set to: " + songUri);
         //appRemote.getPlayerApi().play(songUri);
         playButton.setVisibility(View.VISIBLE);
         spotify.getTrack(trackId, new Callback<Track>() {
             @Override
             public void success(Track track, Response response) {
-                Log.d("Spotify", "Title of track: " + track.name);
+                //Log.d("Spotify", "Title of track: " + track.name);
                 refreshViews(track);
             }
 
             @Override
             public void failure(RetrofitError error) {
-                Log.d("Spotify", "Error getting track information");
+                //Log.d("Spotify", "Error getting track information");
                 sendCantReachSpotifyError();
             }
         });

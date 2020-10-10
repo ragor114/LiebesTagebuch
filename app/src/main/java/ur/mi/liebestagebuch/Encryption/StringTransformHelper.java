@@ -25,11 +25,11 @@ import ur.mi.liebestagebuch.LoginActivity;
 
 public class StringTransformHelper {
     /*
-    * Diese Klasse soll statische Methoden bereitstellen, die helfen Arraylists von Boxen in Strings
-    * um zu wandeln und Strings in Arraylists von Boxen. Außerdem soll die Klasse statische
-    * Methoden zur Verschlüsselung von Strings in einem asynchronen Task bereitstellen.
-    *
-    * Entwickelt von Jannik Wiese
+     * Diese Klasse soll statische Methoden bereitstellen, die helfen Arraylists von Boxen in Strings
+     * um zu wandeln und Strings in Arraylists von Boxen. Außerdem soll die Klasse statische
+     * Methoden zur Verschlüsselung von Strings in einem asynchronen Task bereitstellen.
+     *
+     * Entwickelt von Jannik Wiese
      */
 
 
@@ -39,11 +39,11 @@ public class StringTransformHelper {
      * Eine neue Box beginnt immer mit |< und | trennt Typ von Inhalt .
      * @param Liste von Boxen die umgewandelt werden soll
      * @return Stringumwandlung der übergebenen Boxliste
-    */
-    public static String getStringFromBoxList (ArrayList<Box> boxes){
+     */
+    public static String getStringFromBoxList(ArrayList<Box> boxes) {
         String boxListString = "";
 
-        for(Box current : boxes){
+        for (Box current : boxes) {
             boxListString += getStringFromBox(current);
         }
 
@@ -51,18 +51,18 @@ public class StringTransformHelper {
     }
 
     /*
-    * Wandelt eine Box in die Form "|<Typ | Stringinhalt" um.
-    * Neue Boxtypen müssen ergänzt werden, hier Verbesserung möglich.
-    * Ist die Box von einem unbekannten Typ wird sie als Text gespeichert.
-    * @param um zu wandelnde Box
-    * @return Stringumwandlung der Box in der Form |<getType() | getString()
+     * Wandelt eine Box in die Form "|<Typ | Stringinhalt" um.
+     * Neue Boxtypen müssen ergänzt werden, hier Verbesserung möglich.
+     * Ist die Box von einem unbekannten Typ wird sie als Text gespeichert.
+     * @param um zu wandelnde Box
+     * @return Stringumwandlung der Box in der Form |<getType() | getString()
      */
-    private static String getStringFromBox(Box box){
+    private static String getStringFromBox(Box box) {
         String boxString = " < ";
 
         Type boxType = box.getType();
         //Log.d("TestConfigTest", "" + boxType);
-        switch (boxType){
+        switch (boxType) {
             case PICTURE:
                 boxString += "Picture";
                 break;
@@ -84,28 +84,27 @@ public class StringTransformHelper {
     }
 
     /*
-    * Gibt eine Arraylist von Boxen auf Basis eines Strings der richtigen Formattierung zurück
-    * Der übergebene String muss unverschlüsselt sein.
-    *
-    * @param Liste der Boxen in String Form
-    * @return Liste von Boxen auf Basis des Strings
+     * Gibt eine Arraylist von Boxen auf Basis eines Strings der richtigen Formattierung zurück
+     * Der übergebene String muss unverschlüsselt sein.
+     *
+     * @param Liste der Boxen in String Form
+     * @return Liste von Boxen auf Basis des Strings
      */
-    public static ArrayList<Box> getBoxListFromString(String boxListString, SpotifyBoxReadyListener spotifyListener, Context context){
-        Log.d("Detail", "Getting BoxList");
+    public static ArrayList<Box> getBoxListFromString(String boxListString, SpotifyBoxReadyListener spotifyListener, Context context) {
+        //Log.d("Detail", "Getting BoxList");
         //Log.d("TestConfigTest", "getBoxListFromString started");
         ArrayList<Box> boxList = new ArrayList<>();
 
         String[] singleBoxStrings = boxListString.split("\\Q < \\E");
-        Log.d("Detail", "splitted 0: " + singleBoxStrings[0]);
-        for(String current : singleBoxStrings){
-            if(current.length() > 0) {
+        //Log.d("Detail", "splitted 0: " + singleBoxStrings[0]);
+        for (String current : singleBoxStrings) {
+            if (current.length() > 0) {
                 Box currentNewBox = getSingleBoxFromString(current, spotifyListener, context);
                 boxList.add(currentNewBox);
-            }
-            else continue;
+            } else continue;
         }
 
-        Log.d("Detail", "Got Boxlist");
+        //Log.d("Detail", "Got Boxlist");
 
         return boxList;
     }
@@ -118,21 +117,21 @@ public class StringTransformHelper {
      * @return eine Box des entsprechenden Typs.
      */
     private static Box getSingleBoxFromString(String current, SpotifyBoxReadyListener spotifyListener, Context context) {
-        Log.d("StringTransformHelper", current);
+        //Log.d("StringTransformHelper", current);
         String[] parts = current.split(" \\Q|\\E ");
-        Log.d("Detail", "parts 0: " + parts[0]);
-        Log.d("Detail", "parts 1: " + parts[1]);
+        //Log.d("Detail", "parts 0: " + parts[0]);
+        //Log.d("Detail", "parts 1: " + parts[1]);
         //Log.d("Detail", "parts 2: " + parts[2]);
-        if(parts[0].contains("Picture")) {
+        if (parts[0].contains("Picture")) {
             PictureBox newPictureBox = new PictureBox(parts[1]);
             return newPictureBox;
-        } else if(parts[0].contains("Map")){
+        } else if (parts[0].contains("Map")) {
             MapBox newMapBox = new MapBox(parts[1]);
             return newMapBox;
-        } else if(parts[0].contains("Music")){
+        } else if (parts[0].contains("Music")) {
             SpotifyBox newSpotifyBox = new SpotifyBox(parts[1], context, spotifyListener);
             return newSpotifyBox;
-        } else if(parts[0].contains("Header")){
+        } else if (parts[0].contains("Header")) {
             HeaderBox newHeaderBox = new HeaderBox(parts[1]);
             return newHeaderBox;
         }
@@ -146,11 +145,11 @@ public class StringTransformHelper {
      * Verschlüsselung in einem neuen Thread durchführt und den übergebenen Listener
      * über die Fertigstellung informiert.
      */
-    public static void startEncryption (String toEncrypt, CryptoListener listener, Context context){
+    public static void startEncryption(String toEncrypt, CryptoListener listener, Context context) {
         startEncryptionWithNewPw(toEncrypt, listener, LoginActivity.correctPassword, context);
     }
 
-    public static void startEncryptionWithNewPw(String toEncrypt, CryptoListener listener, String newPw, Context context){
+    public static void startEncryptionWithNewPw(String toEncrypt, CryptoListener listener, String newPw, Context context) {
         Handler mainThreadHandler = new Handler(Looper.getMainLooper());
         AsyncEncryptor encryptor = new AsyncEncryptor(mainThreadHandler, listener, toEncrypt, newPw, context);
         Executors.newSingleThreadExecutor().submit(encryptor);
@@ -161,7 +160,7 @@ public class StringTransformHelper {
      * Entschlüsselung in einem neuen Thread durchführt und den übergebenen Listener
      * über die Fertigstellung informiert.
      */
-    public static void startDecryption (String toDecrypt, CryptoListener listener, byte[] iv, byte[] salt, Context context){
+    public static void startDecryption(String toDecrypt, CryptoListener listener, byte[] iv, byte[] salt, Context context) {
         Handler mainThreadHandler = new Handler(Looper.getMainLooper());
         AsyncDecryptor decryptor = new AsyncDecryptor(mainThreadHandler, listener, toDecrypt, LoginActivity.correctPassword, iv, salt, context);
         Executors.newSingleThreadExecutor().submit(decryptor);
@@ -172,16 +171,16 @@ public class StringTransformHelper {
      * ein Byte-Array umgewandelt, dass dann in einen String konvertiert wird, der in der Datenbank
      * gespeichert werden kann.
      */
-    public static String convertBitmapToBase64String (Bitmap bitmap){
-        Log.d("Detail", "Converting startetd");
+    public static String convertBitmapToBase64String(Bitmap bitmap) {
+        //Log.d("Detail", "Converting startetd");
         Bitmap bitmapCopy = bitmap.copy(Bitmap.Config.RGB_565, false);
-        Log.d("Detail", "Copy made");
+        //Log.d("Detail", "Copy made");
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmapCopy.compress(Bitmap.CompressFormat.PNG, 100, baos);
-        Log.d("Detail", "Compressed");
+        //Log.d("Detail", "Compressed");
         byte[] bitmapAsBytes = baos.toByteArray();
         String base64BitmapString = Base64.encodeToString(bitmapAsBytes, Base64.DEFAULT);
-        Log.d("Detail", "Encoded to String");
+        //Log.d("Detail", "Encoded to String");
 
         //Aufräumen um Speicher zu sparen:
         try {
@@ -199,7 +198,7 @@ public class StringTransformHelper {
      * dieser Methode wieder ein Bild generiert werden, dass in einem ImageView angezeigt werden
      * kann.
      */
-    public static Bitmap convertBase64StringToBitmap (String bitmapString){
+    public static Bitmap convertBase64StringToBitmap(String bitmapString) {
         byte[] bitmapAsBytes = Base64.decode(bitmapString, Base64.DEFAULT);
         Bitmap bitmap = BitmapFactory.decodeByteArray(bitmapAsBytes, 0, bitmapAsBytes.length);
         return bitmap;

@@ -29,7 +29,6 @@ public class SettingsActivity extends AppCompatActivity {
     private ImageButton passwordArrow;
 
 
-
     private boolean switchEncrypt;
     private boolean switchRemind;
     private int timeHour;
@@ -56,7 +55,7 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     //Initialisiere die OnClickListener für die verschiedenen Einstellungsmöglichkeiten
-    private void initListeners(){
+    private void initListeners() {
         sw_encrypt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -75,14 +74,14 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
                 save();
-                Log.println(Log.DEBUG,"DB","Time Changed");
+                //Log.println(Log.DEBUG, "DB", "Time Changed");
             }
         });
 
         password.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.println(Log.DEBUG,"DB","Password Button Pressed");
+                //Log.println(Log.DEBUG, "DB", "Password Button Pressed");
                 startPasswordChangeActivity();
             }
         });
@@ -90,17 +89,17 @@ public class SettingsActivity extends AppCompatActivity {
         passwordArrow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.println(Log.DEBUG,"DB","Password Button Pressed");
+                //Log.println(Log.DEBUG, "DB", "Password Button Pressed");
                 startPasswordChangeActivity();
             }
         });
     }
 
     private void startEntriesDeOrEncryption() {
-        if(!sw_encrypt.isChecked()){
+        if (!sw_encrypt.isChecked()) {
             Intent intent = new Intent(SettingsActivity.this, DisableEncryptionActivity.class);
             startActivityForResult(intent, getResources().getInteger(R.integer.decryption_request_code));
-        } else{
+        } else {
             Intent intent = new Intent(SettingsActivity.this, EnableEncryptionActivity.class);
             startActivityForResult(intent, getResources().getInteger(R.integer.encryption_request_code));
         }
@@ -109,10 +108,10 @@ public class SettingsActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode == RESULT_OK){
-            if(requestCode == getResources().getInteger(R.integer.decryption_request_code)){
+        if (resultCode == RESULT_OK) {
+            if (requestCode == getResources().getInteger(R.integer.decryption_request_code)) {
                 Bundle extras = data.getExtras();
-                if(extras != null){
+                if (extras != null) {
                     boolean decrypted = extras.getBoolean(getString(R.string.has_decrypted_key));
                     sw_encrypt.setChecked(false);
                     save();
@@ -120,17 +119,17 @@ public class SettingsActivity extends AppCompatActivity {
                     sw_encrypt.setChecked(true);
                     save();
                 }
-            } else if(requestCode == getResources().getInteger(R.integer.encryption_request_code)){
+            } else if (requestCode == getResources().getInteger(R.integer.encryption_request_code)) {
                 Bundle extras = data.getExtras();
-                if(extras != null){
+                if (extras != null) {
                     sw_encrypt.setChecked(true);
                     save();
-                } else{
+                } else {
                     sw_encrypt.setChecked(false);
                     save();
                 }
             }
-        } else if(resultCode == RESULT_CANCELED){
+        } else if (resultCode == RESULT_CANCELED) {
             sw_encrypt.setChecked(!sw_encrypt.isChecked());
         }
     }
@@ -141,16 +140,16 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     //Speichert die vom User gewählten Einstellungen in Shared Preferences
-    private void save(){
+    private void save() {
         SharedPreferences sharedPreferences = getSharedPreferences(getString(R.string.shared_prefs_name), MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
-        editor.putBoolean(getString(R.string.encrypt_setting),sw_encrypt.isChecked());
-        editor.putBoolean(getString(R.string.remind_setting),sw_remind.isChecked());
-        editor.putInt(getString(R.string.remind_hour),reminder_picker.getHour());
-        editor.putInt(getString(R.string.remind_minute),reminder_picker.getMinute());
+        editor.putBoolean(getString(R.string.encrypt_setting), sw_encrypt.isChecked());
+        editor.putBoolean(getString(R.string.remind_setting), sw_remind.isChecked());
+        editor.putInt(getString(R.string.remind_hour), reminder_picker.getHour());
+        editor.putInt(getString(R.string.remind_minute), reminder_picker.getMinute());
 
-        Log.println(Log.DEBUG,"DB","Preferences saved");
+        //Log.println(Log.DEBUG, "DB", "Preferences saved");
 
         editor.apply();
         toggleTimePicker();
@@ -158,16 +157,16 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     //Lädt die vom User gewählten Einstellungen aus den Shared Preferences
-    public void load(){
+    public void load() {
         SharedPreferences sharedPreferences = getSharedPreferences(getString(R.string.shared_prefs_name), MODE_PRIVATE);
-        switchEncrypt = sharedPreferences.getBoolean(getString(R.string.encrypt_setting),true);
-        switchRemind = sharedPreferences.getBoolean(getString(R.string.remind_setting),false);
-        timeHour = sharedPreferences.getInt(getString(R.string.remind_hour),18);
-        timeMinute = sharedPreferences.getInt(getString(R.string.remind_minute),0);
+        switchEncrypt = sharedPreferences.getBoolean(getString(R.string.encrypt_setting), true);
+        switchRemind = sharedPreferences.getBoolean(getString(R.string.remind_setting), false);
+        timeHour = sharedPreferences.getInt(getString(R.string.remind_hour), 18);
+        timeMinute = sharedPreferences.getInt(getString(R.string.remind_minute), 0);
     }
 
     //Überschreibt die Shared Preferences falls der User in den Einstellungen etwas geändert hat
-    public void update(){
+    public void update() {
         sw_encrypt.setChecked(switchEncrypt);
         sw_remind.setChecked(switchRemind);
         reminder_picker.setHour(timeHour);
@@ -175,11 +174,11 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     //Zeigt bzw versteckt den Time Picker je nachdem ob der User Benachrichtigungen erhalten möchte
-    private void toggleTimePicker(){
-        if(sw_remind.isChecked()){
+    private void toggleTimePicker() {
+        if (sw_remind.isChecked()) {
             reminder_picker.setVisibility(View.VISIBLE);
             setNotificationTime();
-        }else{
+        } else {
             reminder_picker.setVisibility(View.GONE);
         }
     }
@@ -194,7 +193,7 @@ public class SettingsActivity extends AppCompatActivity {
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
 
         Intent intent = new Intent(SettingsActivity.this, Reminder.class);
-        PendingIntent pendingIntent = PendingIntent. getBroadcast(SettingsActivity.this, 1, intent, 0);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(SettingsActivity.this, 1, intent, 0);
 
 
         alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);

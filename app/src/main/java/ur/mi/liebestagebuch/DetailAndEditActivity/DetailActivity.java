@@ -85,7 +85,7 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
 
     // Das übergebene Datum wird ausgelesen und die nach dem korrespondierendem Datenbankeintrag gesucht.
     @Override
-    protected void onCreate(Bundle savedInstanceState){
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         isReadyToFinish = true;
         setContentView(R.layout.detail_activity);
@@ -96,21 +96,21 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
         Intent callingIntent = getIntent();
         Bundle extras = callingIntent.getExtras();
         this.entryDate = DateUtil.setToMidnight((Date) extras.get(getString(R.string.entry_date_key)));
-        Log.d("Detail", "Date loaded: " + entryDate.toString());
+        //Log.d("Detail", "Date loaded: " + entryDate.toString());
         dbHelper = new DBHelper(this, this);
         dbHelper.getEntryByDate(this.entryDate);
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu){
+    public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.detail_activity_action_bar, menu);
         return true;
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item){
+    public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        switch (id){
+        switch (id) {
             case R.id.back_button:
                 finishDetail();
                 break;
@@ -128,21 +128,21 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
      * wurde.
      */
     private void setUpViews() {
-        Log.d("Detail", "Setting up Views");
+        //Log.d("Detail", "Setting up Views");
         dateTextView = (TextView) findViewById(R.id.datum_text_view);
         boxListView = (ListView) findViewById(R.id.box_list_view);
 
         setUpEmotionButtons();
 
         FloatingActionButton fab = findViewById(R.id.floating_action_button);
-        fab.setOnClickListener(new View.OnClickListener(){
+        fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startAddingNewBox();
             }
         });
 
-        Log.d("Detail", "setUpViews finished");
+        //Log.d("Detail", "setUpViews finished");
     }
 
     /*
@@ -200,10 +200,10 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
      * Der aktuell aktivierte Button wird zurückgesetzt und der Background des übergebenen (angeklickten)
      * Buttons auf die farbige Variante gesetzt.
      */
-    private void activateEmotionButton (int position){
+    private void activateEmotionButton(int position) {
         resetActivatedEmotionButton();
         currentlyActivatedButton = position;
-        switch(position){
+        switch (position) {
             case 0:
                 emotionButtons[0].setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_very_good_color_24dp, null));
                 break;
@@ -225,8 +225,8 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
     /*
      * Der Hintergrund des aktuell aktivierten Buttons wird auf die S/W Variante des Drawables gesetzt.
      */
-    private void resetActivatedEmotionButton(){
-        switch (currentlyActivatedButton){
+    private void resetActivatedEmotionButton() {
+        switch (currentlyActivatedButton) {
             case 0:
                 emotionButtons[0].setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.ic__very_good_bw_24dp, null));
                 break;
@@ -255,8 +255,8 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
      * Activity übergeben. Auch wenn der Zurück-Knopf gedrückt wird, wird der ResultCode auf OKAY
      * gesetzt.
      */
-    private void finishDetail(){
-        if(isReadyToFinish == true){
+    private void finishDetail() {
+        if (isReadyToFinish == true) {
             Intent returnIntent = new Intent();
 
             Date entryDate = DateUtil.setToMidnight(entryDetail.getDate());
@@ -269,7 +269,7 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
 
             setResult(RESULT_OK, returnIntent);
             finish();
-        } else{
+        } else {
             Toast.makeText(this, "Decryption running, try again later.", Toast.LENGTH_SHORT);
         }
     }
@@ -277,12 +277,12 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
     // Der Zurück-Knopf wird überschrieben, damit auch mit diesem die Informationen in die DB
     // zurückgespeichert werden können.
     @Override
-    public void onBackPressed(){
+    public void onBackPressed() {
         finishDetail();
     }
 
     // Falls eine neue Box ergänzt werden soll, wird die TypeChooserActivity forResult gestartet.
-    private void startAddingNewBox(){
+    private void startAddingNewBox() {
         Intent intent = new Intent(DetailActivity.this, TypeChooserActivity.class);
         startActivityForResult(intent, getResources().getInteger(R.integer.type_chooser_request_code));
     }
@@ -296,14 +296,14 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode == RESULT_OK){
-            Log.d("Detail", "Result in Detail OK");
+        if (resultCode == RESULT_OK) {
+            //Log.d("Detail", "Result in Detail OK");
             Bundle extras = data.getExtras();
-            if(requestCode == getResources().getInteger(R.integer.spotify_auth_request_code)){
+            if (requestCode == getResources().getInteger(R.integer.spotify_auth_request_code)) {
                 gotAccessToken(resultCode, data);
-            } else if(requestCode != getResources().getInteger(R.integer.edit_box_request_code)) {
+            } else if (requestCode != getResources().getInteger(R.integer.edit_box_request_code)) {
                 newBoxResult(extras);
-            } else if (requestCode == getResources().getInteger(R.integer.edit_box_request_code)){
+            } else if (requestCode == getResources().getInteger(R.integer.edit_box_request_code)) {
                 editBoxResult(extras);
             }
             boxListAdapter.notifyDataSetChanged();
@@ -312,7 +312,7 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
 
     private void gotAccessToken(int resultCode, Intent data) {
         AuthenticationResponse response = AuthenticationClient.getResponse(resultCode, data);
-        switch (response.getType()){
+        switch (response.getType()) {
             case TOKEN:
                 DetailActivityConfig.ACCESS_TOKEN = response.getAccessToken();
                 setUpSpotifyWebApis();
@@ -325,8 +325,8 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
 
     // Alle Spotify Boxen werden informiert, dass jetzt ein Access Token zur Verfügung steht.
     private void setUpSpotifyWebApis() {
-        for(Box current : entryDetail.getBoxList()){
-            if(current.getType() == Type.MUSIC){
+        for (Box current : entryDetail.getBoxList()) {
+            if (current.getType() == Type.MUSIC) {
                 ((SpotifyBox) current).gotAccessToken();
             }
         }
@@ -340,20 +340,20 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
     private void editBoxResult(Bundle extras) {
         int positionInList = extras.getInt(getString(R.string.position_in_list_key));
         String newContent = "";
-        if(extras.getString(getString(R.string.textbox_content_key)) != null){
+        if (extras.getString(getString(R.string.textbox_content_key)) != null) {
             newContent = extras.getString(getString(R.string.textbox_content_key));
         }
-        if(extras.getString(getString(R.string.picturebox_content_key)) != null){
+        if (extras.getString(getString(R.string.picturebox_content_key)) != null) {
             newContent = extras.getString(getString(R.string.picturebox_content_key));
         }
-        if(extras.getString(getString(R.string.mapbox_content_key)) != null){
+        if (extras.getString(getString(R.string.mapbox_content_key)) != null) {
             newContent = extras.getString(getString(R.string.mapbox_content_key));
         }
-        if(extras.getString(getString(R.string.musicbox_content_key)) != null){
+        if (extras.getString(getString(R.string.musicbox_content_key)) != null) {
             newContent = extras.getString(getString(R.string.musicbox_content_key));
-            Log.d("Spotify", "Position " +positionInList + " changed to: " + newContent);
+            //Log.d("Spotify", "Position " +positionInList + " changed to: " + newContent);
         }
-        if(extras.getString(getString(R.string.headerbox_content_key)) != null){
+        if (extras.getString(getString(R.string.headerbox_content_key)) != null) {
             newContent = extras.getString(getString(R.string.headerbox_content_key));
         }
         entryDetail.getBoxList().get(positionInList).setContent(newContent);
@@ -370,23 +370,23 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
             TextBox createdTextBox = new TextBox(extras.getString(getString(R.string.textbox_content_key)));
             entryDetail.addBoxToBoxList(createdTextBox);
         } else if (extras.getString(getString(R.string.picturebox_content_key)) != null) {
-            Log.d("Detail", "Creating new PictureBox");
+            //Log.d("Detail", "Creating new PictureBox");
             PictureBox createdPictureBox = new PictureBox(extras.getString(getString(R.string.picturebox_content_key)));
             entryDetail.addBoxToBoxList(createdPictureBox);
-        } else if(extras.get(getString(R.string.mapbox_content_key)) != null){
-            Log.d("Detail", "Creating new MapBox");
+        } else if (extras.get(getString(R.string.mapbox_content_key)) != null) {
+            //Log.d("Detail", "Creating new MapBox");
             LatLng coordinates = (LatLng) extras.get(getString(R.string.mapbox_content_key));
-            Log.d("MapView", "Got LatLng with: " + coordinates.toString());
+            //Log.d("MapView", "Got LatLng with: " + coordinates.toString());
             MapBox createdMapBox = new MapBox(coordinates);
             entryDetail.addBoxToBoxList(createdMapBox);
-        } else if(extras.getString(getString(R.string.musicbox_content_key)) != null){
-            Log.d("Spotify", "Creating new MusicBox");
+        } else if (extras.getString(getString(R.string.musicbox_content_key)) != null) {
+            //Log.d("Spotify", "Creating new MusicBox");
             String songUri = extras.getString(getString(R.string.musicbox_content_key));
             SpotifyBox createdSpotifyBox = new SpotifyBox(songUri, this, this);
             entryDetail.addBoxToBoxList(createdSpotifyBox);
-            Log.d("Spotify", "Added to BoxList: " + entryDetail.getBoxList().toString());
-        } else if(extras.getString(getString(R.string.headerbox_content_key)) != null){
-            Log.d("Detail", "Creating new Headerbox");
+            //Log.d("Spotify", "Added to BoxList: " + entryDetail.getBoxList().toString());
+        } else if (extras.getString(getString(R.string.headerbox_content_key)) != null) {
+            //Log.d("Detail", "Creating new Headerbox");
             String header = extras.getString(getString(R.string.headerbox_content_key));
             HeaderBox createdHeaderBox = new HeaderBox(header);
             entryDetail.addBoxToBoxList(createdHeaderBox);
@@ -395,11 +395,11 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
 
     // Um einen neuen Datenbank Eintrag zu erstellen wird ein verschlüsselter Inhalt benötigt.
     @Override
-    public void onEncryptionFinished(String result, byte[] iv, byte[] salt){
-        Log.d("Detail", "Encryption finished");
-        Log.d("Encryption", "IV length at Encryption is " + iv.length);
+    public void onEncryptionFinished(String result, byte[] iv, byte[] salt) {
+        //Log.d("Detail", "Encryption finished");
+        //Log.d("Encryption", "IV length at Encryption is " + iv.length);
         dbHelper.newEntry(entryDate, 2, result, salt, iv);
-        Log.d("Encryption", iv.toString());
+        //Log.d("Encryption", iv.toString());
     }
 
     @Override
@@ -421,8 +421,8 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
     // erneute Abfrage nach diesem Eintrag gestartet.
     @Override
     public void updateFinished(int updateCode) {
-        if(updateCode == getResources().getInteger(R.integer.new_entry_update_code)){
-            Log.d("Detail", "New Entry created");
+        if (updateCode == getResources().getInteger(R.integer.new_entry_update_code)) {
+            //Log.d("Detail", "New Entry created");
             dbHelper.getEntryByDate(entryDate);
         }
     }
@@ -435,25 +435,25 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
      */
     @Override
     public void entryFound(DBEntry foundEntry) {
-        if(foundEntry == null){
-            Log.d("Detail", "No Entry found");
+        if (foundEntry == null) {
+            //Log.d("Detail", "No Entry found");
             isReadyToFinish = false;
             String emptyContent = "|<Text | Schreib deine Erlebnisse auf.";
-            if(CheckEncryptionSettingHelper.encryptionActivated(this)){
+            if (CheckEncryptionSettingHelper.encryptionActivated(this)) {
                 StringTransformHelper.startEncryption(emptyContent, this, this);
-            } else{
-                byte[] emptyIv = new byte[]{00,00};
-                byte[] emptySalt = new byte[]{00,00};
+            } else {
+                byte[] emptyIv = new byte[]{00, 00};
+                byte[] emptySalt = new byte[]{00, 00};
                 dbHelper.newEntry(entryDate, 2, emptyContent, emptySalt, emptyIv);
             }
-        } else{
-            Log.d("Detail", "Entry found");
+        } else {
+            //Log.d("Detail", "Entry found");
             isReadyToFinish = true;
-            Log.d("Encryption", "found Entry: " + foundEntry.toString());
+            //Log.d("Encryption", "found Entry: " + foundEntry.toString());
             this.entryDetail = new EntryDetail(foundEntry, this, this, this);
-            Log.d("Passwort", "EntryDetail created: " + entryDetail.toString());
+            //Log.d("Passwort", "EntryDetail created: " + entryDetail.toString());
             setUpViews();
-            if(!CheckEncryptionSettingHelper.encryptionActivated(this)){
+            if (!CheckEncryptionSettingHelper.encryptionActivated(this)) {
                 setUpBoxlistView();
             }
         }
@@ -473,13 +473,13 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
     // wird diese an den Adapter angeschlossen.
     @Override
     public void onBoxListDecryptionFinished() {
-        Log.d("Passwort", "EntryDetail is: " + entryDetail.getBoxListString());
+        //Log.d("Passwort", "EntryDetail is: " + entryDetail.getBoxListString());
         setUpBoxlistView();
     }
 
     @Override
     public void onEncryptionFailed(int code) {
-        if(code == getResources().getInteger(R.integer.decryption_failed_code)){
+        if (code == getResources().getInteger(R.integer.decryption_failed_code)) {
             Toast.makeText(this, "Decryption failed, if this keeps happening, change password", Toast.LENGTH_SHORT);
         }
     }
@@ -490,7 +490,7 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
      * auf das Datum gesetzt und die onClickListener der boxListView gesetzt.
      */
     private void setUpBoxlistView() {
-        Log.d("Passwort", "EntryDetail is: " + entryDetail.getBoxListString());
+        //Log.d("Passwort", "EntryDetail is: " + entryDetail.getBoxListString());
         boxListAdapter = new BoxListAdapter(this.entryDetail.getBoxList(), this);
         boxListView.setAdapter(boxListAdapter);
         boxListAdapter.notifyDataSetChanged();
@@ -518,11 +518,11 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
         boxListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.d("Detail", "BoxList Entry clicked at position " + position + " clicked.");
-                Log.d("Detail", "Boxlist is: " + entryDetail.getBoxList().toString());
+                //Log.d("Detail", "BoxList Entry clicked at position " + position + " clicked.");
+                //Log.d("Detail", "Boxlist is: " + entryDetail.getBoxList().toString());
                 Box clickedBox = entryDetail.getBoxFromBoxList(position);
                 Type boxType = clickedBox.getType();
-                switch (boxType){
+                switch (boxType) {
                     case TEXT:
                         Intent startTextboxEditingIntent = new Intent(DetailActivity.this, EditTextBoxActivity.class);
                         startTextboxEditingIntent.putExtra(getString(R.string.position_in_list_key), position);
@@ -543,7 +543,7 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
                         startActivityForResult(startMapBoxDetailIntent, getResources().getInteger(R.integer.edit_box_request_code));
                         break;
                     case MUSIC:
-                        Log.d("Spotify", "Spotifybox at position " + position + " clicked.");
+                        //Log.d("Spotify", "Spotifybox at position " + position + " clicked.");
                         Intent startMusicboxEditingIntent = new Intent(DetailActivity.this, EditMusicBoxActivity.class);
                         startMusicboxEditingIntent.putExtra(getString(R.string.position_in_list_key), position);
                         startMusicboxEditingIntent.putExtra(getString(R.string.existing_content_key), clickedBox.getString());
@@ -569,16 +569,16 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
         boxListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.d("Detail", "LongClicked Position: " + position);
+                //Log.d("Detail", "LongClicked Position: " + position);
                 String filePath = null;
-                if(entryDetail.getBoxList().get(position).getType() == Type.PICTURE){
+                if (entryDetail.getBoxList().get(position).getType() == Type.PICTURE) {
                     filePath = entryDetail.getBoxList().get(position).getString();
                 }
                 entryDetail.getBoxList().remove(position);
                 boxListAdapter.notifyDataSetChanged();
-                if(filePath != null){
+                if (filePath != null) {
                     File fileToDelete = new File(filePath);
-                    if(fileToDelete.exists()){
+                    if (fileToDelete.exists()) {
                         fileToDelete.delete();
                     }
                 }
@@ -607,7 +607,7 @@ public class DetailActivity extends AppCompatActivity implements CryptoListener,
      */
     @Override
     public void updatedViews() {
-        Log.d("Spotify", "Callback: updatedView()");
+        //Log.d("Spotify", "Callback: updatedView()");
         boxListAdapter.notifyDataSetChanged();
     }
 }

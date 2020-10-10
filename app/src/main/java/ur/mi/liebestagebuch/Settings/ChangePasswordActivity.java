@@ -89,9 +89,9 @@ public class ChangePasswordActivity extends AppCompatActivity implements Databas
         finishButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(isReadyToFinish){
+                if (isReadyToFinish) {
                     changePassword();
-                } else{
+                } else {
                     sendNotReadyToFinishMessage();
                 }
             }
@@ -104,20 +104,20 @@ public class ChangePasswordActivity extends AppCompatActivity implements Databas
      * die beiden Wiederholungen übereinstimmen wird mit der Neuverschlüsselung begonnen. Ansonsten
      * werden Fehler als Toasts gesendet.
      */
-    private void changePassword(){
+    private void changePassword() {
         String oldPasswordText = oldPasswordEt.getText().toString();
         String newPasswordText = newPasswordEt.getText().toString();
         String repeatPasswordText = newPasswordRepeatEt.getText().toString();
         String correctPassword = SecurePasswordSaver.getStoredPassword(this);
-        Log.d("Password", "Correct Password is: " + correctPassword + " oldPassword is: " + oldPasswordText + " newPassword is: " + newPasswordText);
-        if(correctPassword.equals(oldPasswordText)){
-            if(newPasswordText.equals(repeatPasswordText)){
+        //Log.d("Password", "Correct Password is: " + correctPassword + " oldPassword is: " + oldPasswordText + " newPassword is: " + newPasswordText);
+        if (correctPassword.equals(oldPasswordText)) {
+            if (newPasswordText.equals(repeatPasswordText)) {
                 startReencryption(newPasswordText);
                 progressBar.setVisibility(View.VISIBLE);
-            } else{
+            } else {
                 sendPasswordDoesNotEqualRepeatMessage();
             }
-        } else{
+        } else {
             sendIncorrectPasswordMessage();
         }
     }
@@ -138,15 +138,15 @@ public class ChangePasswordActivity extends AppCompatActivity implements Databas
      * gespeichert udn die Activity beendet.
      */
     private void startReencryption(String newPassword) {
-        Log.d("Password", "Starting reencryption");
+        //Log.d("Password", "Starting reencryption");
         boolean isEncrypted = CheckEncryptionSettingHelper.encryptionActivated(this);
-        if(isEncrypted) {
+        if (isEncrypted) {
             encryptionRunningView.setVisibility(View.VISIBLE);
             isReadyToFinish = false;
             this.newPassword = newPassword;
             dbHelper.getAllEntries();
-        } else{
-            Log.d("Password", "Entries are not encrypted");
+        } else {
+            //Log.d("Password", "Entries are not encrypted");
             SecurePasswordSaver.storePasswordSecure(newPassword, this);
             LoginActivity.correctPassword = newPassword;
             finishEditing();
@@ -154,7 +154,7 @@ public class ChangePasswordActivity extends AppCompatActivity implements Databas
     }
 
     private void finishEditing() {
-        if(newPassword != null){
+        if (newPassword != null) {
             LoginActivity.correctPassword = newPassword;
         }
         setResult(RESULT_OK);
@@ -168,12 +168,12 @@ public class ChangePasswordActivity extends AppCompatActivity implements Databas
     // Bei der Neuverschlüsselung müssen Inhalt, Iv und Salt gespeichert werden.
     @Override
     public void updateFinished(int updateCode) {
-        if(updateCode == getResources().getInteger(R.integer.content_update_code)){
+        if (updateCode == getResources().getInteger(R.integer.content_update_code)) {
             dbHelper.updateEntryIV(allEntries.get(currentEntryPosition).getDate(), currentEntryIv);
-        } else if(updateCode == getResources().getInteger(R.integer.iv_update_code)){
+        } else if (updateCode == getResources().getInteger(R.integer.iv_update_code)) {
             dbHelper.updateEntrySalt(allEntries.get(currentEntryPosition).getDate(), currentEntrySalt);
-        } else if(updateCode == getResources().getInteger(R.integer.salt_update_code)){
-            currentEntryPosition ++;
+        } else if (updateCode == getResources().getInteger(R.integer.salt_update_code)) {
+            currentEntryPosition++;
             currentEntryReencryption();
         }
     }
@@ -193,7 +193,7 @@ public class ChangePasswordActivity extends AppCompatActivity implements Databas
         this.decryptedContents = new ArrayList<>();
         this.decryptionFinished = false;
         currentEntryReencryption();
-        Log.d("Password", "Number of Entries is: " + allEntries.size());
+        //Log.d("Password", "Number of Entries is: " + allEntries.size());
     }
 
     /*
@@ -205,20 +205,20 @@ public class ChangePasswordActivity extends AppCompatActivity implements Databas
      * die Activity beeendet.
      */
     private void currentEntryReencryption() {
-        if(!decryptionFinished && currentEntryPosition < allEntries.size()){
-            Log.d("Password", "Decrypting " + currentEntryPosition);
+        if (!decryptionFinished && currentEntryPosition < allEntries.size()) {
+            //Log.d("Password", "Decrypting " + currentEntryPosition);
             DBEntry currentEntry = allEntries.get(currentEntryPosition);
             StringTransformHelper.startDecryption(currentEntry.getContent(), this, currentEntry.getIv(), currentEntry.getSalt(), this);
-        } else if(!decryptionFinished){
-            Log.d("Password", "All decryptions finished");
+        } else if (!decryptionFinished) {
+            //Log.d("Password", "All decryptions finished");
             decryptionFinished = true;
             currentEntryPosition = 0;
             currentEntryReencryption();
-        } else if(decryptionFinished && currentEntryPosition < allEntries.size()){
-            Log.d("Password", "Encrypting " + currentEntryPosition);
+        } else if (decryptionFinished && currentEntryPosition < allEntries.size()) {
+            //Log.d("Password", "Encrypting " + currentEntryPosition);
             StringTransformHelper.startEncryptionWithNewPw(decryptedContents.get(currentEntryPosition), this, newPassword, this);
-        } else{
-            Log.d("Password", "Saving new Password");
+        } else {
+            //Log.d("Password", "Saving new Password");
             SecurePasswordSaver.storePasswordSecure(newPassword, this);
             isReadyToFinish = true;
             finishEditing();
@@ -255,9 +255,9 @@ public class ChangePasswordActivity extends AppCompatActivity implements Databas
     // Die Activity kann nur verlassen werden wenn keine Ent- oder Verschlüsselung läuft.
     @Override
     public void onBackPressed() {
-        if(isReadyToFinish){
+        if (isReadyToFinish) {
             super.onBackPressed();
-        } else{
+        } else {
             sendNotReadyToFinishMessage();
         }
     }

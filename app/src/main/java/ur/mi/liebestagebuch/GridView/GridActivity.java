@@ -53,7 +53,6 @@ public class GridActivity extends AppCompatActivity implements AdapterView.OnIte
      * Check: onEmotionRequestFinished(): Empfangene Emotionen den entsprechenden Entries zuweisen und dann grid refreshen.
      * Check: onEmotionRequestFinished(): Falls kein Datenbankeintrag für ein Datum vorhanden ist, leeren Eintrag anlegen.
      * Check: Layout verbessern, Grafiken statt hässlicher Rechtecke.
-     * TODO: Bei zurücktaste app schließen
      *
      * Check: onItemClick(): Übergang in Detailactivity, Übergabe der nötigen Informationen (reicht nur Datum?).
      */
@@ -116,7 +115,7 @@ public class GridActivity extends AppCompatActivity implements AdapterView.OnIte
         entries = new ArrayList<>();
         Date installationDate = getInstallationDate();
         int daysPassed = getDaysPassed(installationDate);
-        Log.d("Date", "Days passed: " + daysPassed);
+        //Log.d("Date", "Days passed: " + daysPassed);
         // SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
         Calendar c = Calendar.getInstance();
         c.setTime(installationDate);
@@ -143,12 +142,12 @@ public class GridActivity extends AppCompatActivity implements AdapterView.OnIte
         currentDate = DateUtil.setToMidnight(currentDate);
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
-        Log.d("Date", "Installationdate is: " + sdf.format(installationDate));
-        Log.d("Date", "Currentdate is: " + sdf.format(currentDate));
+        //Log.d("Date", "Installationdate is: " + sdf.format(installationDate));
+        //Log.d("Date", "Currentdate is: " + sdf.format(currentDate));
 
         int daysPassed = 1;
         if (installationDate.equals(currentDate)) {
-            Log.d("Date", "is equal");
+            //Log.d("Date", "is equal");
             return daysPassed;
         } else {
             daysPassed = (int) (currentDate.getTime() - installationDate.getTime());
@@ -165,21 +164,21 @@ public class GridActivity extends AppCompatActivity implements AdapterView.OnIte
                 Scanner scan = new Scanner(installationFile);
                 // Im File steht immer nur eine Zeile Text.
                 String dateString = scan.next();
-                Log.d("Date", "Datestring is: " + dateString);
+                //Log.d("Date", "Datestring is: " + dateString);
                 saveDate = new SimpleDateFormat("dd/MM/yyyy").parse(dateString);
                 saveDate = DateUtil.setToMidnight(saveDate);
             } catch (FileNotFoundException e) {
-                Log.d("Date", "File not found. in getInstallationDate()");
+                //Log.d("Date", "File not found. in getInstallationDate()");
                 e.printStackTrace();
             } catch (ParseException e) {
-                Log.d("Date", "ParseException in getInstallationDate()");
+                //Log.d("Date", "ParseException in getInstallationDate()");
                 e.printStackTrace();
             } catch (IOException e) {
-                Log.d("Date", "IOException in getInstallationDate()");
+                //Log.d("Date", "IOException in getInstallationDate()");
                 e.printStackTrace();
             }
         } else {
-            Log.d("Date", "File doesn't exist in getInstallationDate()");
+            //Log.d("Date", "File doesn't exist in getInstallationDate()");
         }
 
         return saveDate;
@@ -266,7 +265,7 @@ public class GridActivity extends AppCompatActivity implements AdapterView.OnIte
 
                 // Die Informationen des EntryDetails müssen zwischengespeichert werden, während
                 // asynchron Datenbank- und Verschlüsselungsoperationen durchgeführt werden.
-                Log.d("Date", "Before formatting milliseconds: " + entryDate.getTime());
+                //Log.d("Date", "Before formatting milliseconds: " + entryDate.getTime());
                 lastEditedEntryDate = DateUtil.setToMidnight(entryDate);
                 for (GridEntry current : entries) {
                     if (current.getDate().equals(lastEditedEntryDate)) {
@@ -275,7 +274,7 @@ public class GridActivity extends AppCompatActivity implements AdapterView.OnIte
                         break;
                     }
                 }
-                Log.d("Date", "After formattting milliseconds: " + entryDate.getTime());
+                //Log.d("Date", "After formattting milliseconds: " + entryDate.getTime());
                 lastEditedBoxListString = boxListString;
                 lastEditedEntryEmotion = emotionInt;
                 savingLastEntryFinished = false;
@@ -361,7 +360,7 @@ public class GridActivity extends AppCompatActivity implements AdapterView.OnIte
             lastEditedSalt = null;
             dbHelper.updateEntryEmotion(lastEditedEntryDate, lastEditedEntryEmotion);
         } else if (updateCode == getResources().getInteger(R.integer.emotion_update_code)) {
-            Log.d("Detail", "Entry update complete");
+            //Log.d("Detail", "Entry update complete");
             lastEditedEntryEmotion = 0;
             savingLastEntryFinished = true;
         }
@@ -374,7 +373,7 @@ public class GridActivity extends AppCompatActivity implements AdapterView.OnIte
 
     @Override
     public void allEntriesFound(List<DBEntry> allEntries) {
-        Log.d("Hallo", "all entries found");
+        //Log.d("Hallo", "all entries found");
         for (GridEntry current : entries) {
             Date currentDate = current.getDate();
             for (DBEntry currentDBEntry : allEntries) {

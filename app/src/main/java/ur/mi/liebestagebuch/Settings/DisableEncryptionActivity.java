@@ -69,7 +69,7 @@ public class DisableEncryptionActivity extends AppCompatActivity implements Data
         disableButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(isRunning == false) {
+                if (isRunning == false) {
                     startDecryption();
                     isRunning = true;
                 }
@@ -93,7 +93,7 @@ public class DisableEncryptionActivity extends AppCompatActivity implements Data
 
     @Override
     public void updateFinished(int updateCode) {
-        if(updateCode == getResources().getInteger(R.integer.content_update_code)){
+        if (updateCode == getResources().getInteger(R.integer.content_update_code)) {
             currentEntryPosition++;
             decryptSingleEntry();
         }
@@ -119,20 +119,20 @@ public class DisableEncryptionActivity extends AppCompatActivity implements Data
      * Wurden alle Einträge zurückgespeichert wird die Activity geschlossen.
      */
     private void decryptSingleEntry() {
-        if(!decrypted && currentEntryPosition < allEntries.size()){
+        if (!decrypted && currentEntryPosition < allEntries.size()) {
             byte[] currentIv = allEntries.get(currentEntryPosition).getIv();
             byte[] currentSalt = allEntries.get(currentEntryPosition).getSalt();
             String content = allEntries.get(currentEntryPosition).getContent();
             StringTransformHelper.startDecryption(content, this, currentIv, currentSalt, this);
-        } else if(!decrypted){
+        } else if (!decrypted) {
             decrypted = true;
             currentEntryPosition = 0;
             decryptSingleEntry();
-        } else if(decrypted && currentEntryPosition < allEntries.size()){
+        } else if (decrypted && currentEntryPosition < allEntries.size()) {
             DBEntry currentEntry = allEntries.get(currentEntryPosition);
             String decryptedContent = allContents.get(currentEntryPosition);
             saveEntryBack(currentEntry, decryptedContent);
-        } else{
+        } else {
             finishEditing();
         }
     }
@@ -174,15 +174,15 @@ public class DisableEncryptionActivity extends AppCompatActivity implements Data
     // Der Zurückknopf kann nur genutzt werden, wenn gerade keine Entschlüsselung läuft.
     @Override
     public void onBackPressed() {
-        if(!isRunning){
+        if (!isRunning) {
             setResult(RESULT_CANCELED);
             finish();
-        } else{
+        } else {
             sendIsRunningToast();
         }
     }
 
-    public void sendIsRunningToast(){
+    public void sendIsRunningToast() {
         Toast.makeText(this, "Please wait until decryption is finished", Toast.LENGTH_SHORT).show();
     }
 }

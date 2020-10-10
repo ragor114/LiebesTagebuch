@@ -130,7 +130,7 @@ public class DBHelper{
 
             //DEBUG
             for(DBEntry entry: diaryDB.getDiaryDao().getAll()){
-                Log.println(Log.DEBUG,"DB",entry.toString());
+                //Log.println(Log.DEBUG,"DB",entry.toString());
             }
 
             listener.updateFinished(updateCode);
@@ -157,7 +157,7 @@ public class DBHelper{
 
             //DEBUG
             for(DBEntry entry: diaryDB.getDiaryDao().getAll()){
-                Log.println(Log.DEBUG,"DB",entry.toString());
+                //Log.println(Log.DEBUG,"DB",entry.toString());
             }
 
             listener.updateFinished(updateCode);
@@ -185,7 +185,7 @@ public class DBHelper{
 
             //DEBUG
             for(DBEntry entry: diaryDB.getDiaryDao().getAll()){
-                Log.println(Log.DEBUG,"DB",entry.toString());
+                //Log.println(Log.DEBUG,"DB",entry.toString());
             }
 
             listener.updateFinished(updateCode);
@@ -193,7 +193,7 @@ public class DBHelper{
     }
 
     public void getEntryByDate(Date date){
-        Log.d("Detail","Getting entry by date");
+        //Log.d("Detail","Getting entry by date");
 
         /*
         AsyncGet asyncGet = new AsyncGet(date, listener);
@@ -221,14 +221,14 @@ public class DBHelper{
         @Override
         public void run() {
             DBEntry foundEntry = null;
-            Log.d("Detail", "Searching for Entry");
+            //Log.d("Detail", "Searching for Entry");
             try {
                 foundEntry = diaryDB.getDiaryDao().getEntryByDate(dateSearch);
-                Log.d("DB", "Found Entry");
-                Log.d("Detail", "Giving found Entry to listener, Async");
+                //Log.d("DB", "Found Entry");
+                //Log.d("Detail", "Giving found Entry to listener, Async");
             } catch (Exception e) {
-                Log.d("Detail", "Exception in AsyncGet: " + e.getMessage());
-                Log.d("DB", "NO ENTRY FOUND");
+                //Log.d("Detail", "Exception in AsyncGet: " + e.getMessage());
+                //Log.d("DB", "NO ENTRY FOUND");
             }
             final DBEntry finalFound = foundEntry;
             Handler mainThreadHandler = new Handler(Looper.getMainLooper());
@@ -260,7 +260,7 @@ public class DBHelper{
 
             //DEBUG
             for(DBEntry entry: diaryDB.getDiaryDao().getAll()){
-                Log.println(Log.DEBUG,"DB",entry.toString());
+                //Log.println(Log.DEBUG,"DB",entry.toString());
             }
 
             listener.updateFinished(updateCode);
@@ -285,13 +285,13 @@ public class DBHelper{
         @Override
         public void run(){
             diaryDB.getDiaryDao().clear();
-            Log.println(Log.DEBUG,"DB","DB cleared");
+            //Log.println(Log.DEBUG,"DB","DB cleared");
             try {
                 for(DBEntry entry: diaryDB.getDiaryDao().getAll()){
                     Log.println(Log.DEBUG,"DB",entry.toString());
                 }
             } catch (Exception e){
-                Log.println(Log.DEBUG,"DB","Database empty");
+                //Log.println(Log.DEBUG,"DB","Database empty");
             }
         }
     }
@@ -301,7 +301,7 @@ public class DBHelper{
         @Override
         public void run() {
             List<Integer> arrEmotions = diaryDB.getDiaryDao().getAllEmotions();
-            Log.println(Log.DEBUG,"DB",arrEmotions.toString());
+            //Log.println(Log.DEBUG,"DB",arrEmotions.toString());
         }
     }
 
@@ -317,9 +317,9 @@ public class DBHelper{
             DBEntry newest = null;
             try {
                 newest = diaryDB.getDiaryDao().getNewest();
-                Log.println(Log.DEBUG, "DB", newest.toString());
+                //Log.println(Log.DEBUG, "DB", newest.toString());
             } catch (Exception e){
-                Log.println(Log.DEBUG,"DB","ERROR - DB empty");
+                //Log.println(Log.DEBUG,"DB","ERROR - DB empty");
             }
         }
     }

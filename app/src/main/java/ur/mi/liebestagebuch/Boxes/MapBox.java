@@ -37,7 +37,7 @@ public class MapBox implements Box {
         this.coordinates = coordinates;
         content = "Lat: - " + coordinates.latitude + " - Long: - " + coordinates.longitude;
         String[] splits = content.split(" - ");
-        Log.d("MapView", "0:" + splits[0] + " 1:" + splits[1] + " 2:" + splits[2] + " 3:" + splits[3]);
+        //Log.d("MapView", "0:" + splits[0] + " 1:" + splits[1] + " 2:" + splits[2] + " 3:" + splits[3]);
     }
 
     // Dem Konstruktor kann auch ein String übergeben werden, aus dem dann ein LatLng-Objekt generiert wird.
@@ -96,7 +96,7 @@ public class MapBox implements Box {
         Address address = adresses.get(0);
         String addressString = "";
 
-        Log.d("Maps", "Address found: " + address.toString());
+        //Log.d("Maps", "Address found: " + address.toString());
 
         if (address.getCountryName() != null) {
             addressString += address.getCountryName();

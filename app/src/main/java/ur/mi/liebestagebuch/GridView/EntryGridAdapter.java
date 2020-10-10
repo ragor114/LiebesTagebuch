@@ -26,7 +26,7 @@ public class EntryGridAdapter extends BaseAdapter {
     private ArrayList<GridEntry> entries;
     private Context context;
 
-    public EntryGridAdapter(ArrayList <GridEntry> entries, Context context){
+    public EntryGridAdapter(ArrayList<GridEntry> entries, Context context) {
         this.entries = entries;
         this.context = context;
     }
@@ -70,9 +70,9 @@ public class EntryGridAdapter extends BaseAdapter {
         return gridElementView;
     }
 
-    private int getColorResourceForEmotion(Emotion emotion){
+    private int getColorResourceForEmotion(Emotion emotion) {
         int colorId = 0;
-        switch(emotion){
+        switch (emotion) {
             case VERY_GOOD:
                 colorId = R.drawable.emoji_sehr_glucklich;
                 break;

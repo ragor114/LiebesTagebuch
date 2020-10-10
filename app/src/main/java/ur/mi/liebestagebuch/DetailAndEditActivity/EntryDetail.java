@@ -39,22 +39,22 @@ public class EntryDetail implements CryptoListener {
 
     //Initialisierungs-Methoden:
 
-    public EntryDetail(DBEntry dbEntry, BoxListEncryptionListener listener, SpotifyBoxReadyListener spotifyListener, Context context){
+    public EntryDetail(DBEntry dbEntry, BoxListEncryptionListener listener, SpotifyBoxReadyListener spotifyListener, Context context) {
         this.listener = listener;
         this.spotifyListener = spotifyListener;
         this.context = context;
-        Log.d("Detail", "Creating Entry Detail");
+        //Log.d("Detail", "Creating Entry Detail");
         this.entryDate = dbEntry.getDate();
         setEmotion(dbEntry);
 
-        if(CheckEncryptionSettingHelper.encryptionActivated(context)){
+        if (CheckEncryptionSettingHelper.encryptionActivated(context)) {
             startContentDecryption(dbEntry);
-        } else{
-            Log.d("Passwort", "Encryption in Entry Detail not activated");
+        } else {
+            //Log.d("Passwort", "Encryption in Entry Detail not activated");
             String contentString = dbEntry.getContent();
-            Log.d("Passwort", "Content String is: " + contentString);
+            //Log.d("Passwort", "Content String is: " + contentString);
             this.boxList = StringTransformHelper.getBoxListFromString(contentString, spotifyListener, context);
-            Log.d("Passwort", "Boxlist is: " + boxList.toString());
+            //Log.d("Passwort", "Boxlist is: " + boxList.toString());
         }
     }
 
@@ -71,7 +71,7 @@ public class EntryDetail implements CryptoListener {
     // über einen switch gefunden werden:
     private void setEmotion(DBEntry dbEntry) {
         int emotionInt = dbEntry.getEmotions();
-        switch (emotionInt){
+        switch (emotionInt) {
             case 0:
                 this.emotion = Emotion.VERY_GOOD;
                 break;
@@ -91,25 +91,25 @@ public class EntryDetail implements CryptoListener {
     }
 
     //Getter- und Setter-Methoden:
-    public ArrayList<Box> getBoxList(){
+    public ArrayList<Box> getBoxList() {
         return boxList;
     }
 
-    public Box getBoxFromBoxList(int id){
+    public Box getBoxFromBoxList(int id) {
         return boxList.get(id);
     }
 
-    public int addBoxToBoxList(Box box){
+    public int addBoxToBoxList(Box box) {
         boxList.add(box);
         return boxList.indexOf(box);
     }
 
-    public Emotion getEmotion(){
+    public Emotion getEmotion() {
         return emotion;
     }
 
-    public int getEmotionInt(){
-        switch(emotion){
+    public int getEmotionInt() {
+        switch (emotion) {
             case VERY_GOOD:
                 return 0;
             case GOOD:
@@ -124,22 +124,22 @@ public class EntryDetail implements CryptoListener {
         return 2;
     }
 
-    public void setEmotion(Emotion emotion){
+    public void setEmotion(Emotion emotion) {
         this.emotion = emotion;
-        Log.d("Detail", "Set Emotion to " + this.emotion);
+        //Log.d("Detail", "Set Emotion to " + this.emotion);
     }
 
-    public Date getDate(){
+    public Date getDate() {
         return entryDate;
     }
 
-    public String getDateString(){
-        Log.d("Detail","Getting Datestring");
+    public String getDateString() {
+        //Log.d("Detail","Getting Datestring");
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
         return dateFormat.format(entryDate);
     }
 
-    public String getBoxListString(){
+    public String getBoxListString() {
         return StringTransformHelper.getStringFromBoxList(boxList);
     }
 
@@ -155,8 +155,8 @@ public class EntryDetail implements CryptoListener {
     // gemacht und dem listener mitgeteilt, dass die Entschlüsselung abgeschlossen ist.
     @Override
     public void onDecryptionFinished(String result) {
-        Log.d("Detail", "Decryption finished");
-        Log.d("Detail", "Decrypted String: " + result);
+        //Log.d("Detail", "Decryption finished");
+        //Log.d("Detail", "Decrypted String: " + result);
         this.boxList = StringTransformHelper.getBoxListFromString(result, spotifyListener, context);
         listener.onBoxListDecryptionFinished();
     }
@@ -167,7 +167,7 @@ public class EntryDetail implements CryptoListener {
     }
 
     @Override
-    public void onDecryptionFailed(){
+    public void onDecryptionFailed() {
         listener.onEncryptionFailed(context.getResources().getInteger(R.integer.decryption_failed_code));
     }
 }

@@ -89,11 +89,11 @@ public class LoginActivity extends AppCompatActivity {
         okButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("login", "clicked not firsttime");
+                //Log.d("login", "clicked not firsttime");
                 String storedPassword = SecurePasswordSaver.getStoredPassword(getApplicationContext());
-                Log.d("login", "Stored password: " + storedPassword);
+                //Log.d("login", "Stored password: " + storedPassword);
                 if (storedPassword.equals(editTextPassword.getText().toString())) {
-                    Log.d("login", "Password correct");
+                    //Log.d("login", "Password correct");
                     loginSuccess();
                 } else {
                     loginFingerprintText.setText(R.string.wrong_password);
@@ -106,7 +106,7 @@ public class LoginActivity extends AppCompatActivity {
         //welches nacher zum einloggen ohne Fingerabdruck genutzt wird.
         if (prefs.getBoolean("firstrun", true)) {
             isFirstRun = true;
-            Log.d("login", "Is firstrun");
+            //Log.d("login", "Is firstrun");
             okButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -209,7 +209,7 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == 100){
+        if (requestCode == 100) {
             finish();
         }
     }
@@ -219,7 +219,7 @@ public class LoginActivity extends AppCompatActivity {
         if (!editTextPassword.getText().toString().equals("")) {
             SecurePasswordSaver.storePasswordSecure(editTextPassword.getText().toString(), this);
             editTextPassword.setText("");
-            Log.d("login", "clicked first time");
+            //Log.d("login", "clicked first time");
             loginSuccess();
         }
     }
@@ -235,7 +235,7 @@ public class LoginActivity extends AppCompatActivity {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         String dateString = sdf.format(installationDate);
 
-        Log.d("Date", "InstallationDate in saveInstallation is: " + dateString);
+        //Log.d("Date", "InstallationDate in saveInstallation is: " + dateString);
 
         File installationFile = new File(this.getDir("date", MODE_PRIVATE), "installationDate");
         if (installationFile.exists()) {
@@ -247,10 +247,10 @@ public class LoginActivity extends AppCompatActivity {
             writer.write(dateString);
             writer.flush();
             writer.close();
-            Log.d("Date", "Created new File " + installationFile.getPath());
+            //Log.d("Date", "Created new File " + installationFile.getPath());
         } catch (IOException e) {
-            Log.d("Date", "IOExeption creating File in saveInstallationDate()");
-            e.printStackTrace();
+            //Log.d("Date", "IOExeption creating File in saveInstallationDate()");
+            //e.printStackTrace();
         }
     }
 

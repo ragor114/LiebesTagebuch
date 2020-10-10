@@ -53,7 +53,7 @@ public class SpotifyBox implements Box {
     public SpotifyBox(String songUri, Context context, SpotifyBoxReadyListener listener) {
         this.songUri = songUri;
         this.listener = listener;
-        Log.d("Spotify", "New SongUri set to: " + this.songUri);
+        //Log.d("Spotify", "New SongUri set to: " + this.songUri);
 
         setUpAppRemoteConnection(context);
 
@@ -73,13 +73,13 @@ public class SpotifyBox implements Box {
                 .setRedirectUri(context.getResources().getString(R.string.spotify_redirect_uri))
                 .showAuthView(true)
                 .build();
-        Log.d("Spotify", "ConnectionParams built");
+        //Log.d("Spotify", "ConnectionParams built");
         SpotifyAppRemote.connect(context, connectionParams, new Connector.ConnectionListener() {
             @Override
             public void onConnected(SpotifyAppRemote spotifyAppRemote) {
                 appRemote = spotifyAppRemote;
                 //DEBUG: appRemote.getPlayerApi().play("spotify:playlist:6uJdeXLzNtFPEhuZ0XFid0");
-                Log.d("Spotify", "App Remote connected!");
+                //Log.d("Spotify", "App Remote connected!");
                 if (playButtonOnClickListener == null) {
                     setPlayButtonClickListener();
                     listener.updatedViews();
@@ -88,7 +88,7 @@ public class SpotifyBox implements Box {
 
             @Override
             public void onFailure(Throwable throwable) {
-                Log.d("Spotify", "App Remote could not connect: " + throwable.getMessage());
+                //Log.d("Spotify", "App Remote could not connect: " + throwable.getMessage());
             }
         });
     }
@@ -162,10 +162,10 @@ public class SpotifyBox implements Box {
     // Die Inhalte der TextViews werden geladen und in den Strings gespeichert, der Listener wird
     // über eine Veränderung informiert.
     private void fillInTextViews() {
-        Log.d("Spotify", "Filling in TextViews");
+        //Log.d("Spotify", "Filling in TextViews");
         String[] splits = songUri.split(":");
         String trackId = splits[2];
-        Log.d("Spotify", "trackId is: " + trackId);
+        //Log.d("Spotify", "trackId is: " + trackId);
         spotify.getTrack(trackId, new Callback<Track>() {
             @Override
             public void success(Track track, Response response) {
@@ -176,7 +176,7 @@ public class SpotifyBox implements Box {
 
             @Override
             public void failure(RetrofitError error) {
-                Log.d("Spotify", "Connection Error!");
+                //Log.d("Spotify", "Connection Error!");
             }
         });
     }
@@ -189,7 +189,7 @@ public class SpotifyBox implements Box {
                 appRemote.getPlayerApi().play(songUri);
             }
         };
-        Log.d("Spotify", "PlayButton onClickListener set.");
+        //Log.d("Spotify", "PlayButton onClickListener set.");
     }
 
     @Override

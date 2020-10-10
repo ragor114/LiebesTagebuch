@@ -57,7 +57,7 @@ public class EditMapBoxActivity extends AppCompatActivity implements OnMapReadyC
     private Bundle extras;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState){
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.create_mapbox_activity);
 
@@ -88,11 +88,11 @@ public class EditMapBoxActivity extends AppCompatActivity implements OnMapReadyC
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent();
-                if(extras != null){
+                if (extras != null) {
                     String coordinatesString = "Lat: - " + coordinates.latitude + " - Long: - " + coordinates.longitude;
                     intent.putExtra(getString(R.string.mapbox_content_key), coordinatesString);
                     intent.putExtra(getString(R.string.position_in_list_key), extras.getInt(getString(R.string.position_in_list_key)));
-                } else{
+                } else {
                     intent.putExtra(getString(R.string.mapbox_content_key), coordinates);
                 }
                 setResult(RESULT_OK, intent);
@@ -128,59 +128,59 @@ public class EditMapBoxActivity extends AppCompatActivity implements OnMapReadyC
         try {
             foundAdresses = geocoder.getFromLocationName(searchString, 1);
         } catch (IOException e) {
-           Log.d("Maps", e.toString());
+            //Log.d("Maps", e.toString());
         }
-        if(foundAdresses.size() > 0){
+        if (foundAdresses.size() > 0) {
             Address foundAdress = foundAdresses.get(0);
             double lat = foundAdress.getLatitude();
             double lng = foundAdress.getLongitude();
             coordinates = new LatLng(lat, lng);
             googleMap.clear();
             setUpMarkerOnMap();
-        } else{
+        } else {
             Toast.makeText(this, "No Address found", Toast.LENGTH_SHORT).show();
         }
     }
 
     //MapsViews müssen über alle Änderungen im Lifecycle informiert werden:
     @Override
-    protected void onStart(){
+    protected void onStart() {
         super.onStart();
         editMap.onStart();
     }
 
     @Override
-    protected void onResume(){
+    protected void onResume() {
         super.onResume();
         editMap.onResume();
     }
 
     @Override
-    protected void onPause(){
+    protected void onPause() {
         super.onPause();
         editMap.onPause();
     }
 
     @Override
-    protected void onStop(){
+    protected void onStop() {
         editMap.onStop();
         super.onStop();
     }
 
     @Override
-    protected void onDestroy(){
+    protected void onDestroy() {
         editMap.onDestroy();
         super.onDestroy();
     }
 
     @Override
-    public void onLowMemory(){
+    public void onLowMemory() {
         super.onLowMemory();
         editMap.onLowMemory();
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState){
+    public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         editMap.onSaveInstanceState(outState);
     }
@@ -193,11 +193,11 @@ public class EditMapBoxActivity extends AppCompatActivity implements OnMapReadyC
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        Log.d("MapView", "Map is showing");
+        //Log.d("MapView", "Map is showing");
 
-        if(extras != null){
+        if (extras != null) {
             coordinates = (LatLng) extras.get(getString(R.string.existing_content_key));
-        } else{
+        } else {
             setCoordinatesToDevicePosition();
         }
 
@@ -230,8 +230,8 @@ public class EditMapBoxActivity extends AppCompatActivity implements OnMapReadyC
      * eine Toast-Nachricht angezeigt.
      */
     private void setCoordinatesToDevicePosition() {
-        if(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
-                || ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED){
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                || ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             Criteria criteria = new Criteria();
             criteria.setAccuracy(Criteria.ACCURACY_FINE);
             criteria.setPowerRequirement(Criteria.POWER_MEDIUM);
@@ -242,12 +242,12 @@ public class EditMapBoxActivity extends AppCompatActivity implements OnMapReadyC
             String bestProvider = locationManager.getBestProvider(criteria, true);
             Location lastLoc = locationManager.getLastKnownLocation(bestProvider);
             coordinates = new LatLng(lastLoc.getLatitude(), lastLoc.getLongitude());
-            if(googleMap != null){
+            if (googleMap != null) {
                 googleMap.clear();
                 setUpMarkerOnMap();
             }
-        } else{
-            coordinates = new LatLng(49,12);
+        } else {
+            coordinates = new LatLng(49, 12);
             Toast.makeText(this, "Please grant location permissions.", Toast.LENGTH_SHORT).show();
         }
     }
@@ -259,8 +259,8 @@ public class EditMapBoxActivity extends AppCompatActivity implements OnMapReadyC
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if(requestCode == getResources().getInteger(R.integer.permission_request_code)){
-            if(extras == null) {
+        if (requestCode == getResources().getInteger(R.integer.permission_request_code)) {
+            if (extras == null) {
                 setCoordinatesToDevicePosition();
             }
         }
@@ -283,6 +283,6 @@ public class EditMapBoxActivity extends AppCompatActivity implements OnMapReadyC
         coordinates = marker.getPosition();
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(coordinates));
         editMap.onResume();
-        Log.d("MapView", "End: Lat: " + coordinates.latitude + " Long: " + coordinates.longitude);
+        //Log.d("MapView", "End: Lat: " + coordinates.latitude + " Long: " + coordinates.longitude);
     }
 }

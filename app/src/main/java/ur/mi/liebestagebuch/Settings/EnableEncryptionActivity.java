@@ -99,11 +99,11 @@ public class EnableEncryptionActivity extends AppCompatActivity implements Datab
      */
     @Override
     public void updateFinished(int updateCode) {
-        if(updateCode == getResources().getInteger(R.integer.content_update_code)){
+        if (updateCode == getResources().getInteger(R.integer.content_update_code)) {
             dbHelper.updateEntryIV(currentDate, currentIv);
-        } else if(updateCode == getResources().getInteger(R.integer.iv_update_code)){
+        } else if (updateCode == getResources().getInteger(R.integer.iv_update_code)) {
             dbHelper.updateEntrySalt(currentDate, currentSalt);
-        } else if (updateCode == getResources().getInteger(R.integer.salt_update_code)){
+        } else if (updateCode == getResources().getInteger(R.integer.salt_update_code)) {
             currentEntryPosition++;
             encryptSingleEntry();
         }
@@ -120,7 +120,7 @@ public class EnableEncryptionActivity extends AppCompatActivity implements Datab
     @Override
     public void allEntriesFound(List<DBEntry> allEntries) {
         this.allEntries = allEntries;
-        for(DBEntry current : allEntries){
+        for (DBEntry current : allEntries) {
             allContents.add(current.getContent());
         }
         encryptSingleEntry();
@@ -131,10 +131,10 @@ public class EnableEncryptionActivity extends AppCompatActivity implements Datab
      * Wenn alle Einträge verschlüsselt worden sind, wird die Activity beendet.
      */
     private void encryptSingleEntry() {
-        if(currentEntryPosition < allContents.size()){
-            Log.d("Passwort", "Entry " + currentEntryPosition + " from " + allContents.size());
+        if (currentEntryPosition < allContents.size()) {
+            //Log.d("Passwort", "Entry " + currentEntryPosition + " from " + allContents.size());
             StringTransformHelper.startEncryptionWithNewPw(allContents.get(currentEntryPosition), this, LoginActivity.correctPassword, this);
-        } else{
+        } else {
             finishEditing();
         }
     }
@@ -149,7 +149,7 @@ public class EnableEncryptionActivity extends AppCompatActivity implements Datab
     // Wurde ein Eintrag verschlüsselt, werden dann Inhalt, Iv und Salt in der Datenbank gespeichert.
     @Override
     public void onEncryptionFinished(String result, byte[] iv, byte[] salt) {
-        Log.d("Passwort", "Encryption " + currentEntryPosition + " finished.");
+        //Log.d("Passwort", "Encryption " + currentEntryPosition + " finished.");
         this.currentDate = allEntries.get(currentEntryPosition).getDate();
         this.currentIv = iv;
         this.currentSalt = salt;
@@ -163,7 +163,7 @@ public class EnableEncryptionActivity extends AppCompatActivity implements Datab
 
     @Override
     public void onEncryptionFailed() {
-       Log.d("Passwort", "Encryption failed!");
+        //Log.d("Passwort", "Encryption failed!");
     }
 
     @Override
@@ -174,15 +174,15 @@ public class EnableEncryptionActivity extends AppCompatActivity implements Datab
     // Die Activty kann erst verlassen werden, wenn alle Einträge verschlüsselt worden sind.
     @Override
     public void onBackPressed() {
-        if(!isRunning) {
+        if (!isRunning) {
             setResult(RESULT_CANCELED);
             finish();
-        } else{
+        } else {
             sendIsRunningToast();
         }
     }
 
-    public void sendIsRunningToast(){
+    public void sendIsRunningToast() {
         Toast.makeText(this, "Please wait until encryption is finished", Toast.LENGTH_SHORT).show();
     }
 }

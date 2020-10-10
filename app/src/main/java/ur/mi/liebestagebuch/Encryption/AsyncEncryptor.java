@@ -39,7 +39,7 @@ public class AsyncEncryptor implements Runnable {
     private Context context;
 
     // Die notwendigen Attribute werden über den Konstruktor gesetzt
-    public AsyncEncryptor(Handler mainThreadHandler, CryptoListener listener, String toEncrypt, String encryptedPassword, Context context){
+    public AsyncEncryptor(Handler mainThreadHandler, CryptoListener listener, String toEncrypt, String encryptedPassword, Context context) {
         this.context = context;
         this.mainThreadHandler = mainThreadHandler;
         this.listener = listener;
@@ -57,7 +57,7 @@ public class AsyncEncryptor implements Runnable {
      * Verschlüsselung mittels der von Java-vorgegebenen Klassen und Methoden genutzt wird.
      * Das verschlüsselte Byte Array wird in einen String umgewandelt und dem Listener übermittelt.
      */
-    private void encrypt(){
+    private void encrypt() {
         //encrypt toEncrypt
         String encryptedString = "";
         byte[] iv = null;
@@ -68,7 +68,7 @@ public class AsyncEncryptor implements Runnable {
             cipher.init(Cipher.ENCRYPT_MODE, myAESKey);
             AlgorithmParameters params = cipher.getParameters();
             iv = params.getParameterSpec(IvParameterSpec.class).getIV();
-            byte [] encrypted = cipher.doFinal(toEncrypt.getBytes(context.getString(R.string.charset_name)));
+            byte[] encrypted = cipher.doFinal(toEncrypt.getBytes(context.getString(R.string.charset_name)));
             encryptedString = Base64.encodeToString(encrypted, Base64.DEFAULT);
         } catch (NoSuchAlgorithmException e) {
             encryptionFailed();
@@ -91,7 +91,7 @@ public class AsyncEncryptor implements Runnable {
     }
 
     // Der Listener wird auf dem UI-Thread informiert und der verschlüsselte String übergeben.
-    private void informListener(String result, byte[] iv, byte[] salt){
+    private void informListener(String result, byte[] iv, byte[] salt) {
         //Nur final Werte können an einen anderen Thread übergeben werden.
         final String resultString = result;
         final byte[] resultIv = iv;
@@ -109,7 +109,7 @@ public class AsyncEncryptor implements Runnable {
     }
 
     //Bei Absturz informieren des Listeners auf dem UI-Thread.
-    private void encryptionFailed(){
+    private void encryptionFailed() {
         mainThreadHandler.post(new Runnable() {
             @Override
             public void run() {

@@ -48,8 +48,8 @@ public class NotificationHelper extends ContextWrapper {
 
     //Mit dieser Methode wird ein NotificationManager erstellt und übergeben, der für die Übertragung von
     //von Notifications benötigt wird.
-    public NotificationManager getManager(){
-        if (mManager == null){
+    public NotificationManager getManager() {
+        if (mManager == null) {
             mManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         }
 
@@ -58,13 +58,11 @@ public class NotificationHelper extends ContextWrapper {
 
     //TODO: Verbessern notification icon
     //Dieser Builder erstellt die Finale Notification
-    public NotificationCompat.Builder getChannelNotification(){
-        return new NotificationCompat.Builder(getApplicationContext(),notificationChannelID)
+    public NotificationCompat.Builder getChannelNotification() {
+        return new NotificationCompat.Builder(getApplicationContext(), notificationChannelID)
                 .setContentTitle("Liebes Tagebuch...")
                 .setContentText("Don't forget to write a diary entry today!")
                 .setSmallIcon(R.drawable.stift_png_24dpi);
-
-
 
 
     }

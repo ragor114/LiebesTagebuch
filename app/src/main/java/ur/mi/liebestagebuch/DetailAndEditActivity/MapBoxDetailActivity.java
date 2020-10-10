@@ -106,7 +106,7 @@ public class MapBoxDetailActivity extends AppCompatActivity implements OnMapRead
     // die Koordinaten und die Position der Box weiter gereicht.
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if(item.getItemId() == R.id.start_editing_map_box){
+        if (item.getItemId() == R.id.start_editing_map_box) {
             Intent intent = new Intent(MapBoxDetailActivity.this, EditMapBoxActivity.class);
             intent.putExtra(getString(R.string.existing_content_key), coordinates);
             intent.putExtra(getString(R.string.position_in_list_key), positionInList);
@@ -128,7 +128,7 @@ public class MapBoxDetailActivity extends AppCompatActivity implements OnMapRead
     // und ein Marker an den Koordinaten platziert.
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        Log.d("MapView", "Map is showing");
+        //Log.d("MapView", "Map is showing");
         MarkerOptions markerOptions = new MarkerOptions().position(coordinates)
                 .title("Marker")
                 .draggable(false);

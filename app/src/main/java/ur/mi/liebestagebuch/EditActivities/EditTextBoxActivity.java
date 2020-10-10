@@ -46,12 +46,12 @@ public class EditTextBoxActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String content = editText.getText().toString();
-                if(!content.contains("|") && !content.contains("<")) {
+                if (!content.contains("|") && !content.contains("<")) {
                     Intent intent = new Intent();
                     intent.putExtra(getString(R.string.textbox_content_key), content);
                     setResult(RESULT_OK, intent);
                     finish();
-                } else{
+                } else {
                     showWarningForIllegalChars();
                 }
             }
@@ -79,13 +79,13 @@ public class EditTextBoxActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String content = editText.getText().toString();
-                if(!content.contains("|") && !content.contains("<")) {
+                if (!content.contains("|") && !content.contains("<")) {
                     Intent intent = new Intent();
                     intent.putExtra(getString(R.string.textbox_content_key), content);
                     intent.putExtra(getString(R.string.position_in_list_key), positionInList);
                     setResult(RESULT_OK, intent);
                     finish();
-                } else{
+                } else {
                     showWarningForIllegalChars();
                 }
             }
