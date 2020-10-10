@@ -66,6 +66,9 @@ Dieses finden Sie unter: https://github.com/ragor114/LiebesTagebuch
 [Beschreiben Sie hier die einzelnen Teammitglieder mit Namen, E-Mail-Adresse, Github-Nutzer und Foto. Nennen Sie mindestens eine Komponenten der Anwendung, die in wesentlichen Teilen vom jeweiligen Teammitglied entwickelt wurde.]
 
 #### Jannik Wiese
+
+<img src="app/src/main/res/drawable/Jannik%20Bild.png" width="200">
+
 Jannik Wiese, E-Mail: Jannik.Wiese@stud.uni-regensburg.de, Github: Ragor114 (https://github.com/ragor114).
 
 Entwicklung von:
@@ -94,6 +97,8 @@ Passworts.
 Außerdem: Allgemeine Projektplanung, Github-Verwaltung.
 
 #### Moritz Schnell
+
+<img src="app/src/main/res/drawable/Mo%20Bild.png" width="200">
 
 Moritz Schnell, E-Mail: Moritz.Schnell@stud.uni-regensburg.de, Github: BrokeMo (https://github.com/BrokeMo).
 
