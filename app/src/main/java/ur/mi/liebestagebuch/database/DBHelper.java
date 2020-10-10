@@ -10,6 +10,7 @@ import androidx.room.Room;
 
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 import ur.mi.liebestagebuch.DetailAndEditActivity.DetailActivityConfig;
@@ -42,29 +43,29 @@ public class DBHelper{
 
     public void newEntry(Date date, int emotion, String content, byte[] salt, byte[] iv){
         newEmptyEntry = new Entry(date, emotion, content, salt, iv);
-        AsyncNewEmpty asyncNewEmpty = new AsyncNewEmpty(listener);
-        asyncNewEmpty.execute();
+        AsyncNewEmpty newEmpty = new AsyncNewEmpty(newEmptyEntry, listener);
+        Executors.newSingleThreadExecutor().submit(newEmpty);
     }
 
     public void updateEntryContent(Date date, String content){
         updatedContent =content;
         changeDate = date;
-        AsyncUpdateContent asyncUpdateContent = new AsyncUpdateContent(listener);
-        asyncUpdateContent.execute();
+        AsyncUpdateContent updateContent = new AsyncUpdateContent(changeDate, updatedContent, listener);
+        Executors.newSingleThreadExecutor().submit(updateContent);
     }
 
     public void updateEntrySalt(Date date, byte[] salt){
         updatedSalt = salt;
         changeDate = date;
-        AsyncUpdateSalt asyncUpdateSalt = new AsyncUpdateSalt(listener);
-        asyncUpdateSalt.execute();
+        AsyncUpdateSalt updateSalt = new AsyncUpdateSalt(changeDate, updatedSalt, listener);
+        Executors.newSingleThreadExecutor().submit(updateSalt);
     }
 
     public void updateEntryIV(Date date, byte[] IV){
         updatedIV = IV;
         changeDate = date;
-        AsyncUpdateIV asyncUpdateIV = new AsyncUpdateIV(listener);
-        asyncUpdateIV.execute();
+        AsyncUpdateIV updateIV = new AsyncUpdateIV(changeDate, updatedIV, listener);
+        Executors.newSingleThreadExecutor().submit(updateIV);
     }
 
     public void updateEntryEmotion(Date date, int emotion){
@@ -93,16 +94,21 @@ public class DBHelper{
         }
     }
 
-    private class AsyncUpdateSalt extends AsyncTask<Void,Void,Void>{
+    private class AsyncUpdateSalt implements Runnable{
 
+        private Date updateDate;
+        private byte[] updateSalt;
         private DatabaseListener listener;
 
-        public AsyncUpdateSalt(DatabaseListener listener){
+        public AsyncUpdateSalt(Date updateDate,byte[] updateSalt,DatabaseListener listener){
+            this.updateDate = updateDate;
+            this.updateSalt = updateSalt;
             this.listener = listener;
         }
 
+
         @Override
-        protected Void doInBackground(Void... voids) {
+        public void run (){
             diaryDB.getDiaryDao().updateSalt(changeDate,updatedSalt);
 
             //DEBUG
@@ -111,21 +117,23 @@ public class DBHelper{
             }
 
             listener.updateFinished(DetailActivityConfig.SALT_UPDATE_CODE);
-
-            return null;
         }
     }
 
-    private class AsyncUpdateIV extends AsyncTask<Void,Void,Void>{
+    private class AsyncUpdateIV implements Runnable{
 
+        private Date updateDate;
+        private byte[] updateIV;
         private DatabaseListener listener;
 
-        public AsyncUpdateIV(DatabaseListener listener){
+        public AsyncUpdateIV(Date updateDate, byte[] updateIV, DatabaseListener listener){
+            this.updateDate = updateDate;
+            this.updateIV = updateIV;
             this.listener = listener;
         }
 
         @Override
-        protected Void doInBackground(Void... voids) {
+        public void run(){
             diaryDB.getDiaryDao().updateIV(changeDate,updatedIV);
 
             //DEBUG
@@ -135,20 +143,23 @@ public class DBHelper{
 
             listener.updateFinished(DetailActivityConfig.IV_UPDATE_CODE);
 
-            return null;
         }
     }
 
-    private class AsyncUpdateContent extends AsyncTask<Void,Void,Void>{
+    private class AsyncUpdateContent implements Runnable{
 
+        private Date updateDate;
+        private String updateContent;
         private DatabaseListener listener;
 
-        public AsyncUpdateContent(DatabaseListener listener){
+        public AsyncUpdateContent(Date updateDate, String updateContent, DatabaseListener listener){
+            this.updateDate = updateDate;
+            this.updateContent = updateContent;
             this.listener = listener;
         }
 
         @Override
-        protected Void doInBackground(Void... voids) {
+        public void run() {
             diaryDB.getDiaryDao().updateContent(changeDate,updatedContent);
 
             //DEBUG
@@ -157,8 +168,6 @@ public class DBHelper{
             }
 
             listener.updateFinished(DetailActivityConfig.CONTENT_UPDATE_CODE);
-
-            return null;
         }
     }
 
@@ -253,17 +262,18 @@ public class DBHelper{
 
 
 
-    private class AsyncNewEmpty extends android.os.AsyncTask<Void,Void,Void> {
+    private class AsyncNewEmpty implements Runnable {
 
+        private Entry updateEntry;
         private DatabaseListener listener;
 
-        public AsyncNewEmpty (DatabaseListener listener){
+        public AsyncNewEmpty (Entry updateEntry,DatabaseListener listener){
+            this.updateEntry = updateEntry;
             this.listener = listener;
         }
 
         @Override
-        protected Void doInBackground(Void... voids) {
-
+        public void run() {
             diaryDB.getDiaryDao().insert(newEmptyEntry);
 
             //DEBUG
@@ -272,28 +282,26 @@ public class DBHelper{
             }
 
             listener.updateFinished(DetailActivityConfig.NEW_ENTRY_UPDATE_CODE);
-
-            return null;
         }
     }
 
     //DEBUG ONLY
     public void clear(){
         AsyncClear clear = new AsyncClear();
-        clear.execute();
+        Executors.newSingleThreadExecutor().submit(clear);
     }
 
     //DEBUG ONLY
     public void list(){
         AsyncGetEmotions list = new AsyncGetEmotions();
-        list.execute();
+        Executors.newSingleThreadExecutor().submit(list);
     }
 
 
-    private class AsyncClear extends android.os.AsyncTask<Void,Void,Void>{
+    private class AsyncClear implements Runnable{
 
         @Override
-        protected Void doInBackground(Void... voids) {
+        public void run(){
             diaryDB.getDiaryDao().clear();
             Log.println(Log.DEBUG,"DB","DB cleared");
             try {
@@ -303,30 +311,27 @@ public class DBHelper{
             } catch (Exception e){
                 Log.println(Log.DEBUG,"DB","Database empty");
             }
-
-            return null;
         }
     }
 
-    private class AsyncGetEmotions extends android.os.AsyncTask<Void,Void,List<Integer>>{
+    private class AsyncGetEmotions implements Runnable{
 
         @Override
-        protected List<Integer> doInBackground(Void... voids) {
+        public void run() {
             List<Integer> arrEmotions = diaryDB.getDiaryDao().getAllEmotions();
             Log.println(Log.DEBUG,"DB",arrEmotions.toString());
-            return arrEmotions;
         }
     }
 
     public void newest(){
         AsyncGetNewest newest = new AsyncGetNewest();
-        newest.execute();
+        Executors.newSingleThreadExecutor().submit(newest);
     }
 
-    private class AsyncGetNewest extends AsyncTask<Void,Void,Entry>{
+    private class AsyncGetNewest implements Runnable{
 
         @Override
-        protected Entry doInBackground(Void... voids) {
+        public void run() {
             Entry newest = null;
             try {
                 newest = diaryDB.getDiaryDao().getNewest();
@@ -334,7 +339,6 @@ public class DBHelper{
             } catch (Exception e){
                 Log.println(Log.DEBUG,"DB","ERROR - DB empty");
             }
-            return newest;
         }
     }
 
