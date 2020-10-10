@@ -85,19 +85,8 @@ public class GridActivity extends AppCompatActivity implements AdapterView.OnIte
         dbHelper = new DBHelper(this, this);
         initGrid();
 
-        //leaveApp();
-
-       // if (getIntent().getBooleanExtra("EXIT",false)) {
-        //    finish();
-        //}
     }
 
-   /* private void leaveApp() {
-        Intent intent = new Intent(GridActivity.this, GridActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.putExtra("EXIT", true);
-        startActivity(intent);
-    }*/
 
     // Das Grid-View wird in einer Java-Variable gespeichert, die ArrayList aufgesetzt, der
     // Adapter mit der ArrayList verbunden und diese Activity als Listener registriert.
