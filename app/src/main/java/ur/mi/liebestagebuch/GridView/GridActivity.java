@@ -162,7 +162,7 @@ public class GridActivity extends AppCompatActivity implements AdapterView.OnIte
     // Check: Abruf des in einer Datei gespeicherten Installationsdatums und Rückgabe dieses Objekts.
     private Date getInstallationDate() {
         Date saveDate = new Date();
-        File installationFile = new File(this.getDir("date", MODE_PRIVATE), "installationDate.txt");
+        File installationFile = new File(this.getDir("date", MODE_PRIVATE), "installationDate");
         if (installationFile.exists()) {
             StringBuilder builder = new StringBuilder();
             BufferedReader br = null;

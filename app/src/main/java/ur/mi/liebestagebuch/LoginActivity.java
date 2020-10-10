@@ -230,7 +230,7 @@ public class LoginActivity extends AppCompatActivity {
 
         Log.d("Date", "InstallationDate in saveInstallation is: " + dateString);
 
-        File installationFile = new File(this.getDir("date", MODE_PRIVATE), "installationDate.txt");
+        File installationFile = new File(this.getDir("date", MODE_PRIVATE), "installationDate");
         if (installationFile.exists()) {
             installationFile.delete();
         }
