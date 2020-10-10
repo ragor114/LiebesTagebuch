@@ -31,6 +31,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Geocoding"
+        android:textColor="@color/lite_grey"
         android:color="@color/colorPrimary"
         android:layout_marginLeft="50dp"
         android:layout_marginRight="50dp"
