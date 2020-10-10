@@ -48,6 +48,19 @@ Tagebucheintrag hinzu zu fügen und auf einer Karte anzeigen zu lassen.
 
 Video:
 
+## Hinweis
+
+Da wir uns nach der Klausur unsicher waren, ob noch eine Information zu
+den Respotories kommt, haben wir uns selbst informiert und ein eigenes
+Repository eingerichtet und dort angefangen zu programmieren. Aus
+Gründen der Einfachheit sind wir auch später nicht zu dem offiziellen
+UniRegensburg-Repository gewechselt. Während der master-branch beider
+Repositories übereinstimmen ist es wahrscheinlich am besten unser
+anderes Repository zu betrachten, um unseren Workflow nach zu voll
+ziehen.
+
+Dieses finden Sie unter: https://github.com/ragor114/LiebesTagebuch
+
 ## Team
 
 [Beschreiben Sie hier die einzelnen Teammitglieder mit Namen, E-Mail-Adresse, Github-Nutzer und Foto. Nennen Sie mindestens eine Komponenten der Anwendung, die in wesentlichen Teilen vom jeweiligen Teammitglied entwickelt wurde.]
@@ -96,6 +109,8 @@ Verbesserung der Datenbank (Austausch AsyncTasks -> Runnables).
 Außerdem: Appicon-Design.
 
 #### Jonas Distler
+
+![Jonas Bild](app/src/main/res/drawable/Jonas%20Bild.png)
 
 Jonas Distler, E-Mail: Jonas.Distler@stud.uni-regensburg.de, Github: jnsds (https://github.com/jnsds).
 
