@@ -129,7 +129,7 @@ public class SettingsActivity extends AppCompatActivity {
                     save();
                 }
             }
-        } else if (resultCode == RESULT_CANCELED) {
+        } else if (resultCode == RESULT_CANCELED && requestCode != 12345) {
             sw_encrypt.setChecked(!sw_encrypt.isChecked());
         }
     }
