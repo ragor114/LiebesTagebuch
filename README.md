@@ -1,28 +1,26 @@
 # Liebes Tagebuch ...
 
-[Beschreiben Sie hier in einer kurzen Zusammenfassung Hintergrund, Ziele und Funktionen Ihrer Anwendung. Fügen Sie mehrere sinnvollen Screenshot ein, die den Funktionsumfang der Anwendungdemonstrieren. Verlinken Sie zum Abschluss des Projekts ein kurzes Video, in dem Sie die wesentlichen Nutzungsszenarien Ihrer Anwendung demonstrieren.]
-
 Ziel von "Liebes Tagebuch..." war es ein möglichst flexibles Tagebuch an
 zu bieten. Also keines nur für Reisen, nur für Musik oder nur für
 klassischen Text. Daher muss "Liebes Tagebuch..." vielfältige Funktionen
 bieten.
 
-In die App kann man sich per Fingerabdruck anmelden oder auch klassisch
+In die App kann man sich per Fingerabdruck einloggen oder auch klassisch
 mit einem Passwort.
 
 <img src="app/src/main/res/drawable/screenshot_lockscreen.png" width="200">
 
 In der darauffolgenden Grid-Ansicht hat man für jeden Tag seit der
-Installation einen Eintrag (somit entsteht kein großes Chaos durch zu
-viele unbekannte Dateien) jeder Eintrag zeigt, wenn vorhanden, die in
+Installation (beziehungsweise dem ersten Start) einen Eintrag, somit entsteht kein großes Chaos durch zu
+viele unbekannte Dateien, jeder Eintrag zeigt, wenn vorhanden, die in
 ihm gewählte Emotion an, somit kann man seine Emotionen tracken.
 
 <img src="app/src/main/res/drawable/screenshot_grid.png" width="200">
 
 Von der GridActivity kann man zu den Einstellungen gelangen, wo man eine
-tägliche Notification aktivieren kann (falls man sein gesamtes Leben
+tägliche Notification aktivieren (falls man sein gesamtes Leben
 aufzeichnen möchte), die Verschlüsselung an- und ausschalten oder sein
-Passwort ändern.
+Passwort ändern kann.
 
 <img src="app/src/main/res/drawable/screenshot_setting_without_remind.png" width="200">
 
@@ -34,7 +32,7 @@ Passwort ändern.
 
 <img src="app/src/main/res/drawable/screenshot_disable_encryption.png" width="200">
 
-Apropos verschlüsselt "Liebes Tabebuch..." alle Einträge (wenn
+"Liebes Tabebuch..." verschlüsselt alle Einträge (wenn
 gewünscht) nach 256-Bit-AES-Standard und legt die Passwörter in einem
 geschützten Bereich des Betriebssystems ab.
 
@@ -44,7 +42,7 @@ vorhandene Boxen löschen oder bearbeiten. Von jeder Box kann man (fast)
 beliebig viele hin zu fügen, so dass man zum Beispiel an einem Tag auch
 mehrere Orte aufzeichnen kann. Das Box-Prinzip ist auch erweiterbar, so
 dass mit vergleichsweise geringem Aufwand auch neue Boxen für andere
-Zwecke hin zu gefügt werden könnten.
+Zwecke hinzugefügt werden könnten.
 
 <img src="app/src/main/res/drawable/screenshot_detail.png" width="200">
 
@@ -61,7 +59,7 @@ der Galerie wählen kann.
 
 SpotifyBoxen erlauben es (wenn man ein Spotify-Konto hat) Songs zu
 suchen oder per Link hinzu zu fügen, Informationen über diese ab zu
-rufen und die Songs in der Spotify-App zu spielen.
+rufen und die Songs in der Spotify-App ab zu spielen.
 
 <img src="app/src/main/res/drawable/screenshot_edit_spotify.png" width="200">
 
@@ -72,24 +70,22 @@ Tagebucheintrag hinzu zu fügen und auf einer Karte anzeigen zu lassen.
 
 <img src="app/src/main/res/drawable/screenshot_editmap.png" width="200">
 
-Video:
+Video: https://1drv.ms/v/s!AmZwwR3ZzIbIqDJsrULWR3I0NU1q?e=QKDmiu
 
 ## Hinweis
 
 Da wir uns nach der Klausur unsicher waren, ob noch eine Information zu
 den Respotories kommt, haben wir uns selbst informiert und ein eigenes
 Repository eingerichtet und dort angefangen zu programmieren. Aus
-Gründen der Einfachheit sind wir auch später nicht zu dem offiziellen
+Gründen der Kontinuität sind wir auch später nicht zu dem offiziellen
 UniRegensburg-Repository gewechselt. Während der master-branch beider
-Repositories übereinstimmen ist es wahrscheinlich am besten unser
+Repositories übereinstimmen, ist es wahrscheinlich am besten unser
 anderes Repository zu betrachten, um unseren Workflow nach zu voll
 ziehen.
 
 Dieses finden Sie unter: https://github.com/ragor114/LiebesTagebuch
 
 ## Team
-
-[Beschreiben Sie hier die einzelnen Teammitglieder mit Namen, E-Mail-Adresse, Github-Nutzer und Foto. Nennen Sie mindestens eine Komponenten der Anwendung, die in wesentlichen Teilen vom jeweiligen Teammitglied entwickelt wurde.]
 
 #### Jannik Wiese
 
